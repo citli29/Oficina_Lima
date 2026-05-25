@@ -1,4 +1,4 @@
-<?php 
+<?php declare(strict_types =1);
 require_once($_SERVER['DOCUMENT_ROOT'].'/templates/common.tpl.php');
 
 $ch = curl_init('http://127.0.0.1:8000/api/search_models.php');

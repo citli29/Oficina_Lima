@@ -15,8 +15,11 @@ case "$1" in
 	-db)
 		sqlite3 database/database.db < database.sql
 		;;
+	-t)
+		./vendor/bin/phpunit tests
+		;;
 	*)
-		echo "Usage: $0 {-s|-db}"
+		echo "Usage: $0 {-s|-db|-t}"
 		exit 1
 		;;
 esac
