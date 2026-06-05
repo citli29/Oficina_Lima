@@ -1,3 +1,3 @@
 <?php
-	header('Location: /pages/index.php');	
+	header('Location: /pages/admin/admin_center.php');	
 	exit;

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$1" in
+	-s)
+		php -S 127.0.0.1:9000 &
+		PID1=$!
+
+		php -S 127.0.0.1:8000 &
+		PID2=$!
+
+		echo "9000: $PID1"
+		echo "8000: $PID2"
+		wait
+		;;
+	-db)
+		sqlite3 database/database.db < database.sql
+		;;
+	*)
+		echo "Usage: $0 {-s|-db}"
+		exit 1
+		;;
+esac

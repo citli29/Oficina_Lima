@@ -1,0 +1,1679 @@
+id;car_model;car_make
+1;GTV6;1
+2;Spider;1
+3;Lagonda;2
+4;V8;2
+5;V8 Vantage;2
+6;4000;3
+7;5000;3
+8;318i;4
+9;318iC;4
+10;318iS;4
+11;318ti;4
+12;320i;4
+13;524td;4
+14;528e;4
+15;528i;4
+16;533i;4
+17;633 csi;4
+18;635CSi;4
+19;733i;4
+20;735i;4
+21;735iL;4
+22;840Ci;4
+23;850CSi;4
+24;850Ci;4
+25;L7;4
+26;M6;4
+27;Century;5
+28;Electra;5
+29;LeSabre;5
+30;Regal;5
+31;Riviera;5
+32;Skyhawk;5
+33;Skylark;5
+34;Cimarron;6
+35;Deville;6
+36;Eldorado;6
+37;Fleetwood;6
+38;Seville;6
+39;Aluminum Tilt;7
+40;Blazer;7
+41;Bus Chassis;7
+42;C/K Pickup;7
+43;C5;7
+44;C6;7
+45;C7;7
+46;Camaro;7
+47;Caprice;7
+48;Cavalier;7
+49;Chevette;7
+50;Citation;7
+51;Corvette;7
+52;El Camino;7
+53;Forward Control;7
+54;G-Series;7
+55;Heavy Conventional;7
+56;Impala;7
+57;LUV;7
+58;Malibu;7
+59;Monte Carlo;7
+60;P - Series;7
+61;Suburban;7
+62;Cordoba;8
+63;Dynasty;8
+64;E-CLASS;8
+65;EXECUTIVE;8
+66;Imperial;8
+67;LASER;8
+68;LeBaron;8
+69;NEWPORT;8
+70;New Yorker;8
+71;SALON;8
+72;210;9
+73;280ZX;9
+74;310;9
+75;510;9
+76;DMC-12;10
+77;400;11
+78;600;11
+79;ARIES;11
+80;Challenger;11
+81;Colt;11
+82;Conquest;11
+83;D-Series;11
+84;D50;11
+85;DIPLOMAT;11
+86;Dynasty;11
+87;LANCER;11
+88;Mirada;11
+89;Monaco;11
+90;OMNI;11
+91;RD200 / RD250;11
+92;Ram Chassis Cab;11
+93;Ram Van;11
+94;Ram Wagon;11
+95;Ramcharger;11
+96;ST.REGIS;11
+97;W-Series;11
+98;308GTB;12
+99;308GTBi;12
+100;308GTS;12
+101;308GTSi;12
+102;Mondial 8;12
+103;Brava;13
+104;Spider 2000;13
+105;Strada;13
+106;X 1/9;13
+107;A9513;14
+108;AT8513;14
+109;AT9513;14
+110;AT9522;14
+111;B600;14
+112;B700;14
+113;B7000;14
+114;Bronco;14
+115;C600;14
+116;C700;14
+117;C7000;14
+118;C800;14
+119;C8000;14
+120;CF6000;14
+121;CF7000;14
+122;CF8000;14
+123;CFT8000;14
+124;CL9000;14
+125;CLT9000;14
+126;CT800;14
+127;CT8000;14
+128;Courier;14
+129;E-100;14
+130;E-150;14
+131;E-250;14
+132;E-350;14
+133;Escort;14
+134;F-100;14
+135;F-150;14
+136;F-250;14
+137;F-350;14
+138;F-590;14
+139;F-600;14
+140;F-700;14
+141;F-800;14
+142;F-Super Duty;14
+143;F6000;14
+144;F7000;14
+145;F8000;14
+146;FT800;14
+147;FT8000;14
+148;FT900;14
+149;Fairmont;14
+150;Granada;14
+151;L800;14
+152;L8000;14
+153;L9000;14
+154;L9513;14
+155;LA8000;14
+156;LA9000;14
+157;LL9000;14
+158;LLA9000;14
+159;LLS9000;14
+160;LN600;14
+161;LN700;14
+162;LN7000;14
+163;LN800;14
+164;LN8000;14
+165;LN9000;14
+166;LNT800;14
+167;LNT8000;14
+168;LNT9000;14
+169;LS8000;14
+170;LS9000;14
+171;LT800;14
+172;LT8000;14
+173;LT8501;14
+174;LT8513;14
+175;LT9000;14
+176;LT9501;14
+177;LT9513;14
+178;LT9522;14
+179;LTA9000;14
+180;LTD;14
+181;LTL9000;14
+182;LTLA9000;14
+183;LTLS9000;14
+184;LTS8000;14
+185;LTS9000;14
+186;Laser;14
+187;Mustang;14
+188;P600;14
+189;Recreational Vehicle;14
+190;Thunderbird;14
+191;Aluminum Tilt;15
+192;Bus Chassis;15
+193;C/K Pickup;15
+194;C5;15
+195;C6;15
+196;C7;15
+197;Caballero;15
+198;Forward Control;15
+199;Heavy Conventional;15
+200;Hi-Cube;15
+201;Jimmy Utility;15
+202;Motorhome Chassis;15
+203;P Truck Forward;15
+204;Rally;15
+205;S15 Utility;15
+206;Suburban;15
+207;Value Van;15
+208;Vandura;15
+209;Accord;16
+210;Civic;16
+211;Prelude;16
+212;I-Mark;17
+213;IMPULSE;17
+214;Pickup;17
+215;XJ6;18
+216;XJS;18
+217;CJ-5;19
+218;CJ-6;19
+219;CJ-7;19
+220;CJ-8 Scrambler;19
+221;Cherokee;19
+222;J-10;19
+223;J-20;19
+224;Wagoneer;19
+225;Continental;20
+226;Mark;20
+227;Town Car;20
+228;Eclat;21
+229;Elite;21
+230;Esprit;21
+231;Turbo Esprit;21
+232;228;22
+233;430;22
+234;Biturbo;22
+235;Merak;22
+236;Quattroporte;22
+237;Spyder;22
+238;TC;22
+239;626;23
+240;B-Series;23
+241;GLC;23
+242;RX-7;23
+243;240;24
+244;280;24
+245;300;24
+246;380;24
+247;L1013;24
+248;L1113;24
+249;L1116;24
+250;L1117;24
+251;L1316;24
+252;L1317;24
+253;L1319;24
+254;L1418;24
+255;L1419;24
+256;LP1219;24
+257;LP1419;24
+258;LPS1525;24
+259;Capri;25
+260;Cougar;25
+261;Grand Marquis;25
+262;Lynx;25
+263;MARQUIS;25
+264;Zephyr;25
+265;200SX;26
+266;Maxima;26
+267;PULSAR;26
+268;Pickup;26
+269;Stanza;26
+270;Custom Cruiser;27
+271;Cutlass;27
+272;Cutlass Calais;27
+273;Cutlass Cruiser;27
+274;Cutlass Supreme;27
+275;Delta 88;27
+276;Ninety Eight (98);27
+277;Omega;27
+278;Toronado;27
+279;200;28
+280;210;28
+281;220;28
+282;310;28
+283;320;28
+284;330;28
+285;335;28
+286;340;28
+287;348;28
+288;349;28
+289;352;28
+290;353;28
+291;357;28
+292;359;28
+293;362;28
+294;365;28
+295;367;28
+296;372;28
+297;375;28
+298;376;28
+299;377;28
+300;378;28
+301;379;28
+302;384;28
+303;385;28
+304;386;28
+305;387;28
+306;388;28
+307;389;28
+308;397;28
+309;476;28
+310;477;28
+311;Medium Duty COE;28
+312;504;29
+313;505;29
+314;604;29
+315;Acclaim;30
+316;Arrow;30
+317;CARAVELLE;30
+318;CONQUEST;30
+319;Champ;30
+320;Colt;30
+321;GRAN FURY;30
+322;HORIZON;30
+323;Laser;30
+324;RELIANT;30
+325;SAPPORO;30
+326;Trailduster;30
+327;Voyager;30
+328;6000;31
+329;Acadian;31
+330;Bonneville;31
+331;Catalina;31
+332;Firebird;31
+333;Grand Lemans;31
+334;Grand Prix;31
+335;Laurentian;31
+336;Lemans;31
+337;Parisienne;31
+338;Phoenix;31
+339;Sunbird 2000;31
+340;T1000;31
+341;911;32
+342;924;32
+343;928;32
+344;944;32
+345;Camargue;33
+346;Corniche;33
+347;Silver Spirit;33
+348;Silver Spur;33
+349;900;34
+350;Brat;35
+351;DL;35
+352;GL;35
+353;GLF;35
+354;Standard;35
+355;Celica;37
+356;Corolla;37
+357;Corona;37
+358;Cressida;37
+359;Land Cruiser;37
+360;Pick-Up;37
+361;Starlet;37
+362;Supra;37
+363;Tercel;37
+364;TR7;38
+365;TR8;38
+366;240 Series;39
+367;260 Series;39
+368;740 Series;39
+369;760 Series;39
+370;780 Series;39
+371;S-10 Blazer;7
+372;S-10 Pickup;7
+373;Rampage;11
+374;Ranger;14
+375;S15 Pickup;15
+376;Sentra;26
+377;Cutlass Ciera;27
+378;Firenza;27
+379;J2000;31
+380;Military Truck;7
+381;Charger;11
+382;Shelby Charger;11
+383;Bronco II;14
+384;190;24
+385;260;24
+386;350;24
+387;420;24
+388;500;24
+389;Cordia;40
+390;Starion;40
+391;Tredia;40
+392;300ZX;26
+393;Scamp;30
+394;Camry;37
+395;Continental;41
+396;Mulsanne;41
+397;Celebrity;7
+398;Daytona;8
+399;FIFTH AVENUE;8
+400;Stratus;8
+401;Viper;8
+402;Vision;8
+403;Caravan;11
+404;Daytona;11
+405;Mini Ram;11
+406;Royal Mini Ram Van;11
+407;Aerostar;14
+408;Tempo;14
+409;Trooper;17
+410;Grand Wagoneer;19
+411;Topaz;25
+412;405;29
+413;Fiero;31
+414;9000;34
+415;4-Runner;37
+416;Van;37
+417;Integra;42
+418;164;1
+419;Milano;1
+420;325/325e;4
+421;535i;4
+422;Somerset;5
+423;Commercial Chassis;6
+424;Astro Van;7
+425;Beretta;7
+426;Corsica;7
+427;Geo Spectrum;7
+428;Geo Sprint;7
+429;Hearse/Limo Commercial Chassis;7
+430;Nova;7
+431;Charade;43
+432;Raider;11
+433;3.2 Mondial;12
+434;308 Convertible;12
+435;308GTB Quattrovalvole;12
+436;308GTS Quattrovalvole;12
+437;Testarossa;12
+438;'34;14
+439;Storm;44
+440;Safari;15
+441;Range Rover;45
+442;Galant;40
+443;Mighty Max;40
+444;Mirage;40
+445;Montero;40
+446;SP;40
+447;Micra;26
+448;Cutlass Salon;27
+449;TURISMO;30
+450;Firefly;31
+451;Grand AM;31
+452;Sunbird;31
+453;Sunburst;31
+454;GL-10;35
+455;XT;35
+456;Forsa;36
+457;MR2;37
+458;Yugo 45;46
+459;Yugo 55;46
+460;Yugo 65;46
+461;Legend;42
+462;325/325eS;4
+463;325ix;4
+464;535i/535is;4
+465;328;12
+466;328 GTB;12
+467;328 GTS;12
+468;Mondial T;12
+469;B6000;14
+470;Taurus;14
+471;Excel;47
+472;Pony;47
+473;Stellar;47
+474;Comanche;19
+475;Wrangler;19
+476;323;23
+477;560;24
+478;Sable;25
+479;Pathfinder;26
+480;Stanza Wagon;26
+481;RX;35
+482;Samurai;36
+483;Cab Behind Engine;39
+484;Cab Over Engine HT;39
+485;Cab Over Engine LT;39
+486;F12 w/F7 Cab;39
+487;F6 w/F7 Cab;39
+488;102, GV;46
+489;CL;42
+490;NSX;42
+491;RL;42
+492;TL;42
+493;Eight;41
+494;325i;4
+495;325iC;4
+496;325iS;4
+497;Allante;6
+498;Brougham;6
+499;GMT-400;7
+500;R Conventional;7
+501;V Conventional;7
+502;Conquest;8
+503;Shadow;8
+504;Dakota;11
+505;RAM 50;11
+506;Shadow;11
+507;Crown Victoria;14
+508;GMT-400;15
+509;Jimmy;15
+510;R Conventional;15
+511;V Conventional;15
+512;NPR;17
+513;Stylus;17
+514;Trooper II;17
+515;SPX;40
+516;Space Wagon;40
+517;Van;40
+518;Van;26
+519;Sundance;30
+520;Safari;31
+521;Tempest;31
+522;Justy;35
+523;Cargo Van;37
+524;80;3
+525;90;3
+526;750iL;4
+527;M3;4
+528;M5;4
+529;Reatta;5
+530;Grand Caravan;11
+531;A9522;14
+532;Festiva;14
+533;Probe;14
+534;Vanden Plas;18
+535;929;23
+536;MX-6;23
+537;Tracer;25
+538;Precis;40
+539;Grand Voyager;30
+540;XT6;35
+541;100;3
+542;200;3
+543;Turbo;41
+544;325i/325is;4
+545;525i;4
+546;S6;7
+547;S7;7
+548;TC;8
+549;Rocky;43
+550;Spirit;11
+551;Metro;44
+552;Prizm;44
+553;Spectrum;44
+554;Sprint;44
+555;Geo Tracker;15
+556;S6;15
+557;Sierra;15
+558;Sonata;47
+559;Amigo;17
+560;FSR;17
+561;FTR/FVR/EVR;17
+562;NRR;17
+563;Rodeo;17
+564;Diablo;48
+565;Roadster;48
+566;MPV;23
+567;MX-3;23
+568;Sigma;40
+569;Wagon;40
+570;240SX;26
+571;Eighty Eight (88);27
+572;Sidekick;36
+573;Sidekick Sport;36
+574;Swift;36
+575;Virage;2
+576;Coupe;3
+577;Coachbuilder;5
+578;Roadmaster;5
+579;Cutaway Chassis;7
+580;Lumina;7
+581;Lumina APV;7
+582;Motorhome Chassis;7
+583;Town and Country;8
+584;348 tb;12
+585;348 ts;12
+586;A8513;14
+587;L8513;14
+588;Tracker;44
+589;Magna Van;15
+590;Civic Si;16
+591;M30;49
+592;Q45;49
+593;ES;50
+594;LS;50
+595;Elan;21
+596;MX-5;23
+597;Protege;23
+598;Eclipse;40
+599;Axxess;26
+600;Silhouette;27
+601;Trans Sport;31
+602;Legacy;35
+603;Loyale;35
+604;V8;3
+605;850i;4
+606;Park Avenue;5
+607;60 Special;6
+608;B7;7
+609;P6S;7
+610;Stealth;11
+611;F40;12
+612;Explorer;14
+613;Sonoma;15
+614;H1;51
+615;Scoupe;47
+616;G20;49
+617;XJ12;18
+618;Navajo;23
+619;3000GT;40
+620;Montero Sport;40
+621;NX;26
+622;Sentra Classic;26
+623;Bravada;27
+624;SC1;52
+625;SC2;52
+626;SL1;52
+627;SL2;52
+628;SL3;52
+629;Previa;37
+630;940 Series;39
+631;960 Series;39
+632;Vigor;42
+633;Cabriolet;3
+634;S4;3
+635;Hi-Cube;7
+636;Viper;11
+637;Yukon;15
+638;Elantra;47
+639;SC;50
+640;400;24
+641;600;24
+642;Diamante;40
+643;Expo;40
+644;Achieva;27
+645;968;32
+646;SVX;35
+647;Paseo;37
+648;Brooklands;41
+649;740i;4
+650;740iL;4
+651;Concorde;8
+652;Intrepid;8
+653;Intrepid;11
+654;512 TR;12
+655;J30;49
+656;Grand Cherokee;19
+657;Liberty;19
+658;Sephia;53
+659;Defender;45
+660;GS;50
+661;Villager;25
+662;Raider;40
+663;Altima;26
+664;Quest;26
+665;Touring Limousine;33
+666;SW1;52
+667;SW2;52
+668;Impreza;35
+669;T100;37
+670;850 Series;39
+671;DB7;2
+672;530i;4
+673;540i;4
+674;730i;4
+675;EB110;54
+676;LHS;8
+677;Neon;11
+678;Ram;11
+679;348 Spider;12
+680;Aspire;14
+681;Passport;16
+682;del Sol;16
+683;Discovery;45
+684;C-Class;24
+685;E-Class;24
+686;S-Class;24
+687;SL-Class;24
+688;Neon;30
+689;SL;52
+690;A6;3
+691;S6;3
+692;Hearse/Limo;7
+693;Tahoe;7
+694;Tracker;7
+695;Cirrus;8
+696;Concorde/LHS;8
+697;Neon;8
+698;PT Cruiser;8
+699;Sebring;8
+700;Voyager;8
+701;Avenger;11
+702;Caravan/Grand Caravan;11
+703;Durango;11
+704;Stratus;11
+705;355 Berlinetta;12
+706;355 GTS;12
+707;355 Spider;12
+708;456 GT;12
+709;B800;14
+710;Contour;14
+711;E-450;14
+712;P700;14
+713;P800;14
+714;Windstar;14
+715;Yukon XL;15
+716;Odyssey;16
+717;Accent;47
+718;FRR;17
+719;XJR;18
+720;Sportage;53
+721;Millenia;23
+722;M-Class;24
+723;Mystique;25
+724;Aurora;27
+725;Flying Spur;33
+726;Silver Dawn;33
+727;Esteem;36
+728;Avalon;37
+729;Sienna;37
+730;Tacoma;37
+731;Tundra;37
+732;SLX;42
+733;A4;3
+734;Azure;41
+735;328i;4
+736;328iC;4
+737;328iS;4
+738;Z3;4
+739;F355;12
+740;F50;12
+741;Savana;15
+742;I30;49
+743;FTR/FVR;17
+744;Hombre;17
+745;Oasis;17
+746;LX;50
+747;LSS;27
+748;Breeze;30
+749;Sunfire;31
+750;X-90;36
+751;RAV4;37
+752;A8;3
+753;Catera;6
+754;Hearse;6
+755;Express;7
+756;Venture;7
+757;LANOS;55
+758;LEGANZA;55
+759;NUBIRA;55
+760;550 Maranello;12
+761;Expedition;14
+762;L8501;14
+763;L9501;14
+764;Electric Vehicle;15
+765;CR-V;16
+766;EV Plus;16
+767;Tiburon;47
+768;QX4;49
+769;F6;17
+770;F7;17
+771;XK8;18
+772;Mountaineer;25
+773;Regency;27
+774;325;28
+775;337;28
+776;363;28
+777;382;28
+778;567;28
+779;579;28
+780;587;28
+781;Prowler;30
+782;Boxster;32
+783;323iC;4
+784;323is;4
+785;Limousine;6
+786;Geo Prizm;7
+787;Metro;7
+788;L8511;14
+789;L9511;14
+790;L9522;14
+791;LT8511;14
+792;LT9511;14
+793;Rodeo/Amigo;17
+794;XJ8;18
+795;Sephia II/Spectra;53
+796;Navigator;20
+797;CL-Class;24
+798;CLK-Class;24
+799;SLK-Class;24
+800;Altra;26
+801;Frontier;26
+802;Intrigue;27
+803;Park Ward;33
+804;Forester;35
+805;C70;39
+806;S70;39
+807;S90;39
+808;V70;39
+809;V90;39
+810;Arnage;41
+811;323i;4
+812;328Ci;4
+813;Escalade;6
+814;Alero;7
+815;Silverado;7
+816;300;8
+817;F-450;14
+818;F-550;14
+819;Motorhome Chassis;14
+820;ZX2;14
+821;NQR;17
+822;RX;50
+823;G-Class;24
+824;Altra-EV;26
+825;Alero;27
+826;Montana;31
+827;Silver Seraph;33
+828;9-3;34
+829;9-5;34
+830;Grand Vitara;36
+831;Vitara;36
+832;Camry Solara;37
+833;S40;39
+834;S80;39
+835;8C Competizione Spider;1
+836;TT;3
+837;325Ci;4
+838;750Li;4
+839;X5;4
+840;Grand Voyager;8
+841;360 Modena;12
+842;360 Spider;12
+843;456 MGT;12
+844;456 MGTA;12
+845;Excursion;14
+846;F-650;14
+847;F-750;14
+848;Focus;14
+849;Insight;16
+850;S2000;16
+851;NPR/NPR-HD;17
+852;VehiCross;17
+853;S-Type;18
+854;XK;18
+855;Spectra;53
+856;LS;20
+857;Xterra;26
+858;Aztek;31
+859;LS;52
+860;LS1;52
+861;LS2;52
+862;LW1;52
+863;LW2;52
+864;smart;56
+865;Echo;37
+866;Sequoia;37
+867;V40;39
+868;MDX;42
+869;Vanquish;2
+870;S8;3
+871;allroad;3
+872;330Ci;4
+873;330i;4
+874;750i;4
+875;M3Ci;4
+876;Z8;4
+877;Incomplete;5
+878;Rendezvous;5
+879;3 ton;7
+880;Prowler;8
+881;550 Barchetta;12
+882;Escape;14
+883;Explorer Sport Trac;14
+884;Santa Fe;47
+885;XG300;47
+886;Optima;53
+887;Rio;53
+888;Sedona;53
+889;Sorento;53
+890;IS;50
+891;Tribute;23
+892;Highlander;37
+893;Prius;37
+894;S60;39
+895;RSX;42
+896;325xi;4
+897;330xi;4
+898;745Li;4
+899;745i;4
+900;Avalanche;7
+901;Trailblazer;7
+902;575 M Maranello;12
+903;B-750;14
+904;E-550;14
+905;Envoy;15
+906;XG350;47
+907;I35;49
+908;Axiom;17
+909;X-Type;18
+910;XJ;18
+911;147;48
+912;Freelander;45
+913;Blackwood;20
+914;Coupe;22
+915;Cooper;57
+916;Lancer;40
+917;Armada;26
+918;Murano;26
+919;Titan;26
+920;Vue;52
+921;C12;58
+922;C8;58
+923;D8/D12;58
+924;Aerio;36
+925;Grand Vitara XL-7;36
+926;RS 6;3
+927;525iA;4
+928;530iA;4
+929;540iA;4
+930;760Li;4
+931;Alpina;4
+932;Z4;4
+933;CTS;6
+934;XLR;6
+935;SSR;7
+936;Caravan;8
+937;Laganza V-car;55
+938;Leganza V-200 & variants/derivatives;55
+939;Enzo;12
+940;Explorer Sport;14
+941;Element;16
+942;Pilot;16
+943;H2;51
+944;FX35;49
+945;FX45;49
+946;G35;49
+947;M45;49
+948;QX56;49
+949;Ascender;17
+950;T6F;17
+951;T7F;17
+952;T8F;17
+953;GX;50
+954;Aviator;20
+955;57;59
+956;62;59
+957;Mazda6;23
+958;Lancer Evolution;40
+959;Outlander;40
+960;350Z;26
+961;Vibe;31
+962;Cayenne;32
+963;Ion;52
+964;L200;52
+965;L300;52
+966;LW200;52
+967;LW300;52
+968;Baja;35
+969;XL7;36
+970;Corolla Matrix;37
+971;XC90;39
+972;TSX;42
+973;ARMOURED ARNAGE;41
+974;545i;4
+975;645Ci;4
+976;645i;4
+977;X3;4
+978;Rainier;5
+979;SRX;6
+980;Aveo;7
+981;Colorado;7
+982;Epica;7
+983;Malibu Classic;7
+984;Matiz;7
+985;Optra;7
+986;U100;7
+987;Crossfire;8
+988;Pacifica;8
+989;Challenge Stradale;12
+990;F-150 Heritage;14
+991;Freestar;14
+992;GT;14
+993;Canyon;15
+994;FCX Clarity;16
+995;Amanti;53
+996;Mazda3;23
+997;RX-8;23
+998;SLR McLaren;24
+999;Marauder;25
+1000;Monterey;25
+1001;Cooper Convertible;57
+1002;Endeavor;40
+1003;Lancer SportBack;40
+1004;GTO;31
+1005;Phantom;33
+1006;Forenza;36
+1007;Verona;36
+1008;Scion xA;37
+1009;Scion xB;37
+1010;XC70;39
+1011;DB9;2
+1012;760i;4
+1013;Veyron;54
+1014;Allure;5
+1015;LaCrosse;5
+1016;Terraza;5
+1017;STS;6
+1018;Cobalt;7
+1019;Equinox;7
+1020;Uplander;7
+1021;300C;8
+1022;Magnum;11
+1023;Sprinter;11
+1024;612 Scaglietti;12
+1025;Five Hundred;14
+1026;Freestyle;14
+1027;Tucson;47
+1028;H-Series;17
+1029;NQR/NRR;17
+1030;Gallardo;48
+1031;Murcielago;48
+1032;LR3;45
+1033;Elise;21
+1034;CLS-Class;24
+1035;Mariner;25
+1036;Montego;25
+1037;X-Trail;26
+1038;G6;31
+1039;Montana SV6;31
+1040;Pursuit;31
+1041;Wave;31
+1042;9-2X;34
+1043;9-7X;34
+1044;Relay;52
+1045;Outback;35
+1046;Reno;36
+1047;Scion tC;37
+1048;V50;39
+1049;Vantage;2
+1050;A3;3
+1051;525xi;4
+1052;530xi;4
+1053;550i;4
+1054;650i;4
+1055;Lucerne;5
+1056;DTS;6
+1057;HHR;7
+1058;Caliber;11
+1059;599 GTB;12
+1060;F430 Coupe;12
+1061;F430 Spider;12
+1062;Fusion;14
+1063;Ridgeline;16
+1064;H3;51
+1065;Azera;47
+1066;Entourage;47
+1067;M35;49
+1068;i-280;17
+1069;i-350;17
+1070;Commander;19
+1071;Compass;19
+1072;Range Rover Sport;45
+1073;Mark LT;20
+1074;Zephyr;20
+1075;Mazda5;23
+1076;GL-Class;24
+1077;R-Class;24
+1078;Milan;25
+1079;Solstice;31
+1080;Torrent;31
+1081;Cayman;32
+1082;B9 Tribeca;35
+1083;RDX;42
+1084;Q7;3
+1085;RS 4;3
+1086;328xi;4
+1087;335i;4
+1088;335xi;4
+1089;Enclave;5
+1090;Aspen;8
+1091;Nitro;11
+1092;430 Scuderia;12
+1093;599 GTB Fiorano;12
+1094;Edge;14
+1095;Expedition MAX;14
+1096;Acadia;15
+1097;Fit;16
+1098;Veracruz;47
+1099;i-290;17
+1100;i-370;17
+1101;Patriot;19
+1102;Rondo;53
+1103;MKX;20
+1104;MKZ;20
+1105;340R;21
+1106;Eleven;21
+1107;Europa;21
+1108;MEL;21
+1109;Monaco;21
+1110;Monza;21
+1111;Spa;21
+1112;CX-7;23
+1113;CX-9;23
+1114;Versa;26
+1115;G5;31
+1116;Matiz;31
+1117;Aura;52
+1118;Outlook;52
+1119;Sky;52
+1120;SX4;36
+1121;FJ Cruiser;37
+1122;Yaris;37
+1123;C30;39
+1124;A5;3
+1125;R8;3
+1126;S5;3
+1127;128i;4
+1128;135i;4
+1129;528xi;4
+1130;535xi;4
+1131;X6;4
+1132;Kalos;7
+1133;Spark;7
+1134;G2X;55
+1135;430 Scuderia Spider;12
+1136;F430;12
+1137;Taurus X;14
+1138;EX35;49
+1139;G37;49
+1140;LR2;45
+1141;2-Eleven;21
+1142;Eagle;21
+1143;Exige;21
+1144;Granturismo;22
+1145;Clubman;57
+1146;Rogue;26
+1147;G3;31
+1148;G8;31
+1149;Astra;52
+1150;Fortwo;56
+1151;Roadster;60
+1152;Scion xD;37
+1153;DBS;2
+1154;Q5;3
+1155;TTS;3
+1156;Roll Royce Silver Seraph;41
+1157;Rolls-Royce Park Ward;41
+1158;335d;4
+1159;Orlando;7
+1160;Traverse;7
+1161;Journey;11
+1162;Flex;14
+1163;Terrain;15
+1164;H3T;51
+1165;Genesis;47
+1166;FX50;49
+1167;XF;18
+1168;Borrego;53
+1169;MKS;20
+1170;540C;61
+1171;570GT;61
+1172;570S;61
+1173;625C;61
+1174;650S;61
+1175;675LT;61
+1176;MP4-12C;61
+1177;P1;61
+1178;Hardtop;57
+1179;370Z;26
+1180;Cube;26
+1181;GT-R;26
+1182;Equator;36
+1183;FCHV-adv;37
+1184;Venza;37
+1185;ZDX;42
+1186;Rapide;2
+1187;750Lxi;4
+1188;750xi;4
+1189;Captiva Sport;7
+1190;Cruze;7
+1191;458 Italia;12
+1192;458 Speciale;12
+1193;458 Speciale Spider;12
+1194;458 Spider;12
+1195;599 GTO;12
+1196;California;12
+1197;California T;12
+1198;F12 Berlinetta;12
+1199;FF;12
+1200;La Ferrari;12
+1201;Transit Connect;14
+1202;Accord Crosstour;16
+1203;Elantra Touring;47
+1204;Genesis Coupe;47
+1205;Forte;53
+1206;Soul;53
+1207;LR4;45
+1208;HS;50
+1209;MKT;20
+1210;Evora;21
+1211;GLK-Class;24
+1212;Sprinter;24
+1213;Panamera;32
+1214;Ghost;33
+1215;Kizashi;36
+1216;XC60;39
+1217;V12 Vantage;2
+1218;1M;4
+1219;335is;4
+1220;740Li;4
+1221;Caprice Police Vehicle;7
+1222;Volt;7
+1223;200;8
+1224;Freemont;13
+1225;Karma;62
+1226;Nina;62
+1227;Fiesta;14
+1228;CR-Z;16
+1229;Equus;47
+1230;G25;49
+1231;M37;49
+1232;M56;49
+1233;Aventador;48
+1234;CT;50
+1235;Mazda2;23
+1236;B-Class;24
+1237;SLS-Class;24
+1238;Countryman;57
+1239;Outlander Sport;40
+1240;RVR;40
+1241;Juke;26
+1242;Leaf;26
+1243;NV;26
+1244;9-4x;34
+1245;Scion iQ;37
+1246;A7;3
+1247;640i;4
+1248;650xi;4
+1249;750Li / ALPINA B7;4
+1250;750Lxi / ALPINA B7;4
+1251;750i / ALPINA B7;4
+1252;750xi / ALPINA B7;4
+1253;ActiveE;4
+1254;ActiveHybrid 5;4
+1255;X1;4
+1256;Verano;5
+1257;Sonic;7
+1258;500;13
+1259;Crosstour;16
+1260;Veloster;47
+1261;M35h;49
+1262;Range Rover Evoque;45
+1263;LFA;50
+1264;ML-Class;24
+1265;Cooper Coupe;57
+1266;Cooper Roadster;57
+1267;i-MiEV;40
+1268;3500;63
+1269;XV CrossTrek;35
+1270;Model S;60
+1271;Prius C;37
+1272;Prius Plug-in;37
+1273;Prius V;37
+1274;C70 / C30;39
+1275;ILX;42
+1276;MV-1;64
+1277;A4 allroad;3
+1278;RS 5;3
+1279;S7;3
+1280;TT RS;3
+1281;Encore;5
+1282;ATS;6
+1283;XTS;6
+1284;Trax;7
+1285;Dart;11
+1286;C-Max;14
+1287;FX37;49
+1288;JX35;49
+1289;CX-5;23
+1290;Paceman;57
+1291;NV200;26
+1292;1500;63
+1293;2500;63
+1294;4000;63
+1295;4500;63
+1296;5500;63
+1297;Cargo Van;63
+1298;Fortwo Electric Drive;56
+1299;BRZ;35
+1300;Scion FR-S;37
+1301;RLX;42
+1302;4C;1
+1303;RS 7;3
+1304;SQ5;3
+1305;Flying Spur;41
+1306;228i;4
+1307;328d;4
+1308;335;4
+1309;428i;4
+1310;435i;4
+1311;535d;4
+1312;ActiveHybrid 3;4
+1313;ActiveHybrid 7;4
+1314;M235i;4
+1315;i3;4
+1316;i8;4
+1317;ELR;6
+1318;Impala Limited;7
+1319;SS;7
+1320;500L;13
+1321;Q50;49
+1322;Q60;49
+1323;Q70;49
+1324;QX50;49
+1325;QX60;49
+1326;QX70;49
+1327;QX80;49
+1328;F-TYPE;18
+1329;Cadenza;53
+1330;Ghibli;22
+1331;CLA-Class;24
+1332;Rogue Select;26
+1333;Versa Note;26
+1334;ProMaster 1500;63
+1335;ProMaster 2500;63
+1336;ProMaster 3500;63
+1337;Wraith;33
+1338;TLX;42
+1339;Q3;3
+1340;S3;3
+1341;650i / ALPINA B6;4
+1342;M4;4
+1343;X4;4
+1344;City Express;7
+1345;Transit;14
+1346;Q40;49
+1347;Q70L;49
+1348;Renegade;19
+1349;Atlantic;65
+1350;Karma;65
+1351;K900;53
+1352;Huracan;48
+1353;Discovery Sport;45
+1354;NX;50
+1355;RC;50
+1356;MKC;20
+1357;GLA-Class;24
+1358;918;32
+1359;Macan;32
+1360;Promaster City;63
+1361;WRX;35
+1362;V60;39
+1363;V60CC;39
+1364;Giulia (952);1
+1365;330e;4
+1366;340i;4
+1367;M2;4
+1368;Cascada;5
+1369;Envision;5
+1370;CT6;6
+1371;Cruze Limited;7
+1372;Malibu Limited;7
+1373;488 GTB;12
+1374;488 GTS;12
+1375;F12 Special Series;12
+1376;F60 America;12
+1377;500X;13
+1378;HR-V;16
+1379;Revero;65
+1380;Forte Koup;53
+1381;CX-3;23
+1382;AMG GT;24
+1383;GLC-Class;24
+1384;GLE-Class;24
+1385;GLS-Class;24
+1386;Metris;24
+1387;Dawn;33
+1388;Crosstrek;35
+1389;Model X;60
+1390;Mirai;37
+1391;Scion iA;37
+1392;Scion iM;37
+1393;S60 Cross Country;39
+1394;DB11;2
+1395;RS 3;3
+1396;Bentayga;41
+1397;230i;4
+1398;430i;4
+1399;440i;4
+1400;650i / B6;4
+1401;740e;4
+1402;750i / B7;4
+1403;M240i;4
+1404;M760i;4
+1405;Escalade ESV;6
+1406;XT5;6
+1407;Bolt EV;7
+1408;488 Pista;12
+1409;488 Spider;12
+1410;812 Superfast;12
+1411;F12 tdf (Tour de France);12
+1412;GTC4Lusso;12
+1413;124 Spider;13
+1414;Expedition EL;14
+1415;Civic Type R;16
+1416;Clarity;16
+1417;Elantra GT;47
+1418;Ioniq;47
+1419;Santa Fe Sport;47
+1420;QX30;49
+1421;F-PACE;18
+1422;XE;18
+1423;Niro;53
+1424;Soul EV;53
+1425;Navigator L;20
+1426;Levante;22
+1427;600LT;61
+1428;720S;61
+1429;GT;61
+1430;SENNA;61
+1431;SENNA GTR;61
+1432;SLC-Class;24
+1433;Mirage G4;40
+1434;Rogue Sport;26
+1435;520;28
+1436;718 Boxster;32
+1437;718 Cayman;32
+1438;Model 3;60
+1439;86;37
+1440;COROLLA iM;37
+1441;Prius Prime;37
+1442;Yaris iA;37
+1443;V90CC;39
+1444;Stelvio;1
+1445;Vanquish Zagato;2
+1446;530e;4
+1447;540d;4
+1448;640xi;4
+1449;M550i;4
+1450;X2;4
+1451;Chiron;54
+1452;Regal TourX;5
+1453;Ecosport;14
+1454;Kona;47
+1455;E-PACE;18
+1456;Wrangler JK;19
+1457;Stinger;53
+1458;Range Rover Velar;45
+1459;LC;50
+1460;Eclipse Cross;40
+1461;Kicks;26
+1462;EQ Fortwo;56
+1463;C-HR;37
+1464;Q8;3
+1465;e-tron;3
+1466;B7;4
+1467;X7;4
+1468;XT4;6
+1469;Silverado HD;7
+1470;Silverado LD;7
+1471;DS;66
+1472;DT;66
+1473;Portofino;12
+1474;Ducato;13
+1475;Sierra HD;15
+1476;Sierra Limited;15
+1477;Nexo;47
+1478;Santa Fe XL;47
+1479;Veloster N;47
+1480;I-PACE;18
+1481;URUS;48
+1482;UX;50
+1483;Nautilus;20
+1484;A-Class;24
+1485;Cullinan;33
+1486;Ascent;35
+1487;VS;39
+1488;VT;39
+1489;XC40;39
+1490;A6 allroad;3
+1491;A8 e;3
+1492;Q5 e;3
+1493;RS Q8;3
+1494;SQ7;3
+1495;SQ8;3
+1496;e-tron Sportback;3
+1497;745e;4
+1498;840i;4
+1499;M340i;4
+1500;M8;4
+1501;M850i;4
+1502;Chiron Pur Sport;54
+1503;Chiron Supersport;54
+1504;Encore GX;5
+1505;CT4;6
+1506;CT5;6
+1507;XT6;6
+1508;488 Pista Spider;12
+1509;F8 Spider;12
+1510;F8 Tributo;12
+1511;Palisade;47
+1512;Venue;47
+1513;Gladiator;19
+1514;Telluride;53
+1515;Corsair;20
+1516;CX-30;23
+1517;620R;61
+1518;GLB-Class;24
+1519;718 Spyder;32
+1520;Taycan;32
+1521;Model Y;60
+1522;DBX;2
+1523;A7 e;3
+1524;A8 L e;3
+1525;RS 6 Avant;3
+1526;M440i;4
+1527;Onix;7
+1528;Grand Caravan;8
+1529;812 GTS;12
+1530;F164BCB;12
+1531;Roma;12
+1532;SF90 Stradale;12
+1533;Bronco Sport;14
+1534;Mustang Mach-E;14
+1535;Kona Electric;47
+1536;Grand Cherokee L;19
+1537;GS-6;65
+1538;Revero GT;65
+1539;K5;53
+1540;Seltos;53
+1541;RAV4 Prime;37
+1542;A8 L;3
+1543;Q4;3
+1544;RS e-tron GT;3
+1545;e-tron GT;3
+1546;745Le;4
+1547;ALPINA B8;4
+1548;M760Li;4
+1549;i4;4
+1550;iX;4
+1551;Bolt EUV;7
+1552;Silverado LTD;7
+1553;296 GTB;12
+1554;812 Competizione;12
+1555;Portofino M;12
+1556;SF90 Spider;12
+1557;Maverick;14
+1558;Hummer EV Pickup;15
+1559;Elantra N;47
+1560;Ioniq 5;47
+1561;Kona N;47
+1562;Santa Cruz;47
+1563;QX55;49
+1564;Carnival;53
+1565;EV6;53
+1566;New Range Rover;45
+1567;Air;67
+1568;MC20;22
+1569;MX-30;23
+1570;765LT;61
+1571;ELVA;61
+1572;EQB-Class;24
+1573;EQS-Class Sedan;24
+1574;535;28
+1575;536;28
+1576;589;28
+1577;EDV;68
+1578;R1S;68
+1579;R1T;68
+1580;RCV;68
+1581;GT;69
+1582;Corolla Cross;37
+1583;GR86;37
+1584;C40;39
+1585;XM;4
+1586;i7;4
+1587;Lyriq;6
+1588;Hornet;11
+1589;296 GTS;12
+1590;812 Competizione A;12
+1591;Daytona SP3;12
+1592;Monza SP1/SP2;12
+1593;Purosangue;12
+1594;Ocean;62
+1595;GT MKII;14
+1596;Ioniq 6;47
+1597;Xcient;47
+1598;RZ;50
+1599;Grecale;22
+1600;CX-50;23
+1601;ARTURA;61
+1602;EQE-Class SUV;24
+1603;EQE-Class Sedan;24
+1604;EQS-Class SUV;24
+1605;ARIYA;26
+1606;NISSAN Z;26
+1607;537;28
+1608;Cobra;69
+1609;Solterra;35
+1610;Semi;60
+1611;Crown;37
+1612;GR Corolla;37
+1613;bZ4X;37
+1614;Tonale;1
+1615;DB12;2
+1616;Valiant;2
+1617;Valour;2
+1618;750e;4
+1619;i5;4
+1620;Envista;5
+1621;Blazer EV;7
+1622;Equinox EV;7
+1623;Silverado EV;7
+1624;Suburban HD;7
+1625;Traverse Limited;7
+1626;Roma Spider;12
+1627;SF90 XX Spider;12
+1628;SF90 XX Stradale;12
+1629;500e;13
+1630;Cruise Origin AV;15
+1631;Hummer EV SUV;15
+1632;Sierra EV;15
+1633;Prologue;16
+1634;Grand Wagoneer L;19
+1635;Wagoneer L;19
+1636;Wagoneer S;19
+1637;EV9;53
+1638;Revuelto;48
+1639;TX;50
+1640;Emira;21
+1641;Grancabrio;22
+1642;CX-90;23
+1643;750S;61
+1644;CLE;24
+1645;eSprinter;24
+1646;548;28
+1647;Spectre;33
+1648;Cybertruck;60
+1649;Grand Highlander;37
+1650;Q6;3
+1651;SQ6;3
+1652;550e;4
+1653;Celestiq;6
+1654;Escalade IQ;6
+1655;Optiq;6
+1656;BrightDrop 400;7
+1657;BrightDrop 400, BrightDrop 600;7
+1658;BrightDrop 600;7
+1659;12Cilindri;12
+1660;12Cilindri Spider;12
+1661;Mustang GTD;14
+1662;IONIQ 5 N;47
+1663;Gyesera;65
+1664;Kaveya;65
+1665;K4;53
+1666;ELETRE;21
+1667;Gravity;67
+1668;CX-70;23
+1669;GTS;61
+1670;Kicks MPV;26
+1671;Kicks Play;26
+1672;Crown Signia;37
+1673;EC40;39
+1674;EX30;39
+1675;EX40;39
+1676;EX90;39
+1677;228;4
+1678;Vistiq;6

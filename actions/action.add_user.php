@@ -10,5 +10,4 @@ if(!isset($_POST['nome']) || !isset($_POST['email']))	{
 $user = User::createUser($db);
 
 $session->addMessage('success', 'Utilizador adicionado com sucesso.');
-header('Location: index.php');
 exit;
