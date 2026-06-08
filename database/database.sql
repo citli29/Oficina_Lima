@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS schedules;
 DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS services_user_time;
 DROP TABLE IF EXISTS applied_products;
+DROP TABLE IF EXISTS services_applied_products;
 
 PRAGMA FOREIGN_KEY = on;
 
@@ -181,7 +182,7 @@ INSERT INTO services_user_time(service_id,user_id, minutes, ut_date) VALUES
 (1,1,90,"01/01/2001");
 
 -- if is_applied then quantity NOT NULL
-CREATE TABLE  service_applied_products(
+CREATE TABLE  services_applied_products(
 	id INT PRIMARY KEY,
 	service_id INT NOT NULL,
 	product_id INT NOT NULL,
