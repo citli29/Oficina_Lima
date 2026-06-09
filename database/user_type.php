@@ -17,8 +17,8 @@ class UserType{
 		$user_types = array();
 		while($user_type = $stmt->fetch()){
 			$user_types[] = new UserType(
-				(int)$user_type['id']
-				,$user_type['designation']);
+				(int)$user_type['id'],
+				$user_type['designation']);
 		}
 		return $user_types;
 	}

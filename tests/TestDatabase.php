@@ -62,9 +62,9 @@ class TestDatabase
 		tax_nr VARCHAR(20)
 	);
 
-	INSERT INTO clients(name, phone) VALUES
-	('client1', 'phone1'),
-	('client2', 'phone2');
+	INSERT INTO clients(id,name, phone) VALUES
+	(1,'client1', 'phone1'),
+	(2,'client2', 'phone2');
 
 	CREATE TABLE makes(
 		id INT PRIMARY KEY,
@@ -203,6 +203,7 @@ class TestDatabase
 
 	INSERT INTO services_applied_products( service_id, product_id) VALUES
 	(1,1);
+
 	SQL;
 	$db->exec($sql);
         return $db;

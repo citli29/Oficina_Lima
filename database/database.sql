@@ -52,9 +52,9 @@ CREATE TABLE clients(
 	tax_nr VARCHAR(20)
 );
 
-INSERT INTO clients(name, phone) VALUES
-('client1', 'phone1'),
-('client2', 'phone2');
+INSERT INTO clients(id,name, phone) VALUES
+(1,'client1', 'phone1'),
+(2,'client2', 'phone2');
 
 CREATE TABLE makes(
 	id INT PRIMARY KEY,
@@ -191,6 +191,6 @@ CREATE TABLE  services_applied_products(
 	is_applied BOOLEAN DEFAULT FALSE
 );
 
-INSERT INTO service_applied_products( service_id, product_id) VALUES
+INSERT INTO services_applied_products( service_id, product_id) VALUES
 (1,1);
 
