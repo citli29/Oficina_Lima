@@ -19,11 +19,11 @@ PRAGMA FOREIGN_KEY = on;
 
 CREATE TABLE user_types(
 	id INT PRIMARY KEY,
-	designation VARCHAR(30)
+	designation VARCHAR(30) NOT NULL
 );
-INSERT into user_types(designation) VALUES 
-('Escriotrio'),
-('Oficina');
+INSERT into user_types(id,designation) VALUES 
+(1,'Escritorio'),
+(2,'Oficina');
 
 CREATE TABLE users(
 	id INT PRIMARY KEY,
@@ -32,6 +32,7 @@ CREATE TABLE users(
 	password VARCHAR(60) NOT NULL,
 	user_type_id INT NOT NULL,
 	profile_pic VARCHAR(256),
+	nullified BOOLEAN NOT NULL DEFAULT 0,
 	CONSTRAINT fk_u_type
 	FOREIGN KEY(user_type_id)
 	REFERENCES user_types(id)

@@ -22,18 +22,18 @@ class TestDatabase
 	DROP TABLE IF EXISTS schedules;
 	DROP TABLE IF EXISTS services;
 	DROP TABLE IF EXISTS services_user_time;
-	DROP TABLE IF EXISTS services_applied_products;
 	DROP TABLE IF EXISTS applied_products;
+	DROP TABLE IF EXISTS services_applied_products;
 
 	PRAGMA FOREIGN_KEY = on;
 
 	CREATE TABLE user_types(
 		id INT PRIMARY KEY,
-		designation VARCHAR(30)
+		designation VARCHAR(30) NOT NULL
 	);
 	INSERT into user_types(id,designation) VALUES 
-	(0,'Escritorio'),
-	(1,'Oficina');
+	(1,'Escritorio'),
+	(2,'Oficina');
 
 	CREATE TABLE users(
 		id INT PRIMARY KEY,
@@ -42,6 +42,7 @@ class TestDatabase
 		password VARCHAR(60) NOT NULL,
 		user_type_id INT NOT NULL,
 		profile_pic VARCHAR(256),
+		nullified BOOLEAN NOT NULL DEFAULT 0,
 		CONSTRAINT fk_u_type
 		FOREIGN KEY(user_type_id)
 		REFERENCES user_types(id)
@@ -200,7 +201,7 @@ class TestDatabase
 		is_applied BOOLEAN DEFAULT FALSE
 	);
 
-	INSERT INTO service_applied_products( service_id, product_id) VALUES
+	INSERT INTO services_applied_products( service_id, product_id) VALUES
 	(1,1);
 	SQL;
 	$db->exec($sql);

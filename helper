@@ -15,8 +15,6 @@ case "$1" in
 	-db)
 		echo "Main DB"
 		sqlite3 database/database.db < database/database.sql
-		echo "Test DB"
-		sqlite3 tests/testdatabase.db < tests/testdatabase.sql
 		;;
 	-t)
 		./vendor/bin/phpunit tests

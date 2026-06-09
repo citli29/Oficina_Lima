@@ -29,9 +29,12 @@ class UserType{
 		$stmt->execute([$id]);
 		$user_type = $stmt->fetch();
 		if($user_type){ 
-			return new UserType((int)$user_type['id'],$user_type['designation']);
+			return new UserType(
+				(int)$user_type['id'],
+				$user_type['designation']
+			);
 		}
-		throw new Exception("Invalid Id: User Type.{{$id}}");
+		throw new Exception("Invalid Id: User Type {{$id}}");
 	}
 
 	public function getId()

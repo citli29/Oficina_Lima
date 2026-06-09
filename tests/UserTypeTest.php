@@ -9,16 +9,19 @@ final class UserTypeTest extends TestCase{
 	{
 		$db = TestDatabase::create();
 		$result = UserType::getUserTypes($db);	
-		$expected = array(new UserType(0,"Escritorio"), new UserType(1,"Oficina"));
+		$expected = array(
+			new UserType(1,"Escritorio"),
+			new UserType(2,"Oficina")
+		);
 		$this->assertEquals($expected, $result);
 	}
 
 	public function testGetOne(): void
 	{
 		$db = TestDatabase::create();
-		$result = UserType::getUserTypeById($db,1);	
-		$expected = new UserType(1,"Oficina");
-		$this->assertEquals($expected, $result );
+		$result = UserType::getUserTypeById($db,2);	
+		$expected = new UserType(2,"Oficina");
+		$this->assertEquals($expected, $result);
 	}
 
 	public function testSave(): void
@@ -30,6 +33,7 @@ final class UserTypeTest extends TestCase{
 		$user_type = UserType::getUserTypeById($db,1);	
 		$this->assertEquals("Teste", $user_type->designation);
 	}
+
 	public function testDelete(): void
 	{
 		$db = TestDatabase::create();
@@ -43,7 +47,7 @@ final class UserTypeTest extends TestCase{
 	{
 		$db = TestDatabase::create();
 		$this->expectException(Exception::class);
-		UserType::getUserTypeById($db,2);
+		UserType::getUserTypeById($db,3);
 	}
 }
 ?>
