@@ -59,7 +59,7 @@ class Client{
 				$client['tax_nr']
 			);
 		}
-		throw new Exception("Invalid Id: Client {$id}");
+		throw new Exception("Invalid Id: Client {{$id}}");
 	}
 
 	public function save(PDO $db)
