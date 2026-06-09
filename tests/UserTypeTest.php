@@ -10,14 +10,33 @@ final class UserTypeTest extends TestCase{
 		$db = TestDatabase::create();
 		$result = UserType::getUserTypes($db);	
 		$expected = array(new UserType(0,"Escritorio"), new UserType(1,"Oficina"));
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
 	}
+
 	public function testGetOne(): void
 	{
 		$db = TestDatabase::create();
 		$result = UserType::getUserTypeById($db,1);	
 		$expected = new UserType(1,"Oficina");
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result );
+	}
+
+	public function testSave(): void
+	{
+		$db = TestDatabase::create();
+		$user_type = UserType::getUserTypeById($db,1);	
+		$user_type->designation = "Teste";
+		$user_type->save($db);
+		$user_type = UserType::getUserTypeById($db,1);	
+		$this->assertEquals("Teste", $user_type->designation);
+	}
+	public function testDelete(): void
+	{
+		$db = TestDatabase::create();
+		$user_type = UserType::getUserTypeById($db,1);	
+		$user_type->delete($db);
+		$this->expectException(Exception::class);
+		UserType::getUserTypeById($db,1);
 	}
 
 	public function testGetInvalidException(): void
