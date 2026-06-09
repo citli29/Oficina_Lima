@@ -87,9 +87,13 @@ class TestDatabase
 	);
 
 
-	INSERT INTO models(name, make_id) VALUES
-	('Clio', 1),
-	('Corsa', 2);
+	INSERT INTO models(id,name, make_id) VALUES
+	(1,'Clio', 1),
+	(2,'Megane', 1),
+	(3,'Express', 1),
+	(4,'Corsa', 2),
+	(5,'Combo', 2),
+	(6,'Astra', 2);
 
 	CREATE TABLE cars(
 		id INT PRIMARY KEY,

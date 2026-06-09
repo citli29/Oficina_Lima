@@ -79,7 +79,11 @@ CREATE TABLE models(
 
 INSERT INTO models(name, make_id) VALUES
 ('Clio', 1),
+('Megane', 1),
+('Express', 1),
 ('Corsa', 2);
+('Combo', 2);
+('Astra', 2);
 
 CREATE TABLE cars(
 	id INT PRIMARY KEY,

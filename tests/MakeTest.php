@@ -47,7 +47,7 @@ final class MakeTest extends TestCase{
 	{
 		$db = TestDatabase::create();
 		$this->expectException(Exception::class);
-		Client::getClientById($db,10);
+		Make::getMakeById($db,10);
 	}
 }
 ?>
