@@ -110,9 +110,14 @@ class TestDatabase
 		REFERENCES models(id)
 	);
 
-	INSERT INTO cars(plate, model_id) VALUES
-	("AB-00-00", 1),
-	("AB-00-01", 2);
+	INSERT INTO cars(id,plate, model_id) VALUES
+	(1,"AB-00-00", 1),
+	(2,"AB-00-01", 2),
+	(3,"AB-00-02", 3),
+	(4,"AB-00-03", 4),
+	(5,"AB-00-04", 5),
+	(6,"AB-00-05", 3),
+	(7,"AB-00-06", 6);
 
 	CREATE TABLE schedules(
 		id INT PRIMARY KEY,
