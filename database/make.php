@@ -1,4 +1,6 @@
 <?php declare(strict_types =1);
+require_once __DIR__ . '/../utils/util.php';
+
 class Make{
 
 	private int $id;
@@ -17,7 +19,7 @@ class Make{
 		$makes = array();
 		while($make = $stmt->fetch()){
 			$makes[] = new Make(
-				(int)$make['id'],
+				nullableInt($make['id']),
 				$make['name']);
 		}
 		return $makes;
@@ -30,7 +32,7 @@ class Make{
 		$make = $stmt->fetch();
 		if($make){ 
 			return new Make(
-				(int)$make['id'],
+				nullableInt($make['id']),
 				$make['name']
 			);
 		}

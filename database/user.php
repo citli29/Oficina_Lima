@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../utils/util.php';
 class User{
 	 
 	private int $id;
@@ -23,10 +24,10 @@ class User{
 		$users = array();
 		while($user = $stmt->fetch()){
 			$users[] = new User(
-				(int)$user['id'],
+				nullableInt($user['id']),
 				$user['name'],
 				$user['email'],
-				(int)$user['user_type_id'],
+				nullableInt($user['user_type_id']),
 				$user['profile_pic'] ?? null
 			);
 		}
@@ -40,10 +41,10 @@ class User{
 		$user= $stmt->fetch();
 		if($user){ 
 			return new User(
-				(int)$user['id'],
+				nullableInt($user['id']),
 				$user['name'],
 				$user['email'],
-				(int) $user['user_type_id'],
+				nullableInt($user['user_type_id']),
 				$user['profile_pic'],
 				
 			);

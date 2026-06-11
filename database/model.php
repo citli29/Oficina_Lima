@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../utils/util.php';
 class Model{
 	 
 	private int $id;
@@ -19,9 +20,9 @@ class Model{
 		$models = array();
 		while($model = $stmt->fetch()){
 			$models[] = new Model(
-				(int)$model['id'],
+				nullableInt($model['id']),
 				$model['name'],
-				(int)$model['make_id']
+				nullableInt($model['make_id'])
 			);
 	}
 		return $models;
@@ -34,9 +35,9 @@ class Model{
 		$model= $stmt->fetch();
 		if($model){ 
 			return new Model(
-				(int)$model['id'],
+				nullableInt($model['id']),
 				$model['name'],
-				(int)$model['make_id']
+				nullableInt($model['make_id'])
 			);
 		}
 		throw new Exception("Invalid Id: Model {{$id}}");

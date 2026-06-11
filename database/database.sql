@@ -127,8 +127,11 @@ CREATE TABLE schedules(
 	REFERENCES client(id)
 );
 
-INSERT INTO schedules(schedule_date, description) VALUES
-('01-01-2026', 'Reparar injetores');
+INSERT INTO schedules(id,schedule_date, description, car_id, model_id, client_id) VALUES
+(1,'01-01-2026', 'Reparar injetores', NULL, NULL, NULL),
+(2,'05-01-2026', 'Revisao', 3,NULL, 1),
+(3,'05-01-2026', 'Problema de juntas', 4,NULL, 2),
+(4,'05-01-2026', 'Revisao', 5,NULL, 2);
 
 CREATE TABLE product_types(
 	id INT PRIMARY KEY,

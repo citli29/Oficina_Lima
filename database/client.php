@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../utils/util.php';
 class Client{
 
 	private int $id;
@@ -31,7 +32,7 @@ class Client{
 		$clients = array();
 		while($client = $stmt->fetch()){
 			$clients[] = new Client(
-				(int)$client['id'],
+				nullableInt($client['id']),
 				$client['name'],
 				$client['phone'],
 				$client['address'],
@@ -50,7 +51,7 @@ class Client{
 		$client = $stmt->fetch();
 		if($client){ 
 			return new Client(
-				(int)$client['id'],
+				nullableInt($client['id']),
 				$client['name'],
 				$client['phone'],
 				$client['address'],

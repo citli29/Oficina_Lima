@@ -1,4 +1,5 @@
 <?php declare(strict_types =1);
+require_once __DIR__ . '/../utils/util.php';
 class UserType{
 
 	private int $id;
@@ -17,7 +18,7 @@ class UserType{
 		$user_types = array();
 		while($user_type = $stmt->fetch()){
 			$user_types[] = new UserType(
-				(int)$user_type['id'],
+				nullableInt($user_type['id']),
 				$user_type['designation']);
 		}
 		return $user_types;
@@ -30,7 +31,7 @@ class UserType{
 		$user_type = $stmt->fetch();
 		if($user_type){ 
 			return new UserType(
-				(int)$user_type['id'],
+				nullableInt($user_type['id']),
 				$user_type['designation']
 			);
 		}

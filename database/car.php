@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+require_once __DIR__ . '/../utils/util.php';
 class Car{
 	 
 	private int $id;
@@ -31,13 +32,13 @@ class Car{
 		$cars = array();
 		while($car = $stmt->fetch()){
 			$cars[] = new Car(
-				(int)$car['id'],
+				nullableInt($car['id']),
 				$car['plate'],
-				(int)$car['model_id'],
+				nullableInt($car['model_id']),
 				$car['chassi_nr'],
-				(int)$car['year'],
-				(int)$car['month'],
-				(int)$car['cc'],
+				nullableInt($car['year']),
+				nullableInt($car['month']),
+				nullableInt($car['cc']),
 				$car['engine_code'],
 				$car['color_code'],
 			);
@@ -52,13 +53,13 @@ class Car{
 		$car= $stmt->fetch();
 		if($car){ 
 			return $cars[] = new Car(
-				(int)$car['id'],
+				nullableInt($car['id']),
 				$car['plate'],
-				(int)$car['model_id'],
+				nullableInt($car['model_id']),
 				$car['chassi_nr'],
-				(int)$car['year'],
-				(int)$car['month'],
-				(int)$car['cc'],
+				nullableInt($car['year']),
+				nullableInt($car['month']),
+				nullableInt($car['cc']),
 				$car['engine_code'],
 				$car['color_code'],
 			);
