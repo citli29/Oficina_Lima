@@ -26,7 +26,7 @@ class Schedule{
 		$schedules = array();
 		while($schedule = $stmt->fetch()){
 			$schedules[] = new Schedule(
-				nullableInt($schedule['id']),
+				(int)$schedule['id'],
 				$schedule['schedule_date'],
 				$schedule['description'],
 				nullableInt($schedule['car_id']),
@@ -44,7 +44,7 @@ class Schedule{
 		$schedules = array();
 		while($schedule = $stmt->fetch()){
 			$schedules[] = new Schedule(
-				nullableInt($schedule['id']),
+				(int)$schedule['id'],
 				$schedule['schedule_date'],
 				$schedule['description'],
 				nullableInt($schedule['car_id']),
@@ -62,7 +62,7 @@ class Schedule{
 		$schedule= $stmt->fetch();
 		if($schedule){ 
 			return new Schedule(
-				nullableInt($schedule['id']),
+				(int)$schedule['id'],
 				$schedule['schedule_date'],
 				$schedule['description'],
 				nullableInt($schedule['car_id']),

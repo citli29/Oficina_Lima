@@ -19,7 +19,7 @@ class Make{
 		$makes = array();
 		while($make = $stmt->fetch()){
 			$makes[] = new Make(
-				nullableInt($make['id']),
+				(int)$make['id'],
 				$make['name']);
 		}
 		return $makes;
@@ -32,7 +32,7 @@ class Make{
 		$make = $stmt->fetch();
 		if($make){ 
 			return new Make(
-				nullableInt($make['id']),
+				(int)$make['id'],
 				$make['name']
 			);
 		}

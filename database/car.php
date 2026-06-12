@@ -32,9 +32,9 @@ class Car{
 		$cars = array();
 		while($car = $stmt->fetch()){
 			$cars[] = new Car(
-				nullableInt($car['id']),
+				(int)$car['id'],
 				$car['plate'],
-				nullableInt($car['model_id']),
+				(int)$car['model_id'],
 				$car['chassi_nr'],
 				nullableInt($car['year']),
 				nullableInt($car['month']),
@@ -53,9 +53,9 @@ class Car{
 		$car= $stmt->fetch();
 		if($car){ 
 			return $cars[] = new Car(
-				nullableInt($car['id']),
+				(int)$car['id'],
 				$car['plate'],
-				nullableInt($car['model_id']),
+				(int)$car['model_id'],
 				$car['chassi_nr'],
 				nullableInt($car['year']),
 				nullableInt($car['month']),

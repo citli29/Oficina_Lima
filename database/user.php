@@ -24,10 +24,10 @@ class User{
 		$users = array();
 		while($user = $stmt->fetch()){
 			$users[] = new User(
-				nullableInt($user['id']),
+				(int)$user['id'],
 				$user['name'],
 				$user['email'],
-				nullableInt($user['user_type_id']),
+				(int)$user['user_type_id'],
 				$user['profile_pic'] ?? null
 			);
 		}
@@ -41,10 +41,10 @@ class User{
 		$user= $stmt->fetch();
 		if($user){ 
 			return new User(
-				nullableInt($user['id']),
+				(int)$user['id'],
 				$user['name'],
 				$user['email'],
-				nullableInt($user['user_type_id']),
+				(int)$user['user_type_id'],
 				$user['profile_pic'],
 				
 			);

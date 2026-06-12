@@ -32,7 +32,7 @@ class Client{
 		$clients = array();
 		while($client = $stmt->fetch()){
 			$clients[] = new Client(
-				nullableInt($client['id']),
+				(int)$client['id'],
 				$client['name'],
 				$client['phone'],
 				$client['address'],
@@ -51,7 +51,7 @@ class Client{
 		$client = $stmt->fetch();
 		if($client){ 
 			return new Client(
-				nullableInt($client['id']),
+				(int)$client['id'],
 				$client['name'],
 				$client['phone'],
 				$client['address'],

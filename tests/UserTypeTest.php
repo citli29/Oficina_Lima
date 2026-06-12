@@ -47,7 +47,7 @@ final class UserTypeTest extends TestCase{
 	{
 		$db = TestDatabase::create();
 		$this->expectException(Exception::class);
-		UserType::getUserTypeById($db,3);
+		UserType::getUserTypeById($db,10);
 	}
 }
 ?>

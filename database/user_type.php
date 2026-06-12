@@ -18,8 +18,9 @@ class UserType{
 		$user_types = array();
 		while($user_type = $stmt->fetch()){
 			$user_types[] = new UserType(
-				nullableInt($user_type['id']),
-				$user_type['designation']);
+				(int)$user_type['id'],
+				$user_type['designation']
+			);
 		}
 		return $user_types;
 	}
@@ -31,7 +32,7 @@ class UserType{
 		$user_type = $stmt->fetch();
 		if($user_type){ 
 			return new UserType(
-				nullableInt($user_type['id']),
+				(int)$user_type['id'],
 				$user_type['designation']
 			);
 		}

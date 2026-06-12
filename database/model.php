@@ -20,9 +20,9 @@ class Model{
 		$models = array();
 		while($model = $stmt->fetch()){
 			$models[] = new Model(
-				nullableInt($model['id']),
+				(int)$model['id'],
 				$model['name'],
-				nullableInt($model['make_id'])
+				(int)$model['make_id']
 			);
 	}
 		return $models;
@@ -35,9 +35,9 @@ class Model{
 		$model= $stmt->fetch();
 		if($model){ 
 			return new Model(
-				nullableInt($model['id']),
+				(int)$model['id'],
 				$model['name'],
-				nullableInt($model['make_id'])
+				(int)$model['make_id']
 			);
 		}
 		throw new Exception("Invalid Id: Model {{$id}}");
