@@ -154,10 +154,10 @@ CREATE TABLE products(
 	REFERENCES product_types(id)
 );
 
-INSERT INTO products(designation, reference, product_type_id) VALUES
-('Filtro Ar', 'PA7553', 3),
-('Filtro Oleo', 'FT6086', 3),
-('Anticongelante Rosa', 'ACR', 1);
+INSERT INTO products(id, designation, reference, product_type_id) VALUES
+(1,'Filtro Ar', 'PA7553', 3),
+(2,'Filtro Oleo', 'FT6086', 3),
+(3,'Anticongelante Rosa', 'ACR', 1);
 
 -- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
 CREATE TABLE services(
