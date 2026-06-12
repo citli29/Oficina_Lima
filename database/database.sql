@@ -169,13 +169,20 @@ CREATE TABLE services(
 	malfunction_description VARCHAR(512),
 	service_description VARCHAR(512),
 	car_id INT,
+	schedule_id INT,
+	CONSTRAINT fk_client
+	FOREIGN KEY(client_id)
+	REFERENCES clients(id),
 	CONSTRAINT fk_car
 	FOREIGN KEY(car_id)
-	REFERENCES cars(id)
+	REFERENCES cars(id),
+	CONSTRAINT fk_schedule
+	FOREIGN KEY(schedule_id)
+	REFERENCES schedules(id)
 );
 
-INSERT INTO services(client_id,car_id,service_description) VALUES
-(1,1,'Revisao Oleo');
+INSERT INTO services(client_id,car_id,service_description, schedule_id) VALUES
+(1,1,'Revisao Oleo', 2);
 
 CREATE TABLE services_user_time(
 	id INT PRIMARY KEY,

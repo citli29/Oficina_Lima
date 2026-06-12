@@ -172,6 +172,7 @@ class TestDatabase
 	(3,'Anticongelante Rosa', 'ACR', 1);
 
 	-- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
+
 	CREATE TABLE services(
 		id INT PRIMARY KEY,
 		client_id INT NOT NULL,
@@ -181,13 +182,21 @@ class TestDatabase
 		malfunction_description VARCHAR(512),
 		service_description VARCHAR(512),
 		car_id INT,
+		schedule_id INT,
+		CONSTRAINT fk_client
+		FOREIGN KEY(client_id)
+		REFERENCES clients(id),
 		CONSTRAINT fk_car
 		FOREIGN KEY(car_id)
-		REFERENCES cars(id)
+		REFERENCES cars(id),
+		CONSTRAINT fk_schedule
+		FOREIGN KEY(schedule_id)
+		REFERENCES schedules(id)
 	);
 
-	INSERT INTO services(client_id,car_id,service_description) VALUES
-	(1,1,'Revisao Oleo');
+	INSERT INTO services(id,client_id,service_description) VALUES
+	(1,1,'Revisao Oleo'),
+	(2,1,'Revisao Oleo');
 
 	CREATE TABLE services_user_time(
 		id INT PRIMARY KEY,

@@ -17,7 +17,7 @@ case "$1" in
 		sqlite3 database/database.db < database/database.sql
 		;;
 	-t)
-		./vendor/bin/phpunit tests
+		./vendor/bin/phpunit tests --display-warnings 
 		;;
 	*)
 		echo "Usage: $0 {-s|-db|-t}"
