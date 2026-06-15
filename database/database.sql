@@ -198,8 +198,10 @@ CREATE TABLE services_user_time(
 	REFERENCES users(id)
 );
 
-INSERT INTO services_user_time(service_id,user_id, minutes, ut_date) VALUES
-(1,1,90,"01/01/2001");
+INSERT INTO services_user_time(id,service_id,user_id, minutes, ut_date) VALUES
+(1,1,1,90,"01/01/2001"),
+(1,1,2,90,"01/01/2001"),
+(1,1,1,15,"02/01/2001");
 
 -- if is_applied then quantity NOT NULL
 CREATE TABLE  services_applied_products(
