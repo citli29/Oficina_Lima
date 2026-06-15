@@ -28,7 +28,7 @@ class TestDatabase
 	PRAGMA FOREIGN_KEY = on;
 
 	CREATE TABLE user_types(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		designation VARCHAR(30) NOT NULL
 	);
 	INSERT into user_types(id,designation) VALUES 
@@ -36,7 +36,7 @@ class TestDatabase
 	(2,'Oficina');
 
 	CREATE TABLE users(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		name VARCHAR(40) NOT NULL,
 		email VARCHAR(60) UNIQUE NOT NULL,
 		password VARCHAR(60) NOT NULL,
@@ -53,7 +53,7 @@ class TestDatabase
 	(2, 'teste', 'teste2@email.com', 'teste',2);
 
 	CREATE TABLE clients(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		name VARCHAR(60) NOT NULL,
 		phone VARCHAR(20) NOT NULL,
 		address VARCHAR(80), 
@@ -67,7 +67,7 @@ class TestDatabase
 	(2,'client2', 'phone2');
 
 	CREATE TABLE makes(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		name VARCHAR(60) NOT NULL,
 		logo VARCHAR(256)
 	);
@@ -77,7 +77,7 @@ class TestDatabase
 	(2,'Opel');
 
 	CREATE TABLE models(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		name VARCHAR(60) NOT NULL,
 		make_id INT NOT NULL,
 		-- more model info but not now
@@ -96,7 +96,7 @@ class TestDatabase
 	(6,'Astra', 2);
 
 	CREATE TABLE cars(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		plate VARCHAR(20) UNIQUE NOT NULL,
 		model_id INT NOT NULL,
 		chassi_nr VARCHAR(60),
@@ -120,7 +120,7 @@ class TestDatabase
 	(7,"AB-00-06", 6);
 
 	CREATE TABLE schedules(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		schedule_date VARCHAR(20) NOT NULL,
 		description VARCHAR(512) NOT NULL,
 		car_id INT,
@@ -146,7 +146,7 @@ class TestDatabase
 	(6,'05-01-2026', 'Revisao', 5,NULL, 2);
 
 	CREATE TABLE product_types(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		designation VARCHAR(60)
 	);
 
@@ -156,7 +156,7 @@ class TestDatabase
 	(3,'Itens');
 
 	CREATE TABLE products(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		designation VARCHAR(60),
 		reference VARCHAR(40),
 		product_type_id INT NOT NULL,
@@ -174,7 +174,7 @@ class TestDatabase
 	-- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
 
 	CREATE TABLE services(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		client_id INT NOT NULL,
 		kms INT,
 		checkin_date VARCHAR(20), -- 00/00/2000
@@ -199,7 +199,7 @@ class TestDatabase
 	(2,1,'Revisao Oleo');
 
 	CREATE TABLE services_user_time(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		service_id INT NOT NULL,
 		user_id INT NOT NULL,
 		minutes INT NOT NULL,
@@ -213,13 +213,16 @@ class TestDatabase
 	);
 
 	INSERT INTO services_user_time(id,service_id,user_id, minutes, ut_date) VALUES
+	--(0,1,1,90,"01/01/2001"),
 	(1,1,1,90,"01/01/2001"),
 	(2,1,2,90,"01/01/2001"),
-	(3,1,1,15,"02/01/2001");
+	(3,2,1,15,"02/01/2001"),
+	(4,2,2,90,"01/01/2001"),
+	(5,2,1,15,"02/01/2001");
 
 	-- if is_applied then quantity NOT NULL
 	CREATE TABLE  services_applied_products(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY NOT NULL,
 		service_id INT NOT NULL,
 		product_id INT NOT NULL,
 		quantity INT,

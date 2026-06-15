@@ -21,6 +21,7 @@ class ServiceUserTime{
 		$stmt = $db->prepare("INSERT INTO services_user_time(service_id,user_id, minutes, ut_date) VALUES (?, ?, ?, ?)");
 		$stmt->execute([$service->getId(), $user->getId(), $minutes, $ut_date]);
 		
+			
 		//Last inserted 
 		$stmt = $db->prepare( "SELECT * FROM services_user_time WHERE rowid = last_insert_rowid()");
 		$stmt->execute();
@@ -37,7 +38,7 @@ class ServiceUserTime{
 		throw new Exception("Create Error: Service User Time");
 	}
 
-	public static function getServUserTimeByService(PDO $db, Service $service):array
+	public static function getServiceUserTimeByService(PDO $db, Service $service):array
 	{
 		$stmt = $db->prepare('SELECT id, service_id, user_id, minutes, ut_date FROM services_user_time WHERE service_id = ?');
 		$stmt->execute([$service->getId()]);
@@ -54,7 +55,7 @@ class ServiceUserTime{
 		return $servUTs;
 	}
 
-	public static function getServUserTimeByUser(PDO $db, User $user):array
+	public static function getServiceUserTimeByUser(PDO $db, User $user):array
 	{
 		$stmt = $db->prepare('SELECT id, service_id, user_id, minutes, ut_date FROM services_user_time WHERE user_id = ?');
 		$stmt->execute([$user->getId()]);
@@ -70,9 +71,10 @@ class ServiceUserTime{
 	}
 		return $servUTs;
 	}
-	public static function getServUserTimes(PDO $db):array
+	public static function getServiceUserTimes(PDO $db):array
 	{
 		$stmt = $db->prepare('SELECT id, service_id, user_id, minutes, ut_date FROM services_user_time');
+		$stmt->execute();
 		$servUTs = array();
 		while($servUT = $stmt->fetch()){
 			$servUTs[] = new ServiceUserTime(
@@ -82,11 +84,11 @@ class ServiceUserTime{
 				(int)$servUT['minutes'],
 				$servUT['ut_date'],
 			);
-	}
+		}
 		return $servUTs;
 	}
 
-	public static function getServUserTimeById(PDO $db, int $id):?ServiceUserTime
+	public static function getServiceUserTimeById(PDO $db, int $id):?ServiceUserTime
 	{
 		$stmt = $db->prepare('SELECT id, service_id, user_id, minutes, ut_date FROM services_user_time WHERE id = ?');
 		$stmt->execute([$id]);
