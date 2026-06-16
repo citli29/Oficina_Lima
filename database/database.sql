@@ -225,8 +225,8 @@
 		REFERENCES products(id)
 	);
 
-	INSERT INTO services_applied_products(service_id, product_id) VALUES
-	(1,1),
-	(1,3),
-	(2,2),
-	(2,1);
+	INSERT INTO services_applied_products(id,service_id, product_id, is_applied) VALUES
+	(1,1,1,0),
+	(2,1,3,0),
+	(3,2,2,0),
+	(4,2,1,1);
