@@ -216,8 +216,17 @@
 		service_id INT NOT NULL,
 		product_id INT NOT NULL,
 		quantity INT,
-		is_applied BOOLEAN DEFAULT FALSE
+		is_applied BOOLEAN NOT NULL DEFAULT FALSE,
+		CONSTRAINT fk_service
+		FOREIGN KEY(service_id)
+		REFERENCES services(id),
+		CONSTRAINT fk_product
+		FOREIGN KEY(product_id)
+		REFERENCES products(id)
 	);
 
-	INSERT INTO services_applied_products( service_id, product_id) VALUES
-	(1,1);
+	INSERT INTO services_applied_products(service_id, product_id) VALUES
+	(1,1),
+	(1,3),
+	(2,2),
+	(2,1);
