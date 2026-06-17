@@ -1,9 +1,0 @@
-<?php
-:
-	$id
-	$name 
-	$email
-	$password 
-	$user_type_id 
-	$profile_pic 
-?>

@@ -2,10 +2,10 @@
 
 case "$1" in
 	-s)
-		php -S 127.0.0.1:9000 &
+		php -S 127.0.0.1:9000 -t api/public &
 		PID1=$!
 
-		php -S 127.0.0.1:8000 &
+		php -S 127.0.0.1:8000 -t api/public &
 		PID2=$!
 
 		echo "9000: $PID1"

@@ -1,4 +1,9 @@
 # Oficina_Lima
+> [!NOTE]
+> api/app/
+>   Models > ONLY database queries
+>   Services > business rules + validation + combining models
+>   Controllers > HTTP layer (request → service → response)
 
 # Features
 
