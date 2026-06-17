@@ -85,9 +85,9 @@
 
 ### Cars
 
-- [ ] List with Search
-- [ ] Create
-- [ ] Read
-- [ ] Update
-- [ ] Delete
+- [x] List with Search
+- [x] Create
+- [x] Read
+- [x] Update
+- [x] Delete
 

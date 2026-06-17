@@ -18,7 +18,7 @@
 	PRAGMA FOREIGN_KEY = on;
 
 	CREATE TABLE user_types(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		designation VARCHAR(30) NOT NULL
 	);
 	INSERT into user_types(id,designation) VALUES 
@@ -26,11 +26,11 @@
 	(2,'Oficina');
 
 	CREATE TABLE users(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		name VARCHAR(40) NOT NULL,
 		email VARCHAR(60) UNIQUE NOT NULL,
 		password VARCHAR(60) NOT NULL,
-		user_type_id INT NOT NULL,
+		user_type_id INTEGER NOT NULL,
 		profile_pic VARCHAR(256),
 		nullified BOOLEAN NOT NULL DEFAULT 0,
 		CONSTRAINT fk_u_type
@@ -43,7 +43,7 @@
 	(2, 'teste', 'teste2@email.com', 'teste',2);
 
 	CREATE TABLE clients(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL,
 		phone VARCHAR(20) NOT NULL,
 		address VARCHAR(80), 
@@ -57,7 +57,7 @@
 	(2,'client2', 'phone2');
 
 	CREATE TABLE makes(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL,
 		logo VARCHAR(256)
 	);
@@ -67,9 +67,9 @@
 	(2,'Opel');
 
 	CREATE TABLE models(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL,
-		make_id INT NOT NULL,
+		make_id INTEGER NOT NULL,
 		-- more model info but not now
 		CONSTRAINT fk_make
 		FOREIGN KEY(make_id)
@@ -86,9 +86,9 @@
 	(6,'Astra', 2);
 
 	CREATE TABLE cars(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		plate VARCHAR(20) UNIQUE NOT NULL,
-		model_id INT NOT NULL,
+		model_id INTEGER NOT NULL,
 		chassi_nr VARCHAR(60),
 		year INT,
 		month INT,
@@ -110,7 +110,7 @@
 	(7,"AB-00-06", 6);
 
 	CREATE TABLE schedules(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		schedule_date VARCHAR(20) NOT NULL,
 		description VARCHAR(512) NOT NULL,
 		car_id INT,
@@ -136,7 +136,7 @@
 	(6,'05-01-2026', 'Revisao', 5,NULL, 2);
 
 	CREATE TABLE product_types(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		designation VARCHAR(60)
 	);
 
@@ -146,10 +146,10 @@
 	(3,'Itens');
 
 	CREATE TABLE products(
-		id INT PRIMARY KEY,
+		id INTEGER PRIMARY KEY,
 		designation VARCHAR(60),
 		reference VARCHAR(40),
-		product_type_id INT NOT NULL,
+		product_type_id INTEGER NOT NULL,
 		-- Mais informacoes de produtos
 		CONSTRAINT fk_ptype
 		FOREIGN KEY(product_type_id)
@@ -164,8 +164,8 @@
 	-- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
 
 	CREATE TABLE services(
-		id INT PRIMARY KEY,
-		client_id INT NOT NULL,
+		id INTEGER PRIMARY KEY,
+		client_id INTEGER NOT NULL,
 		kms INT,
 		checkin_date VARCHAR(20), -- 00/00/2000
 		checkout_date VARCHAR(20), -- 00/00/2000
@@ -190,9 +190,9 @@
 
 	CREATE TABLE services_user_time(
 		id INTEGER PRIMARY KEY NOT NULL,
-		service_id INT NOT NULL,
-		user_id INT NOT NULL,
-		minutes INT NOT NULL,
+		service_id INTEGER NOT NULL,
+		user_id INTEGER NOT NULL,
+		minutes INTEGER NOT NULL,
 		ut_date VARCHAR(20) NOT NULL,
 		CONSTRAINT fk_service
 		FOREIGN KEY(service_id)
@@ -213,8 +213,8 @@
 	-- if is_applied then quantity NOT NULL
 	CREATE TABLE  services_applied_products(
 		id INTEGER PRIMARY KEY,
-		service_id INT NOT NULL,
-		product_id INT NOT NULL,
+		service_id INTEGER NOT NULL,
+		product_id INTEGER NOT NULL,
 		quantity INT,
 		is_applied BOOLEAN NOT NULL DEFAULT FALSE,
 		CONSTRAINT fk_service
