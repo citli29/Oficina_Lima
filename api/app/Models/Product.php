@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Models;
+
+use App\Database\Database;
+use PDO;
+
+class Product
+{
+	private PDO $db;
+
+	public function __construct(PDO $db)
+	{
+		$this->db = $db;
+	}
+
+	public function getProductsWithFilter(array $filters): array
+	{
+		$sql = "
+		SELECT p.*, pt.designation AS product_type, 		FROM cars c
+		LEFT JOIN product_types pt ON p.product_type_id = pt.id
+		WHERE 1=1
+		";
+
+		$params = [];
+
+		$rules = [
+			'designation' => [
+				'column' => 'p.designation',
+				'operator' => 'LIKE'
+			],
+			'ref' => [
+				'column' => 'c.reference',
+				'operator' => 'LIKE'
+			],
+			'p_type' => [
+				'column' => 'pt.designation',
+				'operator' => 'LIKE'
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getProductById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+		SELECT p.*, pt.designation AS product_type, 		FROM cars c
+		LEFT JOIN product_types pt ON p.product_type_id = pt.id
+		WHERE p.id = ?
+		");
+
+		$stmt->execute([$id]);
+		return $stmt->fetch();
+	}
+
+	public function getProductTypesWithFilter(array $filters):bool|array
+	{		
+		$sql = "
+		SELECT * FROM product_types WHERE 1=1
+		";
+
+		$params = [];
+
+		$rules = [
+			'designation' => [
+				'column' => 'p.designation',
+				'operator' => 'LIKE'
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getProductTypeById(int $id):bool|array
+	{
+		$stmt = $this->db->query("
+			SELECT * FROM product_types WHERE id = ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateProduct(int $id, array $data): bool|array
+	{
+		$stmt = $this->db->prepare("
+			UPDATE products
+			SET designation = ? , reference = ?, product_type_id = ? WHERE id = ?
+			");
+
+		$stmt->execute([
+			$data['designation'],
+			$data['reference'] ?? null,
+			$data['product_type_id'] ?? null,
+			$id
+		]);
+
+		$stmt = $this->db->prepare("
+			SELECT * FROM products WHERE id = ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateProductType(int $id, array $data): bool|array
+	{
+		$stmt = $this->db->prepare("
+			UPDATE product_types
+			SET designation = ? WHERE id = ?
+			");
+
+		$stmt->execute([
+			$data['designation'],
+			$id
+		]);
+
+		$stmt = $this->db->prepare("
+			SELECT * FROM product_types WHERE id = ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function createProduct(array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO products
+			(designation, reference, product_type_id)
+			VALUES (?, ?, ?)
+			");
+
+		$stmt->execute([
+			$data['designation'],
+			$data['reference'] ?? null,
+			$data['product_type_id'] ?? null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		$stmt = $this->db->prepare("
+			SELECT * FROM products WHERE id = ?
+			");
+
+		$stmt->execute([$newId]);
+
+		return $stmt->fetch();
+	}
+
+	public function createProductType(array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO product_types
+			(designation)
+			VALUES (?)
+			");
+
+		$stmt->execute([
+			$data['designation'],
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		$stmt = $this->db->prepare("
+			SELECT * FROM product_types WHERE id = ?
+			");
+
+		$stmt->execute([$newId]);
+
+		return $stmt->fetch();
+	}
+
+	public function deleteProduct(int $id): bool|array
+	{
+		$stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
+		$stmt->execute([$id]);
+		$product = $stmt->fetch();
+
+		if($product)
+		{
+			$stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
+			$stmt->execute([$id]);
+		}
+		return $product; 
+	}
+	public function deleteProductType(int $id): bool|array
+	{
+		$stmt = $this->db->prepare("SELECT * FROM product_types WHERE id = ?");
+		$stmt->execute([$id]);
+		$product_type = $stmt->fetch();
+
+		if($product)
+		{
+			$stmt = $this->db->prepare("DELETE FROM product_types WHERE id = ?");
+			$stmt->execute([$id]);
+		}
+		return $product_type; 
+	}
+}

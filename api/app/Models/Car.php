@@ -14,7 +14,7 @@ class Car
 		$this->db = $db;
 	}
 
-	public function getCarsAll(array $filters): array
+	public function getCarsWithFilter(array $filters): array
 	{
 		$sql = "
 		SELECT c.*, m.name AS model_name, mk.name AS make_name

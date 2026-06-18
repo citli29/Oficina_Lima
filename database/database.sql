@@ -137,7 +137,7 @@
 
 	CREATE TABLE product_types(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60)
+		designation VARCHAR(60) UNIQUE
 	);
 
 	INSERT INTO product_types(id,designation) VALUES
@@ -147,9 +147,9 @@
 
 	CREATE TABLE products(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60),
-		reference VARCHAR(40),
-		product_type_id INTEGER NOT NULL,
+		designation VARCHAR(60) UNIQUE NOT NULL,
+		reference VARCHAR(40) UNIQUE,
+		product_type_id INTEGER,
 		-- Mais informacoes de produtos
 		CONSTRAINT fk_ptype
 		FOREIGN KEY(product_type_id)

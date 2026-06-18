@@ -9,6 +9,17 @@ class Database
 {
 	private static ?PDO $instance = null;
 
+	public static function getConnection(): PDO
+	{
+		if (self::$instance === null) {
+			self::$instance= new PDO('sqlite:' . __DIR__ . '/../../../database/database.db');
+			self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+			self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		}
+		return self::$instance;
+	}
+
 	public static function applyFilters(string $sql, array $filters, array $rules, array &$params = []): string
 	{
 		foreach ($filters as $key => $value) {
@@ -48,14 +59,4 @@ class Database
 		return $sql;
 	}
 
-	public static function getConnection(): PDO
-	{
-		if (self::$instance === null) {
-			self::$instance= new PDO('sqlite:' . __DIR__ . '/../../../database/database.db');
-			self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-			self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		}
-		return self::$instance;
-	}
 }
