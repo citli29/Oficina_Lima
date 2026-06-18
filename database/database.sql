@@ -1,26 +1,28 @@
-	DROP TABLE IF EXISTS user_types;
-	DROP TABLE IF EXISTS users;
-	DROP TABLE IF EXISTS clients;
+	PRAGMA foreign_keys = ON;
 
-	DROP TABLE IF EXISTS makes;
-	DROP TABLE IF EXISTS models;
-	DROP TABLE IF EXISTS cars;
-
-	DROP TABLE IF EXISTS product_types;
-	DROP TABLE IF EXISTS products;
-
-	DROP TABLE IF EXISTS schedules;
-	DROP TABLE IF EXISTS services;
 	DROP TABLE IF EXISTS services_user_time;
-	DROP TABLE IF EXISTS applied_products;
 	DROP TABLE IF EXISTS services_applied_products;
 
-	PRAGMA FOREIGN_KEY = on;
+	DROP TABLE IF EXISTS services;
+	DROP TABLE IF EXISTS schedules;
+
+	DROP TABLE IF EXISTS cars;
+	DROP TABLE IF EXISTS models;
+
+	DROP TABLE IF EXISTS products;
+	DROP TABLE IF EXISTS product_types;
+
+	DROP TABLE IF EXISTS users;
+	DROP TABLE IF EXISTS user_types;
+
+	DROP TABLE IF EXISTS clients;
+	DROP TABLE IF EXISTS makes;
 
 	CREATE TABLE user_types(
 		id INTEGER PRIMARY KEY,
 		designation VARCHAR(30) NOT NULL
 	);
+
 	INSERT into user_types(id,designation) VALUES 
 	(1,'Escritorio'),
 	(2,'Oficina');
@@ -33,7 +35,6 @@
 		user_type_id INTEGER NOT NULL,
 		profile_pic VARCHAR(256),
 		nullified BOOLEAN NOT NULL DEFAULT 0,
-		CONSTRAINT fk_u_type
 		FOREIGN KEY(user_type_id)
 		REFERENCES user_types(id)
 	);
@@ -58,7 +59,7 @@
 
 	CREATE TABLE makes(
 		id INTEGER PRIMARY KEY,
-		name VARCHAR(60) NOT NULL,
+		name VARCHAR(60) NOT NULL UNIQUE,
 		logo VARCHAR(256)
 	);
 
@@ -71,7 +72,7 @@
 		name VARCHAR(60) NOT NULL,
 		make_id INTEGER NOT NULL,
 		-- more model info but not now
-		CONSTRAINT fk_make
+		UNIQUE(id, make_id),
 		FOREIGN KEY(make_id)
 		REFERENCES makes(id)
 	);
@@ -88,26 +89,28 @@
 	CREATE TABLE cars(
 		id INTEGER PRIMARY KEY,
 		plate VARCHAR(20) UNIQUE NOT NULL,
-		model_id INTEGER NOT NULL,
-		chassi_nr VARCHAR(60),
-		year INT,
 		month INT,
+		year INT,
+		chassi_nr VARCHAR(60),
 		cc INT,
 		engine_code VARCHAR(60),
 		color_code VARCHAR(60),
-		CONSTRAINT fk_models
-		FOREIGN KEY(model_id)
-		REFERENCES models(id)
+		model_id INTEGER,
+		make_id INTEGER NOT NULL,
+		FOREIGN KEY (make_id)
+		REFERENCES makes(id),
+		FOREIGN KEY (model_id, make_id)
+		REFERENCES models(id, make_id)
 	);
 
-	INSERT INTO cars(id,plate, model_id) VALUES
-	(1,"AB-00-00", 1),
-	(2,"AB-00-01", 2),
-	(3,"AB-00-02", 3),
-	(4,"AB-00-03", 4),
-	(5,"AB-00-04", 5),
-	(6,"AB-00-05", 3),
-	(7,"AB-00-06", 6);
+	INSERT INTO cars(id,plate, make_id, model_id) VALUES
+	(1,"AB-00-00", 1,1),
+	(2,"AB-00-01", 1,2),
+	(3,"AB-00-02", 1,3),
+	(4,"AB-00-03", 2,4),
+	(5,"AB-00-04", 2,5),
+	(6,"AB-00-05", 1,3),
+	(7,"AB-00-06", 2,6);
 
 	CREATE TABLE schedules(
 		id INTEGER PRIMARY KEY,
@@ -116,15 +119,12 @@
 		car_id INT,
 		model_id INT,
 		client_id INT,
-		CONSTRAINT fk_car
 		FOREIGN KEY (car_id)
 		REFERENCES cars(id),
-		CONSTRAINT fk_model
 		FOREIGN KEY (model_id)
 		REFERENCES models(id),
-		CONSTRAINT fk_client
 		FOREIGN KEY (client_id)
-		REFERENCES client(id)
+		REFERENCES clients(id)
 	);
 
 	INSERT INTO schedules(id,schedule_date, description, car_id, model_id, client_id) VALUES
@@ -151,7 +151,6 @@
 		reference VARCHAR(40) UNIQUE,
 		product_type_id INTEGER,
 		-- Mais informacoes de produtos
-		CONSTRAINT fk_ptype
 		FOREIGN KEY(product_type_id)
 		REFERENCES product_types(id)
 	);
@@ -173,13 +172,10 @@
 		service_description VARCHAR(512),
 		car_id INT,
 		schedule_id INT,
-		CONSTRAINT fk_client
 		FOREIGN KEY(client_id)
 		REFERENCES clients(id),
-		CONSTRAINT fk_car
 		FOREIGN KEY(car_id)
 		REFERENCES cars(id),
-		CONSTRAINT fk_schedule
 		FOREIGN KEY(schedule_id)
 		REFERENCES schedules(id)
 	);
@@ -194,10 +190,8 @@
 		user_id INTEGER NOT NULL,
 		minutes INTEGER NOT NULL,
 		ut_date VARCHAR(20) NOT NULL,
-		CONSTRAINT fk_service
 		FOREIGN KEY(service_id)
-		REFERENCES service(id),
-		CONSTRAINT fk_user
+		REFERENCES services(id),
 		FOREIGN KEY(user_id)
 		REFERENCES users(id)
 	);
@@ -217,10 +211,8 @@
 		product_id INTEGER NOT NULL,
 		quantity INT,
 		is_applied BOOLEAN NOT NULL DEFAULT FALSE,
-		CONSTRAINT fk_service
 		FOREIGN KEY(service_id)
 		REFERENCES services(id),
-		CONSTRAINT fk_product
 		FOREIGN KEY(product_id)
 		REFERENCES products(id)
 	);

@@ -39,7 +39,7 @@ class CarController
 	{
 		try {
 			header('Content-Type: application/json');
-			echo json_encode($this->service->listCar($id));
+			echo json_encode($this->service->showCar($id));
 		} catch (RuntimeException$e) {
 			http_response_code(404);
 			echo json_encode(['error' => $e->getMessage()]);
