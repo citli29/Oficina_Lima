@@ -132,7 +132,7 @@ class Car
 			SELECT m.*, mk.name AS make_name
 			FROM models m 
 			LEFT JOIN makes mk ON m.make_id = mk.id
-			WHERE id = ?
+			WHERE m.id = ?
 			");
 
 		$stmt->execute([$id]);
@@ -155,7 +155,7 @@ class Car
 	{
 		$stmt = $this->db->prepare("
 			UPDATE cars
-			SET plate = ? , make_id = ?,model_id = ?, chassi_nr = ?,
+			SET plate = ?, make_id = ?,model_id = ?, chassi_nr = ?,
 			year = ?, month = ?, cc = ?, 
 			engine_code = ?, color_code = ? 
 			WHERE id = ?

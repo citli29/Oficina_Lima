@@ -47,18 +47,6 @@ class Product
 		return $stmt->fetchAll();
 	}
 
-	public function getProductById(int $id): bool|array
-	{
-		$stmt = $this->db->query( "
-		SELECT p.*, pt.designation AS product_type, 		FROM cars c
-		LEFT JOIN product_types pt ON p.product_type_id = pt.id
-		WHERE p.id = ?
-		");
-
-		$stmt->execute([$id]);
-		return $stmt->fetch();
-	}
-
 	public function getProductTypesWithFilter(array $filters):bool|array
 	{		
 		$sql = "
@@ -82,10 +70,26 @@ class Product
 		return $stmt->fetchAll();
 	}
 
+	public function getProductById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+			SELECT p.*, pt.designation AS product_type 
+			FROM products p 
+			LEFT JOIN product_types pt ON p.product_type_id = pt.id
+			WHERE p.id = ?
+		");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
 	public function getProductTypeById(int $id):bool|array
 	{
 		$stmt = $this->db->query("
-			SELECT * FROM product_types WHERE id = ?
+			SELECT * 
+			FROM product_types 
+			WHERE id = ?
 			");
 
 		$stmt->execute([$id]);
@@ -97,7 +101,8 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			UPDATE products
-			SET designation = ? , reference = ?, product_type_id = ? WHERE id = ?
+			SET designation = ? , reference = ?, product_type_id = ? 
+			WHERE id = ?
 			");
 
 		$stmt->execute([
@@ -107,20 +112,15 @@ class Product
 			$id
 		]);
 
-		$stmt = $this->db->prepare("
-			SELECT * FROM products WHERE id = ?
-			");
-
-		$stmt->execute([$id]);
-
-		return $stmt->fetch();
+		return $this->getProductById($id);
 	}
 
 	public function updateProductType(int $id, array $data): bool|array
 	{
 		$stmt = $this->db->prepare("
 			UPDATE product_types
-			SET designation = ? WHERE id = ?
+			SET designation = ? 
+			WHERE id = ?
 			");
 
 		$stmt->execute([
@@ -128,13 +128,7 @@ class Product
 			$id
 		]);
 
-		$stmt = $this->db->prepare("
-			SELECT * FROM product_types WHERE id = ?
-			");
-
-		$stmt->execute([$id]);
-
-		return $stmt->fetch();
+		return $this->getProductTypeById($id);
 	}
 
 	public function createProduct(array $data): array
@@ -153,13 +147,7 @@ class Product
 
 		$newId = (int)$this->db->lastInsertId();
 
-		$stmt = $this->db->prepare("
-			SELECT * FROM products WHERE id = ?
-			");
-
-		$stmt->execute([$newId]);
-
-		return $stmt->fetch();
+		return $this->getProductById($newId);
 	}
 
 	public function createProductType(array $data): array
@@ -176,39 +164,32 @@ class Product
 
 		$newId = (int)$this->db->lastInsertId();
 
-		$stmt = $this->db->prepare("
-			SELECT * FROM product_types WHERE id = ?
-			");
-
-		$stmt->execute([$newId]);
-
-		return $stmt->fetch();
+		return $this->getProductTypeById($newId);
 	}
 
 	public function deleteProduct(int $id): bool|array
 	{
-		$stmt = $this->db->prepare("SELECT * FROM products WHERE id = ?");
-		$stmt->execute([$id]);
-		$product = $stmt->fetch();
+		$product = $this->getProductById($id);
 
 		if($product)
 		{
 			$stmt = $this->db->prepare("DELETE FROM products WHERE id = ?");
 			$stmt->execute([$id]);
 		}
+
 		return $product; 
 	}
+
 	public function deleteProductType(int $id): bool|array
 	{
-		$stmt = $this->db->prepare("SELECT * FROM product_types WHERE id = ?");
-		$stmt->execute([$id]);
-		$product_type = $stmt->fetch();
+		$product_type = $this->getProductTypeById($id);
 
-		if($product)
+		if($product_type)
 		{
 			$stmt = $this->db->prepare("DELETE FROM product_types WHERE id = ?");
 			$stmt->execute([$id]);
 		}
+
 		return $product_type; 
 	}
 }

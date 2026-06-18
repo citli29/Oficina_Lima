@@ -17,7 +17,36 @@ class CarController
 		$this->service = new CarService($model);
 	}
 
-	public function cars():void
+	public function getMakes():void
+	{
+		try {
+			$filters = [
+				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
+			];
+			header('Content-Type: application/json');
+			echo json_encode($this->service->listMakes($filters));
+		} catch (RuntimeException$e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getModels():void
+	{
+		try {
+			$filters = [
+				'model_name' => isset($_GET['model_name']) ? $_GET['model_name'] : null,
+				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
+			];
+			header('Content-Type: application/json');
+			echo json_encode($this->service->listModels($filters));
+		} catch (RuntimeException$e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getCars():void
 	{
 		try {
 			$filters = [
@@ -35,7 +64,29 @@ class CarController
 		}
 	}
 
-	public function car(int $id):void
+	public function getMake(int $id):void
+	{
+		try {
+			header('Content-Type: application/json');
+			echo json_encode($this->service->showMake($id));
+		} catch (RuntimeException$e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getModel(int $id):void
+	{
+		try {
+			header('Content-Type: application/json');
+			echo json_encode($this->service->showModel($id));
+		} catch (RuntimeException$e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getCar(int $id):void
 	{
 		try {
 			header('Content-Type: application/json');
@@ -46,7 +97,37 @@ class CarController
 		}
 	}
 
-	public function create():void
+	public function postMakes():void
+	{
+		try {
+			$input = json_decode(file_get_contents('php://input'), true);
+
+			$make = $this->service->createMake($input);
+
+			header('Content-Type: application/json');
+			echo json_encode($make);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postModels():void
+	{
+		try {
+			$input = json_decode(file_get_contents('php://input'), true);
+
+			$model = $this->service->createModel($input);
+
+			header('Content-Type: application/json');
+			echo json_encode($model);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postCars():void
 	{
 		try {
 			$input = json_decode(file_get_contents('php://input'), true);
@@ -60,10 +141,45 @@ class CarController
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
-	public function delete(int $id):void
+
+	public function deleteMake(int $id):void
 	{
 		try {
-			if($id < 0) throw new InvalidArgumentException("Invalid ID");
+
+			$make = $this->service->deleteMake($id);
+
+			header('Content-Type: application/json');
+			echo json_encode([
+			    'success' => true,
+			    'make' => $make
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function deleteModel(int $id):void
+	{
+		try {
+
+			$model = $this->service->deleteModel($id);
+
+			header('Content-Type: application/json');
+			echo json_encode([
+			    'success' => true,
+			    'model' => $model
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function deleteCar(int $id):void
+	{
+		try {
+
 			$car = $this->service->deleteCar($id);
 
 			header('Content-Type: application/json');
@@ -75,12 +191,41 @@ class CarController
 			http_response_code(404);
 			echo json_encode(['error' => $e->getMessage()]);
 		}
-
 	}
-	public function update(int $id):void
+
+	public function putMake(int $id):void
 	{
 		try {
-			if($id < 0) throw new InvalidArgumentException("Invalid ID");
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			$make = $this->service->updateMake($id, $data);
+
+			header('Content-Type: application/json');
+			echo json_encode($make);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putModel(int $id):void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			$model = $this->service->updateModel($id, $data);
+
+			header('Content-Type: application/json');
+			echo json_encode($model);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(404);
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putCar(int $id):void
+	{
+		try {
 			$data = json_decode(file_get_contents('php://input'), true);
 
 			$car = $this->service->updateCar($id, $data);

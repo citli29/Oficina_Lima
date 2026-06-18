@@ -1,5 +1,3 @@
-	PRAGMA foreign_keys = ON;
-
 	DROP TABLE IF EXISTS services_user_time;
 	DROP TABLE IF EXISTS services_applied_products;
 
@@ -137,7 +135,7 @@
 
 	CREATE TABLE product_types(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60) UNIQUE
+		designation VARCHAR(60) NOT NULL UNIQUE
 	);
 
 	INSERT INTO product_types(id,designation) VALUES
@@ -147,7 +145,7 @@
 
 	CREATE TABLE products(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60) UNIQUE NOT NULL,
+		designation VARCHAR(60) NOT NULL,
 		reference VARCHAR(40) UNIQUE,
 		product_type_id INTEGER,
 		-- Mais informacoes de produtos
