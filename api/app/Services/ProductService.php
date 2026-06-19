@@ -30,116 +30,98 @@ class ProductService
 	public function showProduct(int $id): array
 	{
 		if(!$product = $this->productModel->getProductById($id))
-			throw new RuntimeException("Product not found: {$id}");
+			throw new RuntimeException("Show Product [ID Not Found]: {$id}.");
 		return $product;
 	}
 
 	public function showProductType(int $id): array
 	{
 		if(!$product_type = $this->productModel->getProductTypeById($id))
-			throw new RuntimeException("Product Type not found: {$id}");
+			throw new RuntimeException("Show Product Type [ID Not Found]: {$id}.");
 		return $product_type;
 	}
 
 	public function createProduct(array $data): array
 	{
 		if(empty($data['designation'])) {
-			throw new InvalidArgumentException("
-				Mandatory arguments:\n
-				\tDesignation
-				");
+			throw new InvalidArgumentException("Create Product [Arguments Required]: Designation.");
 		}
 		try
 {
 			return $this->productModel->createProduct($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("
-				Argument constraints:\n
-				\tDesignation must be provided\n
-				\tReference unique\n
-				{$e->getMessage()}
-				");
+			throw new InvalidArgumentException("Create Product [Argument Constraints]: Designation must be provided. Reference must be unique. [{$e->errorInfo[2]}]");
 		}
 	}
 
 	public function createProductType(array $data): array
 	{
 		if(empty($data['designation'])) {
-			throw new InvalidArgumentException("
-				Mandatory arguments:\n
-				\tDesignation
-				");
+			throw new InvalidArgumentException("Create Product Type [Arguments Required]: Designation.");
 		}
 		try
 {
 			return $this->productModel->createProductType($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("
-				Argument constraints:\n
-				\tDesignation must be provided\n
-				{$e->getMessage()}
-				");
+			throw new InvalidArgumentException("Create Product Type [Argument Constraints]: Designation must be provided. [{$e->errorInfo[2]}]");
 		}
 	}
 	public function deleteProductType(int $id): array
 	{
+		try
+		{
 		if(!$product_type = $this->productModel->deleteProductType($id))
-			throw new InvalidArgumentException("{$id}: Invalid ID");
+			throw new InvalidArgumentException("Delete Product Type [Invalid ID]: {$id}.");
 		return $product_type;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException("Delete Product Type [Error]: [{$e->errorInfo[2]}]");
+		}
 	}
 
 	public function deleteProduct(int $id): array
 	{
+		try
+		{
 		if(!$product= $this->productModel->deleteProduct($id))
-			throw new InvalidArgumentException("{$id}: Invalid ID");
+			throw new InvalidArgumentException("Delete Product [Invalid ID]: {$id}.");
 		return $product;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException("Delete Product Type [Error]: [{$e->errorInfo[2]}]");
+		}
 	}
 
 	public function updateProductType(int $id, array $data): array
 	{
 		if(empty($data['designation'])) {
-			throw new InvalidArgumentException("
-				Mandatory arguments:\n
-				\tDesignation\n
-				");
+			throw new InvalidArgumentException("Update Product Type [Argument required]: Designation.");
 		}
 		try
 		{
 			$product_type = $this->productModel->updateProductType($id,$data);
-			if(!$product_type) throw new InvalidArgumentException("
-				Invalid Product Type ID: {$id}
-				"); 
+			if(!$product_type) 
+			throw new InvalidArgumentException("Update Product Type [Invalid ID]: {$id}.");
 			return $product_type;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("
-				Argument constraints:\n
-				\tDesignation unique\n
-				{$e->getMessage()}
-				");
+			throw new InvalidArgumentException("Update Product Type [Argument constraints]: Designation must be unique. [{$e->errorInfo[2]}]");
 		}
 	}
+
 	public function updateProduct(int $id, array $data): array
 	{
 		if(empty($data['designation'])) {
-			throw new InvalidArgumentException("
-				Mandatory arguments:\n
-				\tDesignation\n
-				");
+			throw new InvalidArgumentException("Update Make [Arguments required]: Designation.");
 		}
+
 		try
 		{
 			$product= $this->productModel->updateProduct($id,$data);
-			if(!$product) throw new InvalidArgumentException("
-				Invalid Product ID: {$id}
-				"); 
+			if(!$product)
+			throw new InvalidArgumentException("Update Product [Invalid ID]: {$id}.");
 			return $product;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("
-				Argument constraints:\n
-				\tDesignation must be provided\n
-				\tReference unique\n
-				{$e->getMessage()}
-				");
+			throw new InvalidArgumentException("Update Product [Argument constraints]: Designation must be provided. Reference must be unique. [{$e->errorInfo[2]}]");
 		}
 	}
 }

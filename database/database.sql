@@ -96,9 +96,10 @@
 		model_id INTEGER,
 		make_id INTEGER NOT NULL,
 		FOREIGN KEY (make_id)
-		REFERENCES makes(id),
+			REFERENCES makes(id),
 		FOREIGN KEY (model_id, make_id)
-		REFERENCES models(id, make_id)
+			REFERENCES models(id, make_id)
+			ON DELETE SET NULL
 	);
 
 	INSERT INTO cars(id,plate, make_id, model_id) VALUES
@@ -118,11 +119,14 @@
 		model_id INT,
 		client_id INT,
 		FOREIGN KEY (car_id)
-		REFERENCES cars(id),
+			REFERENCES cars(id)
+			ON DELETE SET NULL,
 		FOREIGN KEY (model_id)
-		REFERENCES models(id),
+			REFERENCES models(id)
+			ON DELETE SET NULL,
 		FOREIGN KEY (client_id)
-		REFERENCES clients(id)
+			REFERENCES clients(id)
+			ON DELETE SET NULL
 	);
 
 	INSERT INTO schedules(id,schedule_date, description, car_id, model_id, client_id) VALUES
@@ -150,7 +154,8 @@
 		product_type_id INTEGER,
 		-- Mais informacoes de produtos
 		FOREIGN KEY(product_type_id)
-		REFERENCES product_types(id)
+			REFERENCES product_types(id)
+			ON DELETE SET NULL
 	);
 
 	INSERT INTO products(id, designation, reference, product_type_id) VALUES
@@ -173,9 +178,11 @@
 		FOREIGN KEY(client_id)
 		REFERENCES clients(id),
 		FOREIGN KEY(car_id)
-		REFERENCES cars(id),
+			REFERENCES cars(id)
+			ON DELETE SET NULL,
 		FOREIGN KEY(schedule_id)
-		REFERENCES schedules(id)
+			REFERENCES schedules(id)
+			ON DELETE SET NULL
 	);
 
 	INSERT INTO services(id,client_id,service_description) VALUES
