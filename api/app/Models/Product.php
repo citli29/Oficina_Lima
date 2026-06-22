@@ -77,7 +77,7 @@ class Product
 			FROM products p 
 			LEFT JOIN product_types pt ON p.product_type_id = pt.id
 			WHERE p.id = ?
-		");
+			");
 
 		$stmt->execute([$id]);
 

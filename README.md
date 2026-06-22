@@ -89,35 +89,44 @@
 > /api/clients
 > /api/client
 
-- [ ] List with Search
+- [x] List with Search
     > GET: /api/clients
-- [ ] Create
+- [x] Create
     > POST: /api/clients
-- [ ] Read
+- [x] Read
     > GET: /api/client/{id}
-- [ ] Update
+- [x] Update
     > PUT: /api/client/{id}
-- [ ] Delete
+- [x] Delete
     > DELETE: /api/client/{id}
 
 ### Products
 > /api/products
 > /api/product
 
-- [ ] List with Search 
+> /api/product_types
+> /api/product_type
+
+- [x] List with Search 
     > GET: /api/products
-- [ ] Create
+- [x] Create
     > POST: /api/products
-- [ ] Read
+- [x] Read
     > GET: /api/product/{id}
-- [ ] Update
+- [x] Update
     > PUT: /api/product/{id}
-- [ ] Delete
+- [x] Delete
     > DELETE: /api/product/{id}
 
 ### Cars
 > /api/cars
 > /api/car
+
+> /api/models
+> /api/model
+
+> /api/makes
+> /api/make
 
 - [x] List with Search
     > GET: /api/cars

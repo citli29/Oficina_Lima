@@ -71,26 +71,26 @@ class CarService
 	{
 		if(empty($data['name']) || !isset($data['make_id'])) 
 		{
-			throw new InvalidArgumentException("Create Model [Arguments required]: Name, Make.",400);
+			throw new InvalidArgumentException("Create Model [Arguments Required]: Name, Make.",400);
 		}
 
 		try
 		{
 			return $this->carModel->createModel($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Model [Argument constraints]: Name must be provided. Make must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException("Create Model [Argument Constraints]: Name must be provided. Make must be provided. [{$e->errorInfo[2]}]", 400);
 		}
 	}
 	public function createCar(array $data): array
 	{
 		if(empty($data['plate']) || !isset($data['make_id'])) {
-			throw new InvalidArgumentException("Create Car [Arguments required]: Plate, Make.", 400);
+			throw new InvalidArgumentException("Create Car [Arguments Required]: Plate, Make.", 400);
 		}
 		try
 		{
 			return $this->carModel->createCar($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Car [Argument constraints]: Plate unique. Make must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException("Create Car [Argument Constraints]: Plate unique. Make must be provided. [{$e->errorInfo[2]}]", 400);
 		}
 	}
 
@@ -136,7 +136,7 @@ public function deleteCar(int $id): array
 	public function updateMake(int $id, array $data): array
 	{
 		if(empty($data['name'])) {
-			throw new InvalidArgumentException("Update Model [Argument required]: Name.",400);
+			throw new InvalidArgumentException("Update Model [Argument Required]: Name.",400);
 		}
 		try
 		{
@@ -145,14 +145,14 @@ public function deleteCar(int $id): array
 			throw new InvalidArgumentException("Update Make [Invalid ID]: {$id}.",404);
 			return $make;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Make [Argument constraints]: Name must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException("Update Make [Argument Constraints]: Name must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 
 	public function updateModel(int $id, array $data): array
 	{
 		if(empty($data['name']) || !isset($data['make_id'])) {
-			throw new InvalidArgumentException("Update Make [Arguments required]: Name, Make.",400);
+			throw new InvalidArgumentException("Update Make [Arguments Required]: Name, Make.",400);
 		}
 
 		try
@@ -162,14 +162,14 @@ public function deleteCar(int $id): array
 			throw new InvalidArgumentException("Update Model [Invalid ID]: {$id}.",404);
 			return $model;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Model [Argument constraints]: Name must be provided. Make must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException("Update Model [Argument Constraints]: Name must be provided. Make must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 
 	public function updateCar(int $id, array $data): array
 	{
 		if(empty($data['plate']) || !isset($data['make_id'])) {
-			throw new InvalidArgumentException("Update Car [Arguments required]: Plate, Make.",400);
+			throw new InvalidArgumentException("Update Car [Arguments Required]: Plate, Make.",400);
 		}
 		try
 		{
@@ -178,7 +178,7 @@ public function deleteCar(int $id): array
 			throw new InvalidArgumentException("Update Car [Invalid ID]: {$id}.",404);
 			return $car;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Car [Argument constraints]: Plate unique. Make must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException("Update Car [Argument Constraints]: Plate unique. Make must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 }
