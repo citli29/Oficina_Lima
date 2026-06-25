@@ -6,7 +6,7 @@
 #### Car - MVC
 >##### Create and List Makes
 >>  - [ ] api/makes
->>>    - [ ] GET *make_name*
+>>>    - [ ] GET *?make_name*
 >>>    - [ ] POST *\*make_name*
 
 >##### Read, Update and Delete Make
@@ -37,7 +37,7 @@
 >>>    - [ ] PUT *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
 >>>    - [ ] DELETE
 
-#### Client- MVC
+#### Client - MVC
 >##### Create and List Clients
 >>  - [ ] api/clients
 >>>    - [ ] GET *?name* *?phone* *?email*
@@ -49,7 +49,7 @@
 >>>    - [ ] PUT *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
 >>>    - [ ] DELETE
 
-#### Service- MVC
+#### Service - MVC
 >##### Create and List Services
 >>  - [ ] api/services
 >>>    - [ ] GET *?client_name* *?checkin* *?checkout* *?car_plate* *?car_model* *?car_make*
@@ -92,17 +92,6 @@
 >>>    - [ ] GET *?service_id* *?product_name* *?product_id* *?is_applied*
 
 #### Product - MVC
->##### Create and List Products
->>  - [ ] api/products
->>>    - [ ] GET *?designation* *?reference* *?p_t_name* *?p_t_id*
->>>    - [ ] POST *\*designation* *reference* product_type_id*
-
->##### Read, Update and Delete Products
->>  - [ ] api/products/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*designation* *reference* product_type_id*
->>>    - [ ] DELETE
-
 >##### Create and List Product Types
 >>  - [ ] api/product_types
 >>>    - [ ] GET *?designation*
@@ -112,6 +101,17 @@
 >>  - [ ] api/product_types/{id}
 >>>    - [ ] GET
 >>>    - [ ] PUT *\*designation*
+>>>    - [ ] DELETE
+
+>##### Create and List Products
+>>  - [ ] api/products
+>>>    - [ ] GET *?designation* *?reference* *?p_t_name* *?p_t_id*
+>>>    - [ ] POST *\*designation* *reference* product_type_id*
+
+>##### Read, Update and Delete Products
+>>  - [ ] api/products/{id}
+>>>    - [ ] GET
+>>>    - [ ] PUT *\*designation* *reference* product_type_id*
 >>>    - [ ] DELETE
 
 #### Schedule - MVC
