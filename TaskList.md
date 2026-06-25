@@ -28,7 +28,7 @@
 
 >##### Create and List Cars
 >>  - [ ] api/cars 
->>>    - [ ] GET *?plate* *?model_name* *?make_id* *?year* *?month*
+>>>    - [ ] GET *?plate* *?model_name* *?make_name* *?make_id* *?year* *?month*
 >>>    - [ ] POST *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
 
 >##### Read, Update and Delete Car
