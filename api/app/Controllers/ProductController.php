@@ -37,7 +37,7 @@ class ProductController
 			]);
 
 		}catch(RuntimeException $e){
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -60,7 +60,7 @@ class ProductController
 			]);
 
 		}catch(RuntimeException $e){
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -77,7 +77,7 @@ class ProductController
 				'product'=>$product
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -94,7 +94,7 @@ class ProductController
 				'product_type'=>$product_type
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -113,7 +113,7 @@ class ProductController
 				'product'=>$product
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -132,7 +132,7 @@ class ProductController
 				'product_type'=>$product_type
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -150,7 +150,7 @@ class ProductController
 				'product' => $product
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -168,7 +168,7 @@ class ProductController
 				'product_type' => $product_type
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -187,7 +187,7 @@ class ProductController
 				'product'=>$product
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -206,7 +206,7 @@ class ProductController
 				'product_type'=>$product_type
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

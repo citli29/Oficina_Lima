@@ -35,7 +35,7 @@ class ClientController
 				'client_list'=>$client_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -52,7 +52,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -71,7 +71,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -89,7 +89,7 @@ class ClientController
 				'client' => $client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -108,7 +108,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
