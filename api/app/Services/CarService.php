@@ -152,7 +152,7 @@ public function deleteCar(int $id): array
 	public function updateModel(int $id, array $data): array
 	{
 		if(empty($data['name']) || !isset($data['make_id'])) {
-			throw new InvalidArgumentException("Update Make [Arguments Required]: Name, Make.",400);
+			throw new InvalidArgumentException("Update Model [Arguments Required]: Name, Make.",400);
 		}
 
 		try

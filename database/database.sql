@@ -57,7 +57,7 @@
 		name VARCHAR(60) NOT NULL,
 		make_id INTEGER NOT NULL,
 		-- more model info but not now
-		UNIQUE(id, make_id),
+		UNIQUE(name, make_id),
 		FOREIGN KEY(make_id)
 		REFERENCES makes(id)
 	);
@@ -77,8 +77,8 @@
 		make_id INTEGER NOT NULL,
 		FOREIGN KEY (make_id)
 			REFERENCES makes(id),
-		FOREIGN KEY (model_id, make_id)
-			REFERENCES models(id, make_id)
+		FOREIGN KEY (model_id)
+			REFERENCES models(id)
 			ON DELETE SET NULL
 	);
 
@@ -166,6 +166,40 @@
 		FOREIGN KEY(product_id)
 		REFERENCES products(id)
 	);
+
+	CREATE TRIGGER check_car_model_insert
+	BEFORE INSERT ON cars
+	FOR EACH ROW
+	WHEN NEW.model_id IS NOT NULL
+	BEGIN
+	    SELECT
+		CASE
+		    WHEN NOT EXISTS (
+			SELECT 1
+			FROM models
+			WHERE id = NEW.model_id
+			  AND make_id = NEW.make_id
+		    )
+		    THEN RAISE(ABORT, 'Invalid model for make')
+		END;
+	END;
+
+	CREATE TRIGGER check_car_model_update
+	BEFORE UPDATE OF model_id, make_id ON cars
+	FOR EACH ROW
+	WHEN NEW.model_id IS NOT NULL
+	BEGIN
+	    SELECT
+		CASE
+		    WHEN NOT EXISTS (
+			SELECT 1
+			FROM models
+			WHERE id = NEW.model_id
+			  AND make_id = NEW.make_id
+		    )
+		    THEN RAISE(ABORT, 'Model does not belong to make')
+		END;
+	END;
 
 	INSERT into user_types(id,designation) VALUES 
 	(1,'Escritorio'),

@@ -69,7 +69,7 @@ class Car
 		$params = [];
 
 		$rules = [
-			'model_name' => [
+			'name' => [
 				'column' => 'm.name',
 				'operator' => 'LIKE'
 			],

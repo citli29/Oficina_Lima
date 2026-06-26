@@ -41,7 +41,7 @@ class CarController
 	{
 		try {
 			$filters = [
-				'model_name' => isset($_GET['model_name']) ? $_GET['model_name'] : null,
+				'name' => isset($_GET['name']) ? $_GET['name'] : null,
 				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
 			];
 
@@ -64,10 +64,10 @@ class CarController
 		try {
 			$filters = [
 				'plate' => $_GET['plate'] ?? null,
-				'model_name' => isset($_GET['model_name']) ? $_GET['model_name'] : null,
-				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
 				'year' => isset($_GET['year']) ? (int) $_GET['year'] : null,
 				'month' => isset($_GET['month']) ? (int) $_GET['month'] : null,
+				'model_name' => isset($_GET['model_name']) ? $_GET['model_name'] : null,
+				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
 			];
 
 			$car_list = $this->service->listCars($filters);

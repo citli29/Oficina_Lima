@@ -21,17 +21,20 @@
 >>>         Tests: regular, bad request(invalid id)
 
 >##### Create and List Models
->>  - [ ] api/models
->>>    - [ ] GET *?name* *?make_name*
+>>  - [x] api/models
+>>>    - [x] GET *?name* *?make_name*
 >>>         Tests: regular, filtered(0,1,multiple)(name, make_name)
->>>    - [ ] POST *\*name* *\*make_id*
+>>>    - [x] POST *\*name* *\*make_id*
 >>>         Tests: regular, bad request(no unique, no required field)(name,make_id)
 
 >##### Read, Update and Delete Model
->>  - [ ] api/models/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*name* *\*make_id*
->>>    - [ ] DELETE
+>>  - [x] api/models/{id}
+>>>    - [x] GET
+>>>         Tests: regular, bad request(invalid id)
+>>>    - [x] PUT *\*name* *\*make_id*
+>>>         Tests: regular, bad request(no unique, no required field)(name,make_id)
+>>>    - [x] DELETE
+>>>         Tests: regular, bad request(invalid id)
 
 >##### Create and List Cars
 >>  - [ ] api/cars 
