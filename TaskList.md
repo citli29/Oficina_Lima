@@ -5,31 +5,38 @@
 ### Database CRUD
 #### Car - MVC
 >##### Create and List Makes
->>  - [ ] api/makes
->>>    - [ ] GET *?make_name*
->>>    - [ ] POST *\*make_name*
+>>  - [x] api/makes
+>>>    - [x] GET *?name*
+>>>         Tests: regular, filtered(0,1,multiple)(name)
+>>>    - [x] POST *\*name*
+>>>         Tests: regular, bad request(no unique, no required field)
 
 >##### Read, Update and Delete Make
->>  - [ ] api/makes/{id}
->>>    - [ ] GET 
->>>    - [ ] PUT *\*make_name*
->>>    - [ ] DELETE
+>>  - [x] api/makes/{id}
+>>>    - [x] GET 
+>>>         Tests: regular, bad request(invalid id)
+>>>    - [x] PUT *\*name*
+>>>         Tests: regular same/different(name), bad request(no unique, no required field)
+>>>    - [x] DELETE
+>>>         Tests: regular, bad request(invalid id)
 
 >##### Create and List Models
 >>  - [ ] api/models
->>>    - [ ] GET *?model_name* *?make_name*
->>>    - [ ] POST *\*model_name* *\*make_id*
+>>>    - [ ] GET *?name* *?make_name*
+>>>         Tests: regular, filtered(0,1,multiple)(name, make_name)
+>>>    - [ ] POST *\*name* *\*make_id*
+>>>         Tests: regular, bad request(no unique, no required field)(name,make_id)
 
 >##### Read, Update and Delete Model
 >>  - [ ] api/models/{id}
 >>>    - [ ] GET
->>>    - [ ] PUT *\*model_name* *\*make_id*
+>>>    - [ ] PUT *\*name* *\*make_id*
 >>>    - [ ] DELETE
 
 >##### Create and List Cars
 >>  - [ ] api/cars 
->>>    - [ ] GET *?plate* *?model_name* *?make_name* *?make_id* *?year* *?month*
->>>    - [ ] POST *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
+>>>    - [ ] GET *?plate*  *?year* *?month* *?model_name* *?make_name* *?make_id*
+>>>    - [ ] POST *\*plate* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id* *\*make_id*
 
 >##### Read, Update and Delete Car
 >>  - [ ] api/cars/{id}

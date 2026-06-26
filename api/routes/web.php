@@ -18,15 +18,15 @@ return [
 
 	['GET', '/api/models', [CarController::class, 'getModels']], //with search
 	['POST', '/api/models', [CarController::class, 'postModels']],
-	['GET', '/api/model/{id:\d+}', [CarController::class, 'getModel']],
-	['PUT', '/api/model/{id:\d+}', [CarController::class, 'putModel']],
-	['DELETE', '/api/model/{id:\d+}', [CarController::class, 'deleteModel']],
+	['GET', '/api/models/{id:\d+}', [CarController::class, 'getModel']],
+	['PUT', '/api/models/{id:\d+}', [CarController::class, 'putModel']],
+	['DELETE', '/api/models/{id:\d+}', [CarController::class, 'deleteModel']],
 
 	['GET', '/api/makes', [CarController::class, 'getMakes']], //with search
 	['POST', '/api/makes', [CarController::class, 'postMakes']],
-	['GET', '/api/make/{id:\d+}', [CarController::class, 'getMake']],
-	['PUT', '/api/make/{id:\d+}', [CarController::class, 'putMake']],
-	['DELETE', '/api/make/{id:\d+}', [CarController::class, 'deleteMake']],
+	['GET', '/api/makes/{id:\d+}', [CarController::class, 'getMake']],
+	['PUT', '/api/makes/{id:\d+}', [CarController::class, 'putMake']],
+	['DELETE', '/api/makes/{id:\d+}', [CarController::class, 'deleteMake']],
 
 	/*	Product Controller	*/
 	['GET', '/api/product_types', [ProductController::class, 'getProductTypes']], //with search

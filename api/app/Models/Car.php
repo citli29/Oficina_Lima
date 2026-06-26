@@ -97,7 +97,7 @@ class Car
 		$params = [];
 
 		$rules = [
-			'make_name' => [
+			'name' => [
 				'column' => 'name',
 				'operator' => 'LIKE'
 			]
@@ -258,7 +258,7 @@ class Car
 	public function createMake(array $data): array
 	{
 		$stmt = $this->db->prepare("
-			INSERT INTO make
+			INSERT INTO makes
 			(name, logo)
 			VALUES (?, ?)
 			");
@@ -311,7 +311,7 @@ class Car
 		if($make)
 		{
 			$stmt = $this->db->prepare("
-				DELETE FROM make WHERE id = ?
+				DELETE FROM makes WHERE id = ?
 				");
 			$stmt->execute([$id]);
 		}

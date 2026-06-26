@@ -21,11 +21,11 @@ class CarController
 	{
 		try {
 			$filters = [
-				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
+				'name' => isset($_GET['name']) ? $_GET['name'] : null,
 			];
 			$make_list = $this->service->listMakes($filters);
 
-			http_response_code(empty($make_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
@@ -47,7 +47,7 @@ class CarController
 
 			$model_list = $this->service->listModels($filters);
 
-			http_response_code(empty($model_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
@@ -72,7 +72,7 @@ class CarController
 
 			$car_list = $this->service->listCars($filters);
 
-			http_response_code(empty($car_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
