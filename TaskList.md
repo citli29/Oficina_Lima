@@ -39,13 +39,13 @@
 >##### Create and List Cars
 >>  - [ ] api/cars 
 >>>    - [x] GET *?plate*  *?year* *?month* *?model_name* *?make_name* *?make_id*
->>>    - [ ] POST *\*plate* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id* *\*make_id*
+>>>    - [x] POST *\*plate* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id* *\*make_id*
 
 >##### Read, Update and Delete Car
->>  - [ ] api/cars/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
->>>    - [ ] DELETE
+>>  - [x] api/cars/{id}
+>>>    - [x] GET
+>>>    - [x] PUT *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
+>>>    - [x] DELETE
 
 #### Client - MVC
 >##### Create and List Clients

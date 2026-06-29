@@ -582,116 +582,168 @@ class CarMVCTest extends TestCase
 		$this->assertEquals('1',$body['car']['make_id']);
 
 	}
-	}
-/*
 
-	public function testPOSTmakesBadRequest(){
-		printf("\n POST Makes Invalid Field: ");
-		$response = $this->client->post('/api/makes',
+	public function testPOSTCarsBadRequest(){
+		printf("\n POST Cars Invalid Fields: ");
+		$response = $this->client->post('/api/cars',
 			[
 				'json' => [
-					'na' => 'Cool',
+					'pla' => 'AB',
+					'make_id' => '1',
 				]
 			]);
 		
 		$this->assertEquals(400, $response->getStatusCode());
 
-		printf("\n POST Makes Duplicated Field: ");
-		$response = $this->client->post('/api/makes',
+		$response = $this->client->post('/api/models',
 			[
 				'json' => [
-					'name' => 'CoolMake',
+					'plate' => 'AB-00-10',
+					'ma' => '1',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Cars Duplicated Field: ");
+		$response = $this->client->post('/api/models',
+			[
+				'json' => [
+					'plate' => 'AB-00-00',
+					'make_id' => '1',
 				]
 			]);
 		
 		$this->assertEquals(400, $response->getStatusCode());
 	}
 
-	public function testGETmakesID(){
-		printf("\n Get Makes/Id regular: ");
-		$response = $this->client->get("/api/makes/5");
+	public function testGETCarsID(){
+		printf("\n Get Cars/Id regular: ");
+		$response = $this->client->get("/api/cars/8");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
-		$this->assertEquals(true,isset($body['make']));
+		$this->assertEquals(true,isset($body['car']));
+		$this->assertEquals(true,isset($body['car']['id']));
+		$this->assertEquals(8,$body['car']['id']);
 	}
 
-	public function testGETmakesIDInvalidID(){
-		printf("\n Get Makes/Id Invalid ID: ");
-		$response = $this->client->get("/api/makes/10");
+	public function testGETCarsIDInvalidID(){
+		printf("\n Get Cars/Id Invalid ID: ");
+		$response = $this->client->get("/api/models/99");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
-	public function testPUTmakes(){
-		printf("\n PUT Makes regular same(name): ");
-		$response = $this->client->put('/api/makes/5',
+	public function testPUTCars(){
+		printf("\n PUT Cars regular same(plate,year,month, make_id, model_id): ");
+		$response = $this->client->put('/api/cars/9',
 			[
 				'json' => [
-					'name' => 'CoolMake',
+					'plate' => 'AB-00-08',
+					'year' => '2007',
+					'month' => '11',
+					'make_id' => '3',
+					'model_id' => '8',
 				]
 			]);
 		
 		$body = json_decode($response->getBody(), true);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertIsArray($body);
-		$this->assertEquals(true,isset($body['make']));
-		$this->assertEquals('CoolMake',$body['make']['name']);
-		$this->assertEquals(true,isset($body['make']['id']));
-		$this->assertEquals(5,$body['make']['id']);
+		$this->assertEquals(true,isset($body['car']));
+		$this->assertEquals(true,isset($body['car']['id']));
+		$this->assertEquals(9,$body['car']['id']);
 
-		printf("\n PUT Makes regular: ");
-		$response = $this->client->put('/api/makes/5',
+		$this->assertEquals(true,isset($body['car']['plate']));
+		$this->assertEquals('AB-00-08',$body['car']['plate']);
+		$this->assertEquals(true,isset($body['car']['year']));
+		$this->assertEquals(2007,$body['car']['year']);
+		$this->assertEquals(true,isset($body['car']['month']));
+		$this->assertEquals(11,$body['car']['month']);
+		$this->assertEquals(true,isset($body['car']['make_id']));
+		$this->assertEquals(3,$body['car']['make_id']);
+		$this->assertEquals(true,isset($body['car']['model_id']));
+		$this->assertEquals(8,$body['car']['model_id']);
+
+		printf("\n PUT Cars regular: ");
+		$response = $this->client->put('/api/cars/9',
 			[
 				'json' => [
-					'name' => 'VeryCoolMake',
+					'plate' => 'AB-00-90',
+					'year' => '2017',
+					'month' => '10',
+					'make_id' => '1',
+					'model_id' => '3',
 				]
 			]);
 		
 		$body = json_decode($response->getBody(), true);
 		$this->assertEquals(200, $response->getStatusCode());
 		$this->assertIsArray($body);
-		$this->assertEquals(true,isset($body['make']));
-		$this->assertEquals('VeryCoolMake',$body['make']['name']);
-		$this->assertEquals(true,isset($body['make']['id']));
-		$this->assertEquals(5,$body['make']['id']);
+		$this->assertEquals(true,isset($body['car']));
+		$this->assertEquals(true,isset($body['car']['id']));
+		$this->assertEquals(9,$body['car']['id']);
+
+		$this->assertEquals(true,isset($body['car']['plate']));
+		$this->assertEquals('AB-00-90',$body['car']['plate']);
+		$this->assertEquals(true,isset($body['car']['year']));
+		$this->assertEquals(2017,$body['car']['year']);
+		$this->assertEquals(true,isset($body['car']['month']));
+		$this->assertEquals(10,$body['car']['month']);
+		$this->assertEquals(true,isset($body['car']['make_id']));
+		$this->assertEquals(1,$body['car']['make_id']);
+		$this->assertEquals(true,isset($body['car']['model_id']));
+		$this->assertEquals(3,$body['car']['model_id']);
 	}
 
-	public function testPUTmakesBadRequest(){
-		printf("\n PUT Makes Invalid Field: ");
-		$response = $this->client->put('/api/makes/5',
+	public function testPUTCarsBadRequest(){
+		printf("\n PUT Cars Invalid Field: ");
+		$response = $this->client->put('/api/cars/9',
 			[
 				'json' => [
-					'na' => 'Cool',
+					'pla' => '',
+					'make_id' => '1',
 				]
 			]);
 		
 		$this->assertEquals(400, $response->getStatusCode());
 
-		printf("\n Put Makes Duplicated Field: ");
-		$response = $this->client->post('/api/makes',
+		$response = $this->client->put('/api/cars/9',
 			[
 				'json' => [
-					'name' => 'Opel',
+					'pla' => '',
+					'make_id' => '1',
+				]
+			]);
+		
+		printf("\n Put Cars Duplicated Field: ");
+		$response = $this->client->put('/api/models/13',
+			[
+				'json' => [
+					'plate' => 'AB-00-00',
+					'make_id' => '1',
 				]
 			]);
 		
 		$this->assertEquals(400, $response->getStatusCode());
 	}
 
-	public function testDELETEmakesID(){
-		printf("\n Delete Makes/Id regular: ");
-		$response = $this->client->delete("/api/makes/5");
+	
+	public function testDELETECarsID(){
+		printf("\n Delete Cars/Id regular: ");
+		$response = $this->client->delete("/api/cars/9");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
-		$this->assertEquals(true,isset($body['make']));
+		$this->assertEquals(true,isset($body['car']));
 	}
 
-	public function testDELETEmakesIDInvalidID(){
-		printf("\n Delete Makes/Id Invalid ID: ");
-		$response = $this->client->delete("/api/makes/10");
+
+	public function testDELETEcarsIDInvalidID(){
+		printf("\n Delete Cars/Id Invalid ID: ");
+		$response = $this->client->delete("/api/cars/20");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
-}*/
+}
 ?>

@@ -12,9 +12,9 @@ return [
 	/*	Car Controller	*/
 	['GET', '/api/cars', [CarController::class, 'getCars']], //with search
 	['POST', '/api/cars', [CarController::class, 'postCars']],
-	['GET', '/api/car/{id:\d+}', [CarController::class, 'getCar']],
-	['PUT', '/api/car/{id:\d+}', [CarController::class, 'putCar']],
-	['DELETE', '/api/car/{id:\d+}', [CarController::class, 'deleteCar']],
+	['GET', '/api/cars/{id:\d+}', [CarController::class, 'getCar']],
+	['PUT', '/api/cars/{id:\d+}', [CarController::class, 'putCar']],
+	['DELETE', '/api/cars/{id:\d+}', [CarController::class, 'deleteCar']],
 
 	['GET', '/api/models', [CarController::class, 'getModels']], //with search
 	['POST', '/api/models', [CarController::class, 'postModels']],
