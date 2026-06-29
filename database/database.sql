@@ -18,7 +18,7 @@
 
 	CREATE TABLE user_types(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(30) NOT NULL
+		name VARCHAR(30) NOT NULL
 	);
 
 
@@ -104,21 +104,23 @@
 
 	CREATE TABLE product_types(
 		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60) NOT NULL UNIQUE
+		name VARCHAR(60) NOT NULL UNIQUE
 	);
 
 
-	CREATE TABLE products(
-		id INTEGER PRIMARY KEY,
-		designation VARCHAR(60) NOT NULL,
-		reference VARCHAR(40) UNIQUE,
-		product_type_id INTEGER,
-		-- Mais informacoes de produtos
-		FOREIGN KEY(product_type_id)
-			REFERENCES product_types(id)
-			ON DELETE SET NULL
+	CREATE TABLE products (
+	    id INTEGER PRIMARY KEY,
+	    name VARCHAR(60) NOT NULL,
+	    reference VARCHAR(40) UNIQUE,
+	    product_type_id INTEGER,
+	    FOREIGN KEY (product_type_id)
+		REFERENCES product_types(id)
+		ON DELETE SET NULL
 	);
 
+	CREATE UNIQUE INDEX unique_name_when_reference_null
+	ON products(name)
+	WHERE reference IS NULL;
 
 	-- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
 
@@ -201,7 +203,7 @@
 		END;
 	END;
 
-	INSERT into user_types(id,designation) VALUES 
+	INSERT into user_types(id,name) VALUES 
 	(1,'Escritorio'),
 	(2,'Oficina'),
 	(3,'Admin');
@@ -283,7 +285,7 @@
 	(19,'11-05-2025', 'Luzes de travao nao funcionam', 11,NULL, 11),
 	(20,'12-05-2025', 'Ruido ao acelerar', 13,NULL, 10);
 
-	INSERT INTO product_types(id,designation) VALUES
+	INSERT INTO product_types(id,name) VALUES
 	(1,'Liquidos'), 
 	(2,'Pecas'), 
 	(3,'Filtros'), 
@@ -291,7 +293,7 @@
 	(5,'Travagem'), 
 	(6,'Pneus');
 
-	INSERT INTO products(id, designation, reference, product_type_id) VALUES
+	INSERT INTO products(id, name, reference, product_type_id) VALUES
 	(1,'Filtro Ar','PA7553',3),
 	(2,'Filtro Oleo','FT6086',3),
 	(3,'Anticongelante Rosa','ACR001',1),

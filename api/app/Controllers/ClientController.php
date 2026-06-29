@@ -59,9 +59,11 @@ class ClientController
 	public function postClients():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$client = $this->service->createClient($input);
+			$client = $this->service->createClient($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');

@@ -21,14 +21,15 @@ class ProductController
 	{
 		try{
 			$filters = [
-				'designation' => isset($_GET['designation']) ? $_GET['designation'] : null,
-				'ref' => isset($_GET['ref']) ? $_GET['ref'] : null,
-				'p_type' => isset($_GET['p_type']) ? $_GET['p_type'] : null,
+				'name' => isset($_GET['name']) ? $_GET['name'] : null,
+				'reference' => isset($_GET['reference']) ? $_GET['reference'] : null,
+				'p_t_name' => isset($_GET['p_t_name']) ? $_GET['p_t_name'] : null,
+				'p_t_id' => isset($_GET['p_t_id']) ? $_GET['p_t_id'] : null,
 			];
 
 			$product_list = $this->service->listProducts($filters);
 
-			http_response_code(empty($client_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 
 			echo json_encode([
@@ -46,12 +47,12 @@ class ProductController
 	{
 		try{
 			$filters = [
-				'designation' => isset($_GET['designation']) ? $_GET['designation'] : null,
+				'name' => isset($_GET['name']) ? $_GET['name'] : null,
 			];
 
 			$product_type_list = $this->service->listProductTypes($filters);
 
-			http_response_code(empty($client_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 
 			echo json_encode([
@@ -102,9 +103,11 @@ class ProductController
 	public function postProducts():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$product = $this->service->createProduct($input);
+			$product = $this->service->createProduct($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -121,9 +124,12 @@ class ProductController
 	public function postProductTypes():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
 
-			$product_type = $this->service->createProductType($input);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$product_type = $this->service->createProductType($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -178,6 +184,8 @@ class ProductController
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
 
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 			$product = $this->service->updateProduct($id, $data);
 
 			http_response_code(200);
@@ -197,6 +205,8 @@ class ProductController
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
 
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 			$product_type = $this->service->updateProductType($id, $data);
 
 			http_response_code(200);

@@ -138,9 +138,12 @@ class CarController
 	public function postMakes():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
 
-			$make = $this->service->createMake($input);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$make = $this->service->createMake($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -157,9 +160,11 @@ class CarController
 	public function postModels():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
 
-			$model = $this->service->createModel($input);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+			$model = $this->service->createModel($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -176,9 +181,11 @@ class CarController
 	public function postCars():void
 	{
 		try {
-			$input = json_decode(file_get_contents('php://input'), true);
+			$data = json_decode(file_get_contents('php://input'), true);
 
-			$car = $this->service->createCar($input);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+			$car = $this->service->createCar($data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -251,6 +258,8 @@ class CarController
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
 
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 			$make = $this->service->updateMake($id, $data);
 
 			http_response_code(200);
@@ -270,6 +279,8 @@ class CarController
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
 
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 			$model = $this->service->updateModel($id, $data);
 
 			http_response_code(200);
@@ -288,6 +299,9 @@ class CarController
 	{
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
+
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
 			$car = $this->service->updateCar($id, $data);
 

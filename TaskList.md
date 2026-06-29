@@ -103,26 +103,26 @@
 
 #### Product - MVC
 >##### Create and List Product Types
->>  - [ ] api/product_types
->>>    - [ ] GET *?designation*
->>>    - [ ] POST *\*designation*
+>>  - [x] api/product_types
+>>>    - [x] GET *?name*
+>>>    - [x] POST *\*name*
 
 >##### Read, Update and Delete Product Types
 >>  - [ ] api/product_types/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*designation*
->>>    - [ ] DELETE
+>>>    - [x] GET
+>>>    - [x] PUT *\*name*
+>>>    - [x] DELETE
 
 >##### Create and List Products
->>  - [ ] api/products
->>>    - [ ] GET *?designation* *?reference* *?p_t_name* *?p_t_id*
->>>    - [ ] POST *\*designation* *reference* product_type_id*
+>>  - [x] api/products
+>>>    - [x] GET *?name* *?reference* *?p_t_name* *?p_t_id*
+>>>    - [x] POST *\*name* *reference* product_type_id*
 
 >##### Read, Update and Delete Products
->>  - [ ] api/products/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*designation* *reference* product_type_id*
->>>    - [ ] DELETE
+>>  - [x] api/products/{id}
+>>>    - [x] GET
+>>>    - [x] PUT *\*name* *reference* product_type_id*
+>>>    - [x] DELETE
 
 #### Schedule - MVC
 >##### Create and List Schedules
@@ -162,13 +162,13 @@
 
 >##### Create and List User Types
 >>  - [ ] api/user_types
->>>    - [ ] GET *?designation*
->>>    - [ ] POST *\*designation*
+>>>    - [ ] GET *?name*
+>>>    - [ ] POST *\*name*
 
 >##### Read, Update and Delete User Type
 >>  - [ ] api/user_types/{id}
 >>>    - [ ] GET
->>>    - [ ] PUT *\*designation*
+>>>    - [ ] PUT *\*name*
 >>>    - [ ] DELETE
 
 ### App Actions

@@ -17,7 +17,8 @@ class Product
 	public function getProductsWithFilter(array $filters): array
 	{
 		$sql = "
-		SELECT p.*, pt.designation AS product_type, 		FROM cars c
+		SELECT p.*, pt.name AS product_type_name,pt.id AS product_type_id 
+		FROM products p
 		LEFT JOIN product_types pt ON p.product_type_id = pt.id
 		WHERE 1=1
 		";
@@ -25,16 +26,20 @@ class Product
 		$params = [];
 
 		$rules = [
-			'designation' => [
-				'column' => 'p.designation',
+			'name' => [
+				'column' => 'p.name',
 				'operator' => 'LIKE'
 			],
-			'ref' => [
-				'column' => 'c.reference',
+			'reference' => [
+				'column' => 'p.reference',
 				'operator' => 'LIKE'
 			],
-			'p_type' => [
-				'column' => 'pt.designation',
+			'p_t_name' => [
+				'column' => 'pt.name',
+				'operator' => 'LIKE'
+			],
+			'p_t_id' => [
+				'column' => 'pt.id',
 				'operator' => 'LIKE'
 			],
 		];
@@ -56,8 +61,8 @@ class Product
 		$params = [];
 
 		$rules = [
-			'designation' => [
-				'column' => 'p.designation',
+			'name' => [
+				'column' => 'name',
 				'operator' => 'LIKE'
 			],
 		];
@@ -73,7 +78,7 @@ class Product
 	public function getProductById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
-			SELECT p.*, pt.designation AS product_type 
+			SELECT p.*, pt.name AS product_type 
 			FROM products p 
 			LEFT JOIN product_types pt ON p.product_type_id = pt.id
 			WHERE p.id = ?
@@ -101,12 +106,12 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			UPDATE products
-			SET designation = ? , reference = ?, product_type_id = ? 
+			SET name = ? , reference = ?, product_type_id = ? 
 			WHERE id = ?
 			");
 
 		$stmt->execute([
-			$data['designation'],
+			$data['name'],
 			$data['reference'] ?? null,
 			$data['product_type_id'] ?? null,
 			$id
@@ -119,12 +124,12 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			UPDATE product_types
-			SET designation = ? 
+			SET name = ? 
 			WHERE id = ?
 			");
 
 		$stmt->execute([
-			$data['designation'],
+			$data['name'],
 			$id
 		]);
 
@@ -135,12 +140,12 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO products
-			(designation, reference, product_type_id)
+			(name, reference, product_type_id)
 			VALUES (?, ?, ?)
 			");
 
 		$stmt->execute([
-			$data['designation'],
+			$data['name'],
 			$data['reference'] ?? null,
 			$data['product_type_id'] ?? null,
 		]);
@@ -154,12 +159,12 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO product_types
-			(designation)
+			(name)
 			VALUES (?)
 			");
 
 		$stmt->execute([
-			$data['designation'],
+			$data['name'],
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
