@@ -4,6 +4,7 @@ use App\Controllers\HomeController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
 use App\Controllers\ProductController;
+use App\Controllers\ScheduleController;
 
 return [
 	['GET', '/api/', [HomeController::class, 'index']],
@@ -47,4 +48,11 @@ return [
 	['GET', '/api/clients/{id:\d+}', [ClientController::class, 'getClient']],
 	['PUT', '/api/clients/{id:\d+}', [ClientController::class, 'putClient']],
 	['DELETE', '/api/clients/{id:\d+}', [ClientController::class, 'deleteClient']],
+
+	/*	Schedule Controller	*/
+	['GET', '/api/schedules', [ScheduleController::class, 'getSchedules']], //with search
+	['POST', '/api/schedules', [ScheduleController::class, 'postSchedules']],
+	['GET', '/api/schedules/{id:\d+}', [ScheduleController::class, 'getSchedule']],
+	['PUT', '/api/schedules/{id:\d+}', [ScheduleController::class, 'putSchedule']],
+	['DELETE', '/api/schedules/{id:\d+}', [ScheduleController::class, 'deleteSchedule']],
 ];

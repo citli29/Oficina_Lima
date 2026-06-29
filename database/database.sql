@@ -82,7 +82,6 @@
 			ON DELETE SET NULL
 	);
 
-
 	CREATE TABLE schedules(
 		id INTEGER PRIMARY KEY,
 		schedule_date VARCHAR(20) NOT NULL,
@@ -100,6 +99,42 @@
 			REFERENCES clients(id)
 			ON DELETE SET NULL
 	);
+
+	CREATE TRIGGER schedule_check_model_insert
+	BEFORE INSERT ON schedules
+	FOR EACH ROW
+	WHEN NEW.car_id IS NOT NULL
+	 AND NEW.model_id IS NOT NULL
+	BEGIN
+	    SELECT
+		CASE
+		    WHEN NOT EXISTS (
+			SELECT 1
+			FROM cars
+			WHERE id = NEW.car_id
+			  AND model_id = NEW.model_id
+		    )
+		    THEN RAISE(ABORT, 'Selected car does not belong to the selected model')
+		END;
+	END;
+
+	CREATE TRIGGER schedule_check_model_update
+	BEFORE UPDATE OF car_id, model_id ON schedules
+	FOR EACH ROW
+	WHEN NEW.car_id IS NOT NULL
+	 AND NEW.model_id IS NOT NULL
+	BEGIN
+	    SELECT
+		CASE
+		    WHEN NOT EXISTS (
+			SELECT 1
+			FROM cars
+			WHERE id = NEW.car_id
+			  AND model_id = NEW.model_id
+		    )
+		    THEN RAISE(ABORT, 'Selected car does not belong to the selected model')
+		END;
+	END;
 
 
 	CREATE TABLE product_types(
@@ -280,8 +315,8 @@
 	(14,'09-05-2025', 'Vidros eletricos nao funcionam', 9,NULL, 10),
 	(15,'09-05-2025', 'Escape faz muito barulho', 8,NULL, 9),
 	(16,'09-05-2025', 'Cheiro a fases', 9,NULL, 9),
-	(17,'11-05-2025', 'Perda de anticongelante', 10,NULL, 8),
-	(18,'11-05-2025', 'Fuga de oleo', 12,NULL, 7),
+	(17,'11-05-2025', 'Perda de anticongelante', NULL,11, 8),
+	(18,'11-05-2025', 'Fuga de oleo', NULL,3, 7),
 	(19,'11-05-2025', 'Luzes de travao nao funcionam', 11,NULL, 11),
 	(20,'12-05-2025', 'Ruido ao acelerar', 13,NULL, 10);
 
