@@ -45,17 +45,17 @@ class ClientService
 
 	public function updateClient(int $id, array $data): array
 	{
-		if(empty($data['name'])| empty($data['name'])) {
-			throw new InvalidArgumentException("Update Client[Argument Required]: Name, Phone.");
+		if(empty($data['name']) || empty($data['phone'])) {
+			throw new InvalidArgumentException("Update Client[Argument Required]: Name, Phone.",400);
 		}
 		try
 		{
 			$client = $this->clientModel->updateClient($id,$data);
 			if(!$client) 
-			throw new InvalidArgumentException("Update Client [Invalid ID]: {$id}.");
+			throw new InvalidArgumentException("Update Client [Invalid ID]: {$id}.",400);
 			return $client;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Client [Argument Required]: Name must be provided. Phone must be provided. [{$e->errorInfo[2]}]");
+			throw new InvalidArgumentException("Update Client [Argument Required]: Name must be provided. Phone must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 

@@ -31,20 +31,20 @@ return [
 	/*	Product Controller	*/
 	['GET', '/api/product_types', [ProductController::class, 'getProductTypes']], //with search
 	['POST', '/api/product_types', [ProductController::class, 'postProductTypes']],
-	['GET', '/api/product_type/{id:\d+}', [ProductController::class, 'getProductType']],
-	['PUT', '/api/product_type/{id:\d+}', [ProductController::class, 'putProductType']],
-	['DELETE', '/api/product_type/{id:\d+}', [ProductController::class, 'deleteProductType']],
+	['GET', '/api/product_types/{id:\d+}', [ProductController::class, 'getProductType']],
+	['PUT', '/api/product_types/{id:\d+}', [ProductController::class, 'putProductType']],
+	['DELETE', '/api/product_types/{id:\d+}', [ProductController::class, 'deleteProductType']],
 
 	['GET', '/api/products', [ProductController::class, 'getProducts']], //with search
 	['POST', '/api/products', [ProductController::class, 'postProducts']],
-	['GET', '/api/product/{id:\d+}', [ProductController::class, 'getProduct']],
-	['PUT', '/api/product/{id:\d+}', [ProductController::class, 'putProduct']],
-	['DELETE', '/api/product/{id:\d+}', [ProductController::class, 'deleteProduct']],
+	['GET', '/api/products/{id:\d+}', [ProductController::class, 'getProduct']],
+	['PUT', '/api/products/{id:\d+}', [ProductController::class, 'putProduct']],
+	['DELETE', '/api/products/{id:\d+}', [ProductController::class, 'deleteProduct']],
 
 	/*	Client Controller	*/
 	['GET', '/api/clients', [ClientController::class, 'getClients']], //with search
 	['POST', '/api/clients', [ClientController::class, 'postClients']],
-	['GET', '/api/client/{id:\d+}', [ClientController::class, 'getClient']],
-	['PUT', '/api/client/{id:\d+}', [ClientController::class, 'putClient']],
-	['DELETE', '/api/client/{id:\d+}', [ClientController::class, 'deleteClient']],
+	['GET', '/api/clients/{id:\d+}', [ClientController::class, 'getClient']],
+	['PUT', '/api/clients/{id:\d+}', [ClientController::class, 'putClient']],
+	['DELETE', '/api/clients/{id:\d+}', [ClientController::class, 'deleteClient']],
 ];

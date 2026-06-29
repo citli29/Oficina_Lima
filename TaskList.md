@@ -37,7 +37,7 @@
 >>>         Tests: regular, bad request(invalid id)
 
 >##### Create and List Cars
->>  - [ ] api/cars 
+>>  - [x] api/cars 
 >>>    - [x] GET *?plate*  *?year* *?month* *?model_name* *?make_name* *?make_id*
 >>>    - [x] POST *\*plate* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id* *\*make_id*
 
@@ -49,15 +49,15 @@
 
 #### Client - MVC
 >##### Create and List Clients
->>  - [ ] api/clients
->>>    - [ ] GET *?name* *?phone* *?email*
->>>    - [ ] POST *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
+>>  - [x] api/clients
+>>>    - [x] GET *?name* *?phone* *?email*
+>>>    - [x] POST *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
 
 >##### Read, Update and Delete Client
->>  - [ ] api/clients/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
->>>    - [ ] DELETE
+>>  - [x] api/clients/{id}
+>>>    - [x] GET
+>>>    - [x] PUT *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
+>>>    - [x] DELETE
 
 #### Service - MVC
 >##### Create and List Services

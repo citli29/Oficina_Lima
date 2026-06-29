@@ -22,13 +22,12 @@ class ClientController
 		try{
 			$filters = [
 				'name' => isset($_GET['name']) ? $_GET['name'] : null,
-				'client' => isset($_GET['client']) ? $_GET['client'] : null,
+				'phone' => isset($_GET['phone']) ? $_GET['phone'] : null,
 				'email' => isset($_GET['email']) ? $_GET['email'] : null,
-				'tax_nr' => isset($_GET['tax_nr']) ? $_GET['tax_nr'] : null,
 			];
 			$client_list = $this->service->listClients($filters);
 
-			http_response_code(empty($client_list)?204:200);
+			http_response_code(200);
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
@@ -98,6 +97,9 @@ class ClientController
 	{
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
+			
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
 			$client = $this->service->updateClient($id, $data);
 

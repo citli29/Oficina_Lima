@@ -211,20 +211,20 @@
 	(2, 'teste', 'teste2@email.com', 'teste',2),
 	(3, 'teste', 'teste3@email.com', 'teste',3);
 	
-	INSERT INTO clients(id,name, phone) VALUES
-	(1,'Antonio', '911'),
-	(2,'Joaquim', '912'),
-	(3,'Maria', '913'),
-	(4,'Bruno', '914'),
-	(5,'Joao', '915'),
-	(6,'Silvia', '916'),
-	(7,'Patricia', '917'),
-	(8,'Rui', '918'),
-	(9,'Fernanda', '919'),
-	(10,'Pedro', '920'),
-	(11,'Beatriz', '921'),
-	(12,'Ricardo', '922'),
-	(13,'Pedro', '923');
+	INSERT INTO clients(id,name, phone, email) VALUES
+	(1,'Antonio', '911','antonio@email.com'),
+	(2,'Joaquim', '912','joaquim@email.com'),
+	(3,'Maria', '913','maria@email.com'),
+	(4,'Bruno', '914','bruno@email.com'),
+	(5,'Joao', '915','joao@email.com'),
+	(6,'Silvia', '916','silvia@email.com'),
+	(7,'Patricia', '917','patricia@email.com'),
+	(8,'Rui', '918','rui@email.com'),
+	(9,'Fernanda', '919','fernanda@email.com'),
+	(10,'Pedro', '920','pedro@email.com'),
+	(11,'Beatriz', '921','beatriz@email.com'),
+	(12,'Ricardo', '922','ricardo@email.com'),
+	(13,'Pedro', '923','pedro@email.com');
 
 	INSERT INTO makes(id,name) VALUES
 	(1,'Renault'),

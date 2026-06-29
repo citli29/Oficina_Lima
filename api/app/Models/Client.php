@@ -35,10 +35,6 @@ class Client
 				'column' => 'c.email',
 				'operator' => 'LIKE'
 			],
-			'tax_nr' => [
-				'column' => 'c.tax_nr',
-				'operator' => 'LIKE'
-			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
