@@ -17,42 +17,52 @@ class Schedule
 	public function getScheduleWithFilter(array $filters): array
 	{
 		//*?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 
+
 		$sql = "
 		SELECT
-		    s.id,
-		    s.schedule_date,
-		    s.description,
+		s.id,
+		s.date,
+		s.description,
+		s.car_id,
 
-		    c.plate AS car_plate,
+		c.plate AS car_plate,
 
-		    mo.name AS car_model,
-		    ma.name AS car_make,
+		COALESCE(car_model.id, sched_model.id) AS car_model_id,
+		COALESCE(car_model.name, sched_model.name) AS car_model,
+		ma.name AS car_make,
 
-		    cl.name AS client_name,
-		    cl.phone AS client_phone,
-		    cl.id AS client_id
+		cl.name AS client_name,
+		cl.phone AS client_phone,
+		cl.id AS client_id
 
 		FROM schedules s
 
 		LEFT JOIN cars c
-		    ON s.car_id = c.id
+		ON c.id = s.car_id
 
-		LEFT JOIN models mo
-		    ON mo.id = COALESCE(c.model_id, s.model_id)
+		LEFT JOIN models car_model
+		ON car_model.id = c.model_id
+
+		LEFT JOIN models sched_model
+		ON sched_model.id = s.model_id
 
 		LEFT JOIN makes ma
-		    ON ma.id = c.make_id
+		ON ma.id = COALESCE(
+		car_model.make_id,
+		sched_model.make_id,
+		c.make_id
+		)
 
 		LEFT JOIN clients cl
-		    ON cl.id = s.client_id
+		ON cl.id = s.client_id
+
 		WHERE 1=1
 		";
-
 		$params = [];
 
 		$rules = [
 			'date'=>[
-				'column' => 's.schedule_date',
+				'column' => 's.date',
 				'operator'=> 'LIKE'
 			],
 			'car_plate' => [
@@ -60,11 +70,11 @@ class Schedule
 				'operator' => 'LIKE'
 			],
 			'car_model' => [
-				'column' => 'mo.name',
+				'column' => 'car_model',
 				'operator' => 'LIKE'
 			],
 			'car_make' => [
-				'column' => 'ma.name',
+				'column' => 'car_make',
 				'operator' => 'LIKE'
 			],
 			'client_name' => [
@@ -72,8 +82,8 @@ class Schedule
 				'operator' => 'LIKE'
 			],
 			'client_id' => [
-				'column' => 'cl.name',
-				'operator' => 'LIKE'
+				'column' => 'cl.id',
+				'operator' => '='
 			],
 		];
 
@@ -88,33 +98,44 @@ class Schedule
 	public function getScheduleById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
-		SELECT
-		    s.id,
-		    s.schedule_date,
-		    s.description,
+			SELECT
+			s.id,
+			s.date,
+			s.description,
+			s.car_id,
 
-		    c.plate AS car_plate,
+			c.plate AS car_plate,
 
-		    mo.name AS model_name,
-		    ma.name AS make_name,
+			COALESCE(car_model.id, sched_model.id) AS car_model_id,
+			COALESCE(car_model.name, sched_model.name) AS car_model,
+			ma.name AS car_make,
 
-		    cl.name AS client_name,
-		    cl.phone AS client_phone
+			cl.name AS client_name,
+			cl.phone AS client_phone,
+			cl.id AS client_id
 
-		FROM schedules s
+			FROM schedules s
 
-		LEFT JOIN cars c
-		    ON s.car_id = c.id
+			LEFT JOIN cars c
+			ON c.id = s.car_id
 
-		LEFT JOIN models mo
-		    ON mo.id = COALESCE(c.model_id, s.model_id)
+			LEFT JOIN models car_model
+			ON car_model.id = c.model_id
 
-		LEFT JOIN makes ma
-		    ON ma.id = c.make_id
+			LEFT JOIN models sched_model
+			ON sched_model.id = s.model_id
 
-		LEFT JOIN clients cl
-		    ON cl.id = s.client_id
-		WHERE s.id=?
+			LEFT JOIN makes ma
+			ON ma.id = COALESCE(
+			car_model.make_id,
+			sched_model.make_id,
+			c.make_id
+			)
+
+			LEFT JOIN clients cl
+			ON cl.id = s.client_id
+
+			WHERE s.id=?
 			");
 
 		$stmt->execute([$id]);
@@ -128,7 +149,7 @@ class Schedule
 		$stmt = $this->db->prepare("
 		UPDATE schedules
 		SET 
-			schedule_date = ?,
+			date = ?,
 			description = ?,
 			car_id = ?,
 			model_id = ?,
@@ -137,7 +158,7 @@ class Schedule
 			");
 
 		$stmt->execute([
-			$data['schedule_date'],
+			$data['date'],
 			$data['description'],
 			$data['car_id'] ?? null,
 			$data['model_id'] ?? null,
@@ -151,11 +172,11 @@ class Schedule
 	public function createSchedule(array $data): array
 	{
 		$stmt = $this->db->prepare("
-			INSERT INTO schedules(schedule_date, description, car_id, model_id, client_id) VALUES(?,?,?,?,?)
+			INSERT INTO schedules(date, description, car_id, model_id, client_id) VALUES(?,?,?,?,?)
 			");
 
 		$stmt->execute([
-			$data['schedule_date'],
+			$data['date'],
 			$data['description'],
 			$data['car_id'] ?? null,
 			$data['model_id'] ?? null,

@@ -84,7 +84,7 @@
 
 	CREATE TABLE schedules(
 		id INTEGER PRIMARY KEY,
-		schedule_date VARCHAR(20) NOT NULL,
+		date VARCHAR(20) NOT NULL,
 		description VARCHAR(512) NOT NULL,
 		car_id INT,
 		model_id INT,
@@ -298,7 +298,7 @@
 	(12,"AB-00-11",2004,11,3,7),
 	(13,"AB-00-12",2005,1,4,12);
 
-	INSERT INTO schedules(id,schedule_date, description, car_id, model_id, client_id) VALUES
+	INSERT INTO schedules(id,date, description, car_id, model_id, client_id) VALUES
 	(1,'05-01-2024', 'Revisao', 1,NULL, 1),
 	(2,'05-02-2025', 'Revisao', 1,NULL, 1),
 	(3,'05-05-2025', 'Carro chia', 2,NULL, 2),
@@ -315,7 +315,7 @@
 	(14,'09-05-2025', 'Vidros eletricos nao funcionam', 9,NULL, 10),
 	(15,'09-05-2025', 'Escape faz muito barulho', 8,NULL, 9),
 	(16,'09-05-2025', 'Cheiro a fases', 9,NULL, 9),
-	(17,'11-05-2025', 'Perda de anticongelante', NULL,11, 8),
+	(17,'11-05-2025', 'Perda de anticongelante', NULL,8, 8),
 	(18,'11-05-2025', 'Fuga de oleo', NULL,3, 7),
 	(19,'11-05-2025', 'Luzes de travao nao funcionam', 11,NULL, 11),
 	(20,'12-05-2025', 'Ruido ao acelerar', 13,NULL, 10);

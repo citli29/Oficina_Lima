@@ -108,7 +108,7 @@
 >>>    - [x] POST *\*name*
 
 >##### Read, Update and Delete Product Types
->>  - [ ] api/product_types/{id}
+>>  - [x] api/product_types/{id}
 >>>    - [x] GET
 >>>    - [x] PUT *\*name*
 >>>    - [x] DELETE
@@ -126,15 +126,15 @@
 
 #### Schedule - MVC
 >##### Create and List Schedules
->>  - [ ] api/schedules
->>>    - [ ] GET *?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 
->>>    - [ ] POST *\*date* *\*description* *car_id* *model_id* *client_id*
+>>  - [x] api/schedules
+>>>    - [x] GET *?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 
+>>>    - [x] POST *\*date* *\*description* *car_id* *model_id* *client_id*
 
 >##### Read, Update and Delete Schedules 
->>  - [ ] api/schedules/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*date* *\*description* *car_id* *model_id* *client_id*
->>>    - [ ] DELETE
+>>  - [x] api/schedules/{id}
+>>>    - [x] GET
+>>>    - [x] PUT *\*date* *\*description* *car_id* *model_id* *client_id*
+>>>    - [x] DELETE
 
 >##### Create a Service based on a Schedule Info
 >>  - [ ] api/schedules/{id}/create_service
