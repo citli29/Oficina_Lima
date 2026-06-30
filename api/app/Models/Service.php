@@ -1,0 +1,210 @@
+<?php 
+namespace App\Models;
+
+use App\Database\Database;
+use PDO;
+
+class Service
+{
+	private PDO $db;
+
+	public function __construct(PDO $db)
+	{
+		$this->db = $db;
+	}
+
+	public function getServicesWithFilter(array $filters): array
+	{
+		$sql = "
+		SELECT 
+			s.id,
+			s.kms,
+			s.checkin_date as checkin,
+			s.checkout_date as checkout,
+			s.schedule_id,
+
+			cl.name as client_name,
+			cl.phone as client_phone,
+
+			c.id as car_id,
+			c.plate as car_plate,
+
+			ma.name as make_name, 
+			mo.name as model_name
+
+		FROM services s
+
+		LEFT JOIN clients cl
+		ON cl.id=s.client_id
+		
+		LEFT JOIN cars c
+		ON c.id=s.car_id
+
+		LEFT JOIN models mo
+		ON mo.id=c.model_id
+
+		LEFT JOIN makes ma
+		ON ma.id=COALESCE(mo.make_id,c.make_id)
+
+		WHERE 1=1
+		";
+
+		$params = [];
+
+		$rules = [
+			'client_name' => [
+				'column' => 'cl.name',
+				'operator' => 'LIKE'
+			],
+			'checkin' => [
+				'column' => 'checkin',
+				'operator' => 'LIKE'
+			],
+			'checkout' => [
+				'column' => 'checkout',
+				'operator' => 'LIKE'
+			],
+			'car_plate' => [
+				'column' => 'car_plate',
+				'operator' => 'LIKE'
+			],
+			'car_model' => [
+				'column' => 'car_model',
+				'operator' => 'LIKE'
+			],
+			'car_make' => [
+				'column' => 'car_make',
+				'operator' => 'LIKE'
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getServiceById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+			SELECT 
+				s.checkin_date as checkin_date,
+				s.checkout_date as checkout_date,
+
+				s.client_id as client_id,
+				cl.name as client_name,
+				cl.phone as client_phone,
+				cl.address as client_address,
+				cl.email as client_email,
+				cl.zip_code as client_zip_code,
+				cl.tax_nr as client_tax_nr,
+
+				s.car_id as car_id,
+				ca.chassi_nr as car_chassi_nr,
+				ca.cc as car_cc,
+				ma.name as car_make_name,
+				mo.name as car_model_name,
+				ca.month as car_month,
+				ca.year as car_year,
+				s.kms as car_kms,
+				ca.engine_code as car_engine_code,
+				ca.color_code as car_color_code,
+				ca.plate as car_plate, 
+				
+				s.malfunction_description as malfunction, 
+				s.service_description as service,
+				
+			FROM services s
+
+			LEFT JOIN clients cl
+			ON cl.id = s.client_id
+
+			LEFT JOIN cars ca
+			ON ca.id = s.car_id
+
+			LEFT JOIN models mo
+			ON mo.id = ca.model_id
+
+			LEFT JOIN makes ma
+			ON ma.id = COALESCE(mo.make_id, ca.make_id)
+
+			WHERE p.id = ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateService(int $id, array $data): bool|array
+	{
+		$stmt = $this->db->prepare("
+			UPDATE services
+			SET 
+				client_id = ?,
+				kms = ?, 
+				checkin_date = ?, 
+				checkout_date = ?,
+				malfunction_description = ?,
+				service_description = ?,
+				car_id = ?,
+				schedule_id = ?,
+
+			WHERE id = ?
+			");
+
+		$stmt->execute([
+			$data['client_id'],
+			$data['kms'] ?? null,
+			$data['checkin'] ?? null,
+			$data['checkout'] ?? null,
+			$data['malfunction'] ?? null,
+			$data['service'] ?? null,
+			$data['car_id'] ?? null,
+			$data['schedule_id'] ?? null,
+			$id
+		]);
+
+		return $this->getServiceById($id);
+	}
+
+	public function createService(array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
+			VALUES (?,?,?,?,?,?,?,?)
+			");
+
+		$stmt->execute([
+			$data['client_id'],
+			$data['kms'] ?? null,
+			$data['checkin'] ?? null,
+			$data['checkout'] ?? null,
+			$data['malfunction'] ?? null,
+			$data['service'] ?? null,
+			$data['car_id'] ?? null,
+			$data['schedule_id'] ?? null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getServiceById($newId);
+	}
+
+	public function deleteService(int $id): bool|array
+	{
+		$service = $this->getServiceById($id);
+
+		if($service)
+		{
+			$stmt = $this->db->prepare("DELETE FROM services WHERE id = ?");
+			$stmt->execute([$id]);
+		}
+
+		return $service; 
+	}
+}
+?>

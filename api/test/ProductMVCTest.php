@@ -24,7 +24,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testGETProducts(){
-		printf("\n Get Products regular: ");
+		printf("\n GET Products regular: ");
 		$response = $this->client->get('/api/products');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -34,7 +34,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testGETProductTypes(){
-		printf("\n Get Product Types regular: ");
+		printf("\n GET Product Types regular: ");
 		$response = $this->client->get('/api/product_types');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -45,7 +45,7 @@ class ProductMVCTest extends TestCase
 	public function testGETProductWithFilters(){
 		//*?name* *?reference* *?p_t_name* *?p_t_id*
 		//Name
-		printf("\n Get Product Filter Name 1: ");
+		printf("\n GET Product Filter Name 1: ");
 		$response = $this->client->get('/api/products?name=Lampada H7');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -53,7 +53,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(1,count($body['product_list']));
 
-		printf("\n Get Product Filter Name 0: ");
+		printf("\n GET Product Filter Name 0: ");
 		$response = $this->client->get('/api/products?name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -61,7 +61,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(0,count($body['product_list']));
 
-		printf("\n Get Product Types Filter Name multiple: ");
+		printf("\n GET Product Types Filter Name multiple: ");
 		$response = $this->client->get('/api/products?name=Lampada');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -72,7 +72,7 @@ class ProductMVCTest extends TestCase
 
 		// Reference
 
-		printf("\n Get Product Filter reference 1: ");
+		printf("\n GET Product Filter reference 1: ");
 		$response = $this->client->get('/api/products?reference=PA7553');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -80,7 +80,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(1,count($body['product_list']));
 
-		printf("\n Get Product Filter reference 0: ");
+		printf("\n GET Product Filter reference 0: ");
 		$response = $this->client->get('/api/products?reference=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -88,7 +88,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(0,count($body['product_list']));
 
-		printf("\n Get Product Types Filter reference multiple: ");
+		printf("\n GET Product Types Filter reference multiple: ");
 		$response = $this->client->get('/api/products?reference=PT');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -97,7 +97,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(2,count($body['product_list']));
 
 		// PT Name
-		printf("\n Get Product Filter p_t_name 1: ");
+		printf("\n GET Product Filter p_t_name 1: ");
 		$response = $this->client->get('/api/products?p_t_name=pneus');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -105,7 +105,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(1,count($body['product_list']));
 
-		printf("\n Get Product Filter p_t_name 0: ");
+		printf("\n GET Product Filter p_t_name 0: ");
 		$response = $this->client->get('/api/products?p_t_name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -113,7 +113,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(0,count($body['product_list']));
 
-		printf("\n Get Product Types Filter p_t_name multiple: ");
+		printf("\n GET Product Types Filter p_t_name multiple: ");
 		$response = $this->client->get('/api/products?p_t_name=liquidos');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -122,7 +122,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(4,count($body['product_list']));
 
 		// PT Id
-		printf("\n Get Product Filter p_t_id 1: ");
+		printf("\n GET Product Filter p_t_id 1: ");
 		$response = $this->client->get('/api/products?p_t_id=6');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -130,7 +130,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(1,count($body['product_list']));
 
-		printf("\n Get Product Filter p_t_id 0: ");
+		printf("\n GET Product Filter p_t_id 0: ");
 		$response = $this->client->get('/api/products?p_t_id=3000');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -138,7 +138,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_list']));
 		$this->assertEquals(0,count($body['product_list']));
 
-		printf("\n Get Product Types Filter p_t_id multiple: ");
+		printf("\n GET Product Types Filter p_t_id multiple: ");
 		$response = $this->client->get('/api/products?p_t_id=1');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -147,7 +147,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(4,count($body['product_list']));
 	}
 	public function testGETProductTypesWithFilters(){
-		printf("\n Get Product Types Filter name 1: ");
+		printf("\n GET Product Types Filter name 1: ");
 		$response = $this->client->get('/api/product_types?name=pecas');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -155,7 +155,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_type_list']));
 		$this->assertEquals(1,count($body['product_type_list']));
 
-		printf("\n Get Product Types Filter designatino 0: ");
+		printf("\n GET Product Types Filter designatino 0: ");
 		$response = $this->client->get('/api/product_types?name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -163,7 +163,7 @@ class ProductMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['product_type_list']));
 		$this->assertEquals(0,count($body['product_type_list']));
 
-		printf("\n Get Product Types Filter name multiple: ");
+		printf("\n GET Product Types Filter name multiple: ");
 		$response = $this->client->get('/api/product_types?name=tr');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -173,7 +173,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testGETProductsID(){
-		printf("\n Get Products/Id regular: ");
+		printf("\n GET Products/Id regular: ");
 		$response = $this->client->get("/api/products/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -182,13 +182,13 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testGETProductsIDInvalidID(){
-		printf("\n Get Products/Id Invalid ID: ");
+		printf("\n GET Products/Id Invalid ID: ");
 		$response = $this->client->get("/api/products/100");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testGETProductTypesID(){
-		printf("\n Get ProductTypes/Id regular: ");
+		printf("\n GET ProductTypes/Id regular: ");
 		$response = $this->client->get("/api/product_types/3");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -197,7 +197,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testGETProductTypesIDInvalidID(){
-		printf("\n Get ProductTypes/Id Invalid ID: ");
+		printf("\n GET ProductTypes/Id Invalid ID: ");
 		$response = $this->client->get("/api/product_types/100");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -305,7 +305,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testDELETEProductsID(){
-		printf("\n Delete Products/Id regular: ");
+		printf("\n DELETE Products/Id regular: ");
 		$response = $this->client->delete("/api/products/9");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -314,13 +314,13 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testDELETEProductsIDInvalidID(){
-		printf("\n Delete Products/Id Invalid ID: ");
+		printf("\n DELETE Products/Id Invalid ID: ");
 		$response = $this->client->delete("/api/products/1000");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEProductTypesID(){
-		printf("\n Delete Products/Id regular: ");
+		printf("\n DELETE Products/Id regular: ");
 		$response = $this->client->delete("/api/product_types/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -329,7 +329,7 @@ class ProductMVCTest extends TestCase
 	}
 
 	public function testDELETEProductTypesIDInvalidID(){
-		printf("\n Delete Products/Id Invalid ID: ");
+		printf("\n DELETE Products/Id Invalid ID: ");
 		$response = $this->client->delete("/api/product_types/1000");
 		$this->assertEquals(404, $response->getStatusCode());
 	}

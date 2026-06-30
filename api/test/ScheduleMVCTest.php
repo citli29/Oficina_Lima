@@ -23,7 +23,7 @@ class ScheduleMVCTest extends TestCase
 	}
 
 	public function testGETSchedules(){
-		printf("\n Get Schedules regular: ");
+		printf("\n GET Schedules regular: ");
 		$response = $this->client->get('/api/schedules');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -35,7 +35,7 @@ class ScheduleMVCTest extends TestCase
 
 	public function testGETSchedulesWithFilters(){
 		//Date
-		printf("\n Get Schedules Filter date 1: ");
+		printf("\n GET Schedules Filter date 1: ");
 		$response = $this->client->get('/api/schedules?date=12-05-2025');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -43,7 +43,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(1,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter date 0: ");
+		printf("\n GET Schedules Filter date 0: ");
 		$response = $this->client->get('/api/schedules?date=13-05-2025');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -51,7 +51,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter date multiple: ");
+		printf("\n GET Schedules Filter date multiple: ");
 		$response = $this->client->get('/api/schedules?date=11-05-2025');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -60,7 +60,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(3,count($body['schedule_list']));
 
 		//Plate
-		printf("\n Get Schedules Filter car plate1: ");
+		printf("\n GET Schedules Filter car plate1: ");
 		$response = $this->client->get('/api/schedules?car_plate=AB-00-06');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -68,7 +68,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(2,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_plate 0: ");
+		printf("\n GET Schedules Filter car_plate 0: ");
 		$response = $this->client->get('/api/schedules?car_plate=OO-00-00');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -76,7 +76,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_plate multiple: ");
+		printf("\n GET Schedules Filter car_plate multiple: ");
 		$response = $this->client->get('/api/schedules?car_plate=AB-00-0');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -85,7 +85,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(16,count($body['schedule_list']));
 
 		//Car Model
-		printf("\n Get Schedules Filter car model 1: ");
+		printf("\n GET Schedules Filter car model 1: ");
 		$response = $this->client->get('/api/schedules?car_model=megane');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -93,7 +93,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(1,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_model 0: ");
+		printf("\n GET Schedules Filter car_model 0: ");
 		$response = $this->client->get('/api/schedules?car_model=aaaaa');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -101,7 +101,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_model multiple: ");
+		printf("\n GET Schedules Filter car_model multiple: ");
 		$response = $this->client->get('/api/schedules?car_model=clio');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -110,7 +110,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(3,count($body['schedule_list']));
 
 		//Car Make
-		printf("\n Get Schedules Filter car make 1: ");
+		printf("\n GET Schedules Filter car make 1: ");
 		$response = $this->client->get('/api/schedules?car_make=opel');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -118,7 +118,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(1,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_model 0: ");
+		printf("\n GET Schedules Filter car_model 0: ");
 		$response = $this->client->get('/api/schedules?car_make=aaaaa');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -126,7 +126,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter car_model multiple: ");
+		printf("\n GET Schedules Filter car_model multiple: ");
 		$response = $this->client->get('/api/schedules?car_make=renault');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -135,7 +135,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(7,count($body['schedule_list']));
 
 		//Client Name
-		printf("\n Get Schedules Filter client name1: ");
+		printf("\n GET Schedules Filter client name1: ");
 		$response = $this->client->get('/api/schedules?client_name=maria');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -143,7 +143,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(1,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter client name 0: ");
+		printf("\n GET Schedules Filter client name 0: ");
 		$response = $this->client->get('/api/schedules?client_name=aaaaa');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -151,7 +151,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter client_name multiple: ");
+		printf("\n GET Schedules Filter client_name multiple: ");
 		$response = $this->client->get('/api/schedules?client_name=pedro');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -160,7 +160,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(4,count($body['schedule_list']));
 
 		//Client id
-		printf("\n Get Schedules Filter client id 1: ");
+		printf("\n GET Schedules Filter client id 1: ");
 		$response = $this->client->get('/api/schedules?client_id=3');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -168,7 +168,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(1,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter client name 0: ");
+		printf("\n GET Schedules Filter client name 0: ");
 		$response = $this->client->get('/api/schedules?client_id=1000');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -176,7 +176,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['schedule_list']));
 		$this->assertEquals(0,count($body['schedule_list']));
 
-		printf("\n Get Schedules Filter client_name multiple: ");
+		printf("\n GET Schedules Filter client_name multiple: ");
 		$response = $this->client->get('/api/schedules?client_id=10');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -185,7 +185,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(3,count($body['schedule_list']));
 	}
 	public function testGETSchedulesID(){
-		printf("\n Get Schedules/Id regular: ");
+		printf("\n GET Schedules/Id regular: ");
 		$response = $this->client->get("/api/schedules/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -194,7 +194,7 @@ class ScheduleMVCTest extends TestCase
 	}
 
 	public function testGETSchedulesIDInvalidID(){
-		printf("\n Get Schedules/Id Invalid ID: ");
+		printf("\n GET Schedules/Id Invalid ID: ");
 		$response = $this->client->get("/api/schedules/100");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -203,8 +203,6 @@ class ScheduleMVCTest extends TestCase
 		printf("\n POST Schedules regular: ");
 		$response = $this->client->post('/api/schedules',
 			[
-				/**\*date* *\*description* *car_id* *model_id* *client_id*
-*/
 				'json' => [
 					'date' => '30-6-2026',
 					'description' => 'Carro come gelados com a testa',
@@ -342,7 +340,7 @@ class ScheduleMVCTest extends TestCase
 	}
 
 	public function testDELETESchduleID(){
-		printf("\n Delete Cars/Id regular: ");
+		printf("\n DELETE Cars/Id regular: ");
 		$response = $this->client->delete("/api/schedules/21");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -352,7 +350,7 @@ class ScheduleMVCTest extends TestCase
 
 
 	public function testDELETEcarsIDInvalidID(){
-		printf("\n Delete Cars/Id Invalid ID: ");
+		printf("\n DELETE Cars/Id Invalid ID: ");
 		$response = $this->client->delete("/api/schedules/30");
 		$this->assertEquals(404, $response->getStatusCode());
 	}

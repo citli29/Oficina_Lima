@@ -1,6 +1,7 @@
 # Oficina_Lima
 > [!NOTE]
 > api/app/
+>   SQL > Triggers checking 
 >   Models > ONLY database queries
 >   Services > business rules + validation + combining models
 >   Controllers > HTTP layer (request → service → response)

@@ -23,7 +23,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETmakes(){
-		printf("\n Get Makes regular: ");
+		printf("\n GET Makes regular: ");
 		$response = $this->client->get('/api/makes');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -33,7 +33,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETmakesWithFilters(){
-		printf("\n Get Makes Filter name 1: ");
+		printf("\n GET Makes Filter name 1: ");
 		$response = $this->client->get('/api/makes?name=opel');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -41,7 +41,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['make_list']));
 		$this->assertEquals(1,count($body['make_list']));
 
-		printf("\n Get Makes Filter name 0: ");
+		printf("\n GET Makes Filter name 0: ");
 		$response = $this->client->get('/api/makes?name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -49,7 +49,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['make_list']));
 		$this->assertEquals(0,count($body['make_list']));
 
-		printf("\n Get Makes Filter name multiple: ");
+		printf("\n GET Makes Filter name multiple: ");
 		$response = $this->client->get('/api/makes?name=o');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -99,7 +99,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETmakesID(){
-		printf("\n Get Makes/Id regular: ");
+		printf("\n GET Makes/Id regular: ");
 		$response = $this->client->get("/api/makes/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -108,7 +108,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETmakesIDInvalidID(){
-		printf("\n Get Makes/Id Invalid ID: ");
+		printf("\n GET Makes/Id Invalid ID: ");
 		$response = $this->client->get("/api/makes/10");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -158,7 +158,7 @@ class CarMVCTest extends TestCase
 		
 		$this->assertEquals(400, $response->getStatusCode());
 
-		printf("\n Put Makes Duplicated Field: ");
+		printf("\n PUT Makes Duplicated Field: ");
 		$response = $this->client->post('/api/makes',
 			[
 				'json' => [
@@ -170,7 +170,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testDELETEmakesID(){
-		printf("\n Delete Makes/Id regular: ");
+		printf("\n DELETE Makes/Id regular: ");
 		$response = $this->client->delete("/api/makes/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -179,13 +179,13 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testDELETEmakesIDInvalidID(){
-		printf("\n Delete Makes/Id Invalid ID: ");
+		printf("\n DELETE Makes/Id Invalid ID: ");
 		$response = $this->client->delete("/api/makes/10");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testGETModels(){
-		printf("\n Get Models regular: ");
+		printf("\n GET Models regular: ");
 		$response = $this->client->get('/api/models');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -195,7 +195,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETModelsWithFilters(){
-		printf("\n Get Models Filter name 1: ");
+		printf("\n GET Models Filter name 1: ");
 		$response = $this->client->get('/api/models?name=Astra');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -203,7 +203,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['model_list']));
 		$this->assertEquals(1,count($body['model_list']));
 
-		printf("\n Get Models Filter name 0: ");
+		printf("\n GET Models Filter name 0: ");
 		$response = $this->client->get('/api/models?name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -211,7 +211,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['model_list']));
 		$this->assertEquals(0,count($body['model_list']));
 
-		printf("\n Get Models Filter name multiple: ");
+		printf("\n GET Models Filter name multiple: ");
 		$response = $this->client->get('/api/models?name=o');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -219,7 +219,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['model_list']));
 		$this->assertEquals(4,count($body['model_list']));
 
-		printf("\n Get Models Filter name & make_name multiple: ");
+		printf("\n GET Models Filter name & make_name multiple: ");
 	}
 
 	public function testPOSTmodels(){
@@ -280,7 +280,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETModelsID(){
-		printf("\n Get Models/Id regular: ");
+		printf("\n GET Models/Id regular: ");
 		$response = $this->client->get("/api/models/13");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -289,7 +289,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETModelIDInvalidID(){
-		printf("\n Get Makes/Id Invalid ID: ");
+		printf("\n GET Makes/Id Invalid ID: ");
 		$response = $this->client->get("/api/models/20");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -380,7 +380,7 @@ class CarMVCTest extends TestCase
 		
 		$this->assertEquals(400, $response->getStatusCode());
 		
-		printf("\n Put Models Duplicated Field: ");
+		printf("\n PUT Models Duplicated Field: ");
 		$response = $this->client->put('/api/models/13',
 			[
 				'json' => [
@@ -394,7 +394,7 @@ class CarMVCTest extends TestCase
 
 	
 	public function testDELETEmodelsID(){
-		printf("\n Delete Makes/Id regular: ");
+		printf("\n DELETE Makes/Id regular: ");
 		$response = $this->client->delete("/api/models/13");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -404,13 +404,13 @@ class CarMVCTest extends TestCase
 
 
 	public function testDELETEmodelsIDInvalidID(){
-		printf("\n Delete Makes/Id Invalid ID: ");
+		printf("\n DELETE Makes/Id Invalid ID: ");
 		$response = $this->client->delete("/api/models/20");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testGETCars(){
-		printf("\n Get Cars regular: ");
+		printf("\n GET Cars regular: ");
 		$response = $this->client->get('/api/cars');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -420,7 +420,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETCarsWithFilters(){
-		printf("\n Get Cars Filter plate 1: ");
+		printf("\n GET Cars Filter plate 1: ");
 		$response = $this->client->get('/api/cars?plate=AB-00-00');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -428,7 +428,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(1,count($body['car_list']));
 
-		printf("\n Get Cars plate 0: ");
+		printf("\n GET Cars plate 0: ");
 		$response = $this->client->get('/api/cars?plate=ABABABA');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -436,7 +436,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(0,count($body['car_list']));
 
-		printf("\n Get Cars Filter plate multiple: ");
+		printf("\n GET Cars Filter plate multiple: ");
 		$response = $this->client->get('/api/cars?plate=00-0');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -444,7 +444,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(10,count($body['car_list']));
 
-		printf("\n Get Cars Filter year 1: ");
+		printf("\n GET Cars Filter year 1: ");
 		$response = $this->client->get('/api/cars?year=2002');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -452,7 +452,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(1,count($body['car_list']));
 
-		printf("\n Get Cars year 0: ");
+		printf("\n GET Cars year 0: ");
 		$response = $this->client->get('/api/cars?year=1999');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -460,7 +460,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(0,count($body['car_list']));
 
-		printf("\n Get Cars Filter year multiple: ");
+		printf("\n GET Cars Filter year multiple: ");
 		$response = $this->client->get('/api/cars?year=2004');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -468,7 +468,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(4,count($body['car_list']));
 
-		printf("\n Get Cars Filter month 1: ");
+		printf("\n GET Cars Filter month 1: ");
 		$response = $this->client->get('/api/cars?month=3');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -476,7 +476,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(1,count($body['car_list']));
 
-		printf("\n Get Cars month 0: ");
+		printf("\n GET Cars month 0: ");
 		$response = $this->client->get('/api/cars?month=2');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -484,7 +484,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(0,count($body['car_list']));
 
-		printf("\n Get Cars Filter month multiple: ");
+		printf("\n GET Cars Filter month multiple: ");
 		$response = $this->client->get('/api/cars?month=11');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -492,7 +492,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(2,count($body['car_list']));
 
-		printf("\n Get Cars Filter model_name 1: ");
+		printf("\n GET Cars Filter model_name 1: ");
 		$response = $this->client->get('/api/cars?model_name=Express');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -500,7 +500,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(1,count($body['car_list']));
 
-		printf("\n Get Cars model_name 0: ");
+		printf("\n GET Cars model_name 0: ");
 		$response = $this->client->get('/api/cars?model_name=Lagun');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -508,7 +508,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(0,count($body['car_list']));
 
-		printf("\n Get Cars Filter model_name multiple: ");
+		printf("\n GET Cars Filter model_name multiple: ");
 		$response = $this->client->get('/api/cars?model_name=Cli');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -516,7 +516,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(2,count($body['car_list']));
 
-		printf("\n Get Cars Filter make_name 1: ");
+		printf("\n GET Cars Filter make_name 1: ");
 		$response = $this->client->get('/api/cars?make_name=Opel');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -524,7 +524,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(1,count($body['car_list']));
 
-		printf("\n Get Cars make_name 0: ");
+		printf("\n GET Cars make_name 0: ");
 		$response = $this->client->get('/api/cars?make_name=AAAAA');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -532,7 +532,7 @@ class CarMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['car_list']));
 		$this->assertEquals(0,count($body['car_list']));
 
-		printf("\n Get Cars Filter make_name multiple: ");
+		printf("\n GET Cars Filter make_name multiple: ");
 		$response = $this->client->get('/api/cars?make_name=Renault');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -618,7 +618,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETCarsID(){
-		printf("\n Get Cars/Id regular: ");
+		printf("\n GET Cars/Id regular: ");
 		$response = $this->client->get("/api/cars/8");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -629,7 +629,7 @@ class CarMVCTest extends TestCase
 	}
 
 	public function testGETCarsIDInvalidID(){
-		printf("\n Get Cars/Id Invalid ID: ");
+		printf("\n GET Cars/Id Invalid ID: ");
 		$response = $this->client->get("/api/models/99");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -716,7 +716,7 @@ class CarMVCTest extends TestCase
 				]
 			]);
 		
-		printf("\n Put Cars Duplicated Field: ");
+		printf("\n PUT Cars Duplicated Field: ");
 		$response = $this->client->put('/api/models/13',
 			[
 				'json' => [
@@ -730,7 +730,7 @@ class CarMVCTest extends TestCase
 
 	
 	public function testDELETECarsID(){
-		printf("\n Delete Cars/Id regular: ");
+		printf("\n DELETE Cars/Id regular: ");
 		$response = $this->client->delete("/api/cars/9");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -740,7 +740,7 @@ class CarMVCTest extends TestCase
 
 
 	public function testDELETEcarsIDInvalidID(){
-		printf("\n Delete Cars/Id Invalid ID: ");
+		printf("\n DELETE Cars/Id Invalid ID: ");
 		$response = $this->client->delete("/api/cars/20");
 		$this->assertEquals(404, $response->getStatusCode());
 	}

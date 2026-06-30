@@ -23,7 +23,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testGETClients(){
-		printf("\n Get Clients regular: ");
+		printf("\n GET Clients regular: ");
 		$response = $this->client->get('/api/clients');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -33,7 +33,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testGETClientsWithFilters(){
-		printf("\n Get Clients Filter name 1: ");
+		printf("\n GET Clients Filter name 1: ");
 		$response = $this->client->get('/api/clients?name=Antonio');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -41,7 +41,7 @@ class ClientMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['client_list']));
 		$this->assertEquals(1,count($body['client_list']));
 
-		printf("\n Get Clients Filter name 0: ");
+		printf("\n GET Clients Filter name 0: ");
 		$response = $this->client->get('/api/clients?name=oooo');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -49,7 +49,7 @@ class ClientMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['client_list']));
 		$this->assertEquals(0,count($body['client_list']));
 
-		printf("\n Get Clients Filter name multiple: ");
+		printf("\n GET Clients Filter name multiple: ");
 		$response = $this->client->get('/api/clients?name=o');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -57,7 +57,7 @@ class ClientMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['client_list']));
 		$this->assertEquals(7,count($body['client_list']));
 
-		printf("\n Get Clients Filter phone 1: ");
+		printf("\n GET Clients Filter phone 1: ");
 		$response = $this->client->get('/api/clients?phone=923');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -65,7 +65,7 @@ class ClientMVCTest extends TestCase
 		$this->assertEquals(true,isset($body['client_list']));
 		$this->assertEquals(1,count($body['client_list']));
 
-		printf("\n Get Clients Filter email 1: ");
+		printf("\n GET Clients Filter email 1: ");
 		$response = $this->client->get('/api/clients?name=Antonio');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -129,7 +129,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testGETClientsID(){
-		printf("\n Get Clients/Id regular: ");
+		printf("\n GET Clients/Id regular: ");
 		$response = $this->client->get("/api/clients/5");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -138,7 +138,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testGETClientsIDInvalidID(){
-		printf("\n Get Clients/Id Invalid ID: ");
+		printf("\n GET Clients/Id Invalid ID: ");
 		$response = $this->client->get("/api/clients/55");
 		$this->assertEquals(404, $response->getStatusCode());
 	}
@@ -207,7 +207,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testDELETEClientsID(){
-		printf("\n Delete Clients/Id regular: ");
+		printf("\n DELETE Clients/Id regular: ");
 		$response = $this->client->delete("/api/clients/14");
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
@@ -216,7 +216,7 @@ class ClientMVCTest extends TestCase
 	}
 
 	public function testDELETEmakesIDInvalidID(){
-		printf("\n Delete Client/Id Invalid ID: ");
+		printf("\n DELETE Client/Id Invalid ID: ");
 		$response = $this->client->delete("/api/clients/55");
 		$this->assertEquals(404, $response->getStatusCode());
 	}

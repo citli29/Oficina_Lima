@@ -5,6 +5,7 @@ use App\Controllers\CarController;
 use App\Controllers\ClientController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
+use App\Controllers\ServiceController;
 
 return [
 	['GET', '/api/', [HomeController::class, 'index']],
@@ -55,4 +56,11 @@ return [
 	['GET', '/api/schedules/{id:\d+}', [ScheduleController::class, 'getSchedule']],
 	['PUT', '/api/schedules/{id:\d+}', [ScheduleController::class, 'putSchedule']],
 	['DELETE', '/api/schedules/{id:\d+}', [ScheduleController::class, 'deleteSchedule']],
+
+	/*	Service Controller	*/
+	['GET', '/api/services', [ServiceController::class, 'getServices']], //with search
+	['POST', '/api/services', [ServiceController::class, 'postServices']],
+	['GET', '/api/services/{id:\d+}', [ServiceController::class, 'getService']],
+	['PUT', '/api/services/{id:\d+}', [ServiceController::class, 'putService']],
+	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
 ];
