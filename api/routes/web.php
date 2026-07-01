@@ -5,6 +5,7 @@ use App\Controllers\CarController;
 use App\Controllers\ClientController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
+use App\Controllers\ServiceComponentController;
 use App\Controllers\ServiceController;
 
 return [
@@ -63,4 +64,8 @@ return [
 	['GET', '/api/services/{id:\d+}', [ServiceController::class, 'getService']],
 	['PUT', '/api/services/{id:\d+}', [ServiceController::class, 'putService']],
 	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
+
+	/*	Service Component Controller	*/
+	['GET', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'getSUTs']], //with search
+	['GET', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'getSUTById']],
 ];
