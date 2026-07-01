@@ -36,7 +36,7 @@ class ScheduleMVCTest extends TestCase
 	public function testGETSchedulesWithFilters(){
 		//Date
 		printf("\n GET Schedules Filter date 1: ");
-		$response = $this->client->get('/api/schedules?date=12-05-2025');
+		$response = $this->client->get('/api/schedules?date=2025-05-12');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
@@ -44,7 +44,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(1,count($body['schedule_list']));
 
 		printf("\n GET Schedules Filter date 0: ");
-		$response = $this->client->get('/api/schedules?date=13-05-2025');
+		$response = $this->client->get('/api/schedules?date=2025-05-13');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
@@ -52,7 +52,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(0,count($body['schedule_list']));
 
 		printf("\n GET Schedules Filter date multiple: ");
-		$response = $this->client->get('/api/schedules?date=11-05-2025');
+		$response = $this->client->get('/api/schedules?date=2025-05-11');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
@@ -204,10 +204,9 @@ class ScheduleMVCTest extends TestCase
 		$response = $this->client->post('/api/schedules',
 			[
 				'json' => [
-					'date' => '30-6-2026',
+					'date' => '2026-06-30',
 					'description' => 'Carro come gelados com a testa',
 					'car_id' =>1,
-					'model_id' =>1,
 					'client_id' =>1,
 				]
 			]);
@@ -220,15 +219,40 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(21,$body['schedule']['id']);
 
 		$this->assertEquals(true,isset($body['schedule']['date']));
-		$this->assertEquals('30-6-2026',$body['schedule']['date']);
+		$this->assertEquals('2026-06-30',$body['schedule']['date']);
 		$this->assertEquals(true,isset($body['schedule']['description']));
 		$this->assertEquals('Carro come gelados com a testa',$body['schedule']['description']);
 		$this->assertEquals(true,isset($body['schedule']['car_id']));
 		$this->assertEquals(1,$body['schedule']['car_id']);
+		$this->assertEquals(true,isset($body['schedule']['client_id']));
+		$this->assertEquals(1,$body['schedule']['client_id']);
+
+		printf("\n POST Schedules regular: ");
+		$response = $this->client->post('/api/schedules',
+			[
+				'json' => [
+					'date' => '2026-06-30',
+					'description' => 'Carro come gelados com a testa',
+					'model_id' =>1,
+					'client_id' =>1,
+				]
+			]);
+		
+		$body = json_decode($response->getBody(), true);
+		$this->assertEquals(201, $response->getStatusCode());
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['schedule']));
+		$this->assertEquals(true,isset($body['schedule']['id']));
+		$this->assertEquals(22,$body['schedule']['id']);
+
+		$this->assertEquals(true,isset($body['schedule']['date']));
+		$this->assertEquals('2026-06-30',$body['schedule']['date']);
+		$this->assertEquals(true,isset($body['schedule']['description']));
+		$this->assertEquals('Carro come gelados com a testa',$body['schedule']['description']);
 		$this->assertEquals(true,isset($body['schedule']['car_model_id']));
 		$this->assertEquals(1,$body['schedule']['car_model_id']);
 		$this->assertEquals(true,isset($body['schedule']['client_id']));
-		$this->assertEquals(1,$body['schedule']['car_id']);
+		$this->assertEquals(1,$body['schedule']['client_id']);
 	}
 
 	public function testPOSTSchedulesBadRequest(){
@@ -275,10 +299,9 @@ class ScheduleMVCTest extends TestCase
 				/**\*date* *\*description* *car_id* *model_id* *client_id*
 */
 				'json' => [
-					'date' => '30-6-2027',
+					'date' => '2027-06-30',
 					'description' => 'Carro come gelados com a boca',
 					'car_id' =>3,
-					'model_id' =>2,
 					'client_id' =>5,
 				]
 			]);
@@ -291,13 +314,37 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(21,$body['schedule']['id']);
 
 		$this->assertEquals(true,isset($body['schedule']['date']));
-		$this->assertEquals('30-6-2027',$body['schedule']['date']);
+		$this->assertEquals('2027-06-30',$body['schedule']['date']);
 		$this->assertEquals(true,isset($body['schedule']['description']));
 		$this->assertEquals('Carro come gelados com a boca',$body['schedule']['description']);
 		$this->assertEquals(true,isset($body['schedule']['car_id']));
 		$this->assertEquals(3,$body['schedule']['car_id']);
+		$this->assertEquals(true,isset($body['schedule']['client_id']));
+		$this->assertEquals(5,$body['schedule']['client_id']);
+
+		$response = $this->client->put('/api/schedules/22',
+			[
+				'json' => [
+					'date' => '2027-06-30',
+					'description' => 'Carro come gelados com a boca',
+					'model_id' =>3,
+					'client_id' =>5,
+				]
+			]);
+		
+		$body = json_decode($response->getBody(), true);
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['schedule']));
+		$this->assertEquals(true,isset($body['schedule']['id']));
+		$this->assertEquals(22,$body['schedule']['id']);
+
+		$this->assertEquals(true,isset($body['schedule']['date']));
+		$this->assertEquals('2027-06-30',$body['schedule']['date']);
+		$this->assertEquals(true,isset($body['schedule']['description']));
+		$this->assertEquals('Carro come gelados com a boca',$body['schedule']['description']);
 		$this->assertEquals(true,isset($body['schedule']['car_model_id']));
-		$this->assertEquals(2,$body['schedule']['car_model_id']);
+		$this->assertEquals(3,$body['schedule']['car_model_id']);
 		$this->assertEquals(true,isset($body['schedule']['client_id']));
 		$this->assertEquals(5,$body['schedule']['client_id']);
 	}
@@ -339,7 +386,7 @@ class ScheduleMVCTest extends TestCase
 		$this->assertEquals(400, $response->getStatusCode());
 	}
 
-	public function testDELETESchduleID(){
+	public function testDELETEScheduleID(){
 		printf("\n DELETE Cars/Id regular: ");
 		$response = $this->client->delete("/api/schedules/21");
 		$this->assertEquals(200, $response->getStatusCode());

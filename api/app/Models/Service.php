@@ -90,8 +90,10 @@ class Service
 	{
 		$stmt = $this->db->query( "
 			SELECT 
-				s.checkin_date as checkin_date,
-				s.checkout_date as checkout_date,
+				s.id,
+				s.checkin_date as checkin,
+				s.checkout_date as checkout,
+				s.kms as kms,
 
 				s.client_id as client_id,
 				cl.name as client_name,
@@ -108,13 +110,12 @@ class Service
 				mo.name as car_model_name,
 				ca.month as car_month,
 				ca.year as car_year,
-				s.kms as car_kms,
 				ca.engine_code as car_engine_code,
 				ca.color_code as car_color_code,
 				ca.plate as car_plate, 
 				
 				s.malfunction_description as malfunction, 
-				s.service_description as service,
+				s.service_description as service
 				
 			FROM services s
 
@@ -130,7 +131,7 @@ class Service
 			LEFT JOIN makes ma
 			ON ma.id = COALESCE(mo.make_id, ca.make_id)
 
-			WHERE p.id = ?
+			WHERE s.id = ?
 			");
 
 		$stmt->execute([$id]);

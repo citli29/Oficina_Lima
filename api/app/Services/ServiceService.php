@@ -64,7 +64,7 @@ class ServiceService
 	{
 		try
 		{
-			if($service = $this->serviceModel->deleteService($id))
+			if(!$service = $this->serviceModel->deleteService($id))
 				throw new InvalidArgumentException("Delete Service [Invalid ID]: {$id}.", 404);
 			return $service;
 		}catch(PDOException $e)

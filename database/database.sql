@@ -21,7 +21,6 @@
 		name VARCHAR(30) NOT NULL
 	);
 
-
 	CREATE TABLE users(
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(40) NOT NULL,
@@ -34,6 +33,7 @@
 		REFERENCES user_types(id)
 	);
 
+	-- No real business logic
 	CREATE TABLE clients(
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL,
@@ -44,7 +44,7 @@
 		tax_nr VARCHAR(20)
 	);
 
-
+	-- No real business logic
 	CREATE TABLE makes(
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL UNIQUE,
@@ -52,18 +52,17 @@
 	);
 
 
+	-- No real business logic
 	CREATE TABLE models(
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL,
 		make_id INTEGER NOT NULL,
-		-- more model info but not now
 		UNIQUE(name, make_id),
 		FOREIGN KEY(make_id)
 		REFERENCES makes(id)
 	);
 
-
-
+	-- No real business logic
 	CREATE TABLE cars(
 		id INTEGER PRIMARY KEY,
 		plate VARCHAR(20) UNIQUE NOT NULL,
@@ -82,13 +81,20 @@
 			ON DELETE SET NULL
 	);
 
+	-- if we have car, dont need model_id
 	CREATE TABLE schedules(
+
 		id INTEGER PRIMARY KEY,
-		date VARCHAR(20) NOT NULL,
+		date VARCHAR(20) NOT NULL CHECK(
+			date(date) IS NOT NULL
+		),
 		description VARCHAR(512) NOT NULL,
 		car_id INT,
 		model_id INT,
 		client_id INT,
+		CHECK(
+			NOT (car_id IS NOT NULL AND model_id IS NOT NULL)
+		),
 		FOREIGN KEY (car_id)
 			REFERENCES cars(id)
 			ON DELETE SET NULL,
@@ -100,49 +106,14 @@
 			ON DELETE SET NULL
 	);
 
-	CREATE TRIGGER schedule_check_model_insert
-	BEFORE INSERT ON schedules
-	FOR EACH ROW
-	WHEN NEW.car_id IS NOT NULL
-	 AND NEW.model_id IS NOT NULL
-	BEGIN
-	    SELECT
-		CASE
-		    WHEN NOT EXISTS (
-			SELECT 1
-			FROM cars
-			WHERE id = NEW.car_id
-			  AND model_id = NEW.model_id
-		    )
-		    THEN RAISE(ABORT, 'Selected car does not belong to the selected model')
-		END;
-	END;
-
-	CREATE TRIGGER schedule_check_model_update
-	BEFORE UPDATE OF car_id, model_id ON schedules
-	FOR EACH ROW
-	WHEN NEW.car_id IS NOT NULL
-	 AND NEW.model_id IS NOT NULL
-	BEGIN
-	    SELECT
-		CASE
-		    WHEN NOT EXISTS (
-			SELECT 1
-			FROM cars
-			WHERE id = NEW.car_id
-			  AND model_id = NEW.model_id
-		    )
-		    THEN RAISE(ABORT, 'Selected car does not belong to the selected model')
-		END;
-	END;
-
-
+	-- no business logic
 	CREATE TABLE product_types(
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(60) NOT NULL UNIQUE
 	);
 
-
+	-- if the product doesnt have reference, it cant have the same name as 
+	-- other product with the same name and no reference
 	CREATE TABLE products (
 	    id INTEGER PRIMARY KEY,
 	    name VARCHAR(60) NOT NULL,
@@ -157,18 +128,28 @@
 	ON products(name)
 	WHERE reference IS NULL;
 
-	-- adicionar o constraint de se car_id != NULL, kms nao podem ser NULL
-
+	-- checkin < checkout
+	-- if checkout and car_id need to have kms
 	CREATE TABLE services(
 		id INTEGER PRIMARY KEY,
 		client_id INTEGER NOT NULL,
 		kms INT,
-		checkin_date VARCHAR(20), -- 00/00/2000
-		checkout_date VARCHAR(20), -- 00/00/2000
+		checkin_date VARCHAR(20) NOT NULL CHECK(
+			date(checkin_date) IS NOT NULL
+		), -- 00/00/2000
+		checkout_date VARCHAR(20) CHECK(
+			checkout_date IS NULL 
+			OR date(checkout_date) IS NOT NULL
+		), -- 00/00/2000
 		malfunction_description VARCHAR(512),
 		service_description VARCHAR(512),
 		car_id INT,
 		schedule_id INT,
+		CHECK(
+			checkout_date IS NULL 
+			OR 
+			checkin_date <= checkout_date
+		)
 		FOREIGN KEY(client_id)
 		REFERENCES clients(id),
 		FOREIGN KEY(car_id)
@@ -179,12 +160,38 @@
 			ON DELETE SET NULL
 	);
 
+	CREATE TRIGGER i_no_checkout_withou_kms_if_car
+	BEFORE INSERT ON services
+	FOR EACH ROW
+	WHEN 
+		NEW.car_id IS NOT NULL 
+		AND NEW.checkout_date IS NOT NULL
+		AND NEW.kms IS NULL
+	BEGIN
+		SELECT RAISE(ABORT, 'Cannot checkout without kms');
+	END;
+
+	CREATE TRIGGER u_no_checkout_withou_kms_if_car
+	BEFORE UPDATE ON services
+	FOR EACH ROW
+	WHEN 
+		NEW.car_id IS NOT NULL 
+		AND NEW.checkout_date IS NOT NULL
+		AND NEW.kms IS NULL
+	BEGIN
+		SELECT RAISE(ABORT, 'Cannot checkout without kms');
+	END;
+
+	-- ut date needs to be >= service.checkin
+	-- minutes needs to be >= 0
 	CREATE TABLE services_user_time(
 		id INTEGER PRIMARY KEY NOT NULL,
 		service_id INTEGER NOT NULL,
 		user_id INTEGER NOT NULL,
 		minutes INTEGER NOT NULL,
-		ut_date VARCHAR(20) NOT NULL,
+		ut_date VARCHAR(20) NOT NULL CHECK(
+			date(ut_date) IS NOT NULL
+		),
 		FOREIGN KEY(service_id)
 		REFERENCES services(id),
 		FOREIGN KEY(user_id)
@@ -300,26 +307,26 @@
 	(13,"AB-00-12",2005,1,4,12);
 
 	INSERT INTO schedules(id,date, description, car_id, model_id, client_id) VALUES
-	(1,'05-01-2024', 'Revisao', 1,NULL, 1),
-	(2,'05-02-2025', 'Revisao', 1,NULL, 1),
-	(3,'05-05-2025', 'Carro chia', 2,NULL, 2),
-	(4,'05-05-2025', 'Perda de Potencia', 3,NULL, 3),
-	(5,'06-05-2025', 'Motor sobreaquece', 4,NULL, 4),
-	(6,'06-05-2025', 'Vibracao excessiva do motor', 5,NULL, 5),
-	(7,'06-05-2025', 'Travoes fazem ruido', 6,NULL, 6),
-	(8,'07-05-2025', 'Luz do ABS acesa', 7,NULL, 7),
-	(9,'07-05-2025', 'Direcao pesada', 4,NULL, 8),
-	(10,'07-05-2025', 'Direcao vibra', 5,NULL, 9),
-	(11,'08-05-2025', 'Volante desalinhado', 6,NULL, 10),
-	(12,'08-05-2025', 'Desgaste irregular dos pneus', 7,NULL, 11),
-	(13,'08-05-2025', 'Ruido na caixa de velocidades', 6,NULL, 13),
-	(14,'09-05-2025', 'Vidros eletricos nao funcionam', 9,NULL, 10),
-	(15,'09-05-2025', 'Escape faz muito barulho', 8,NULL, 9),
-	(16,'09-05-2025', 'Cheiro a fases', 9,NULL, 9),
-	(17,'11-05-2025', 'Perda de anticongelante', NULL,8, 8),
-	(18,'11-05-2025', 'Fuga de oleo', NULL,3, 7),
-	(19,'11-05-2025', 'Luzes de travao nao funcionam', 11,NULL, 11),
-	(20,'12-05-2025', 'Ruido ao acelerar', 13,NULL, 10);
+	(1,'2024-01-05', 'Revisao', 1,NULL, 1),
+	(2,'2025-02-05', 'Revisao', 1,NULL, 1),
+	(3,'2025-05-05', 'Carro chia', 2,NULL, 2),
+	(4,'2025-05-05', 'Perda de Potencia', 3,NULL, 3),
+	(5,'2025-05-06', 'Motor sobreaquece', 4,NULL, 4),
+	(6,'2025-05-06', 'Vibracao excessiva do motor', 5,NULL, 5),
+	(7,'2025-05-06', 'Travoes fazem ruido', 6,NULL, 6),
+	(8,'2025-05-07', 'Luz do ABS acesa', 7,NULL, 7),
+	(9,'2025-05-07', 'Direcao pesada', 4,NULL, 8),
+	(10,'2025-05-07', 'Direcao vibra', 5,NULL, 9),
+	(11,'2025-05-08', 'Volante desalinhado', 6,NULL, 10),
+	(12,'2025-05-08', 'Desgaste irregular dos pneus', 7,NULL, 11),
+	(13,'2025-05-09', 'Ruido na caixa de velocidades', 6,NULL, 13),
+	(14,'2025-05-09', 'Vidros eletricos nao funcionam', 9,NULL, 10),
+	(15,'2025-05-09', 'Escape faz muito barulho', 8,NULL, 9),
+	(16,'2025-05-09', 'Cheiro a fases', 9,NULL, 9),
+	(17,'2025-05-11', 'Perda de anticongelante', NULL,8, 8),
+	(18,'2025-05-11', 'Fuga de oleo', NULL,3, 7),
+	(19,'2025-05-11', 'Luzes de travao nao funcionam', 11,NULL, 11),
+	(20,'2025-05-12', 'Ruido ao acelerar', 13,NULL, 10);
 
 	INSERT INTO product_types(id,name) VALUES
 	(1,'Liquidos'), 
@@ -374,50 +381,50 @@
 INSERT INTO services
 (id, client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
 VALUES
-(1,1,125000,'05-01-2024','05-01-2024','Revisao','Mudanca de oleo e filtros',1,1),
-(2,1,138000,'05-02-2025','05-02-2025','Revisao','Revisao completa',1,2),
-(3,2,98000,'05-05-2025','06-05-2025','Carro chia','Substituicao de pastilhas dianteiras',2,3),
-(4,3,184000,'05-05-2025','06-05-2025','Perda de Potencia','Substituicao filtro combustivel e velas',3,4),
-(5,4,210000,'06-05-2025','07-05-2025','Motor sobreaquece','Substituicao termostato',4,5),
-(6,5,156000,'06-05-2025','07-05-2025','Vibracao excessiva do motor','Troca de bobina e velas',5,6),
-(7,6,142000,'06-05-2025','06-05-2025','Travoes fazem ruido','Pastilhas novas',6,7),
-(8,7,118000,'07-05-2025','08-05-2025','Luz do ABS acesa','Substituicao sensor ABS',7,8),
-(9,8,245000,'07-05-2025','08-05-2025','Direcao pesada','Substituicao terminal direcao',4,9),
-(10,9,131000,'07-05-2025','08-05-2025','Direcao vibra','Balanceamento e rolamento',5,10),
-(11,10,99000,'08-05-2025','09-05-2025','Volante desalinhado','Alinhamento direcao',6,11),
-(12,11,87000,'08-05-2025','09-05-2025','Desgaste irregular dos pneus','Substituicao pneus',7,12),
-(13,13,223000,'08-05-2025','10-05-2025','Ruido caixa velocidades','Substituicao kit embraiagem',6,13),
-(14,10,150000,'09-05-2025','09-05-2025','Vidros eletricos nao funcionam','Substituicao motor vidro',9,14),
-(15,9,167000,'09-05-2025','10-05-2025','Escape faz muito barulho','Substituicao silencioso',8,15),
-(16,9,168500,'09-05-2025','10-05-2025','Cheiro a gases','Reparacao tubo escape',9,16),
-(17,8,192000,'11-05-2025','12-05-2025','Perda de anticongelante','Substituicao bomba agua',10,17),
-(18,7,204000,'11-05-2025','12-05-2025','Fuga de oleo','Substituicao junta tampa valvulas',12,18),
-(19,11,76000,'11-05-2025','11-05-2025','Luzes de travao nao funcionam','Substituicao lampada',11,19),
-(20,10,111000,'12-05-2025','13-05-2025','Ruido ao acelerar','Substituicao rolamento',13,20);
+(1,1,125000,'2024-01-05','2024-01-05','Revisao','Mudanca de oleo e filtros',1,1),
+(2,1,138000,'2025-02-05','2025-02-05','Revisao','Revisao completa',1,2),
+(3,2,98000,'2025-05-05','2025-05-06','Carro chia','Substituicao de pastilhas dianteiras',2,3),
+(4,3,184000,'2025-05-05','2025-05-06','Perda de Potencia','Substituicao filtro combustivel e velas',3,4),
+(5,4,210000,'2025-05-06','2025-05-07','Motor sobreaquece','Substituicao termostato',4,5),
+(6,5,156000,'2025-05-06','2025-05-07','Vibracao excessiva do motor','Troca de bobina e velas',5,6),
+(7,6,142000,'2025-05-06','2025-05-06','Travoes fazem ruido','Pastilhas novas',6,7),
+(8,7,118000,'2025-05-07','2025-05-08','Luz do ABS acesa','Substituicao sensor ABS',7,8),
+(9,8,245000,'2025-05-07','2025-05-08','Direcao pesada','Substituicao terminal direcao',4,9),
+(10,9,131000,'2025-05-07','2025-05-08','Direcao vibra','Balanceamento e rolamento',5,10),
+(11,10,99000,'2025-05-07','2025-05-08','Volante desalinhado','Alinhamento direcao',6,11),
+(12,11,87000,'2025-05-08','2025-05-09','Desgaste irregular dos pneus','Substituicao pneus',7,12),
+(13,13,223000,'2025-05-08','2025-05-10','Ruido caixa velocidades','Substituicao kit embraiagem',6,13),
+(14,10,150000,'2025-05-09','2025-05-09','Vidros eletricos nao funcionam','Substituicao motor vidro',9,14),
+(15,9,167000,'2025-05-09','2025-05-10','Escape faz muito barulho','Substituicao silencioso',8,15),
+(16,9,168500,'2025-05-09','2025-05-10','Cheiro a gases','Reparacao tubo escape',9,16),
+(17,8,192000,'2025-05-11','2025-05-12','Perda de anticongelante','Substituicao bomba agua',10,17),
+(18,7,204000,'2025-05-11','2025-05-12','Fuga de oleo','Substituicao junta tampa valvulas',12,18),
+(19,11,76000,'2025-05-11','2025-05-11','Luzes de travao nao funcionam','Substituicao lampada',11,19),
+(20,10,111000,'2025-05-12','2025-05-13','Ruido ao acelerar','Substituicao rolamento',13,20);
 
 INSERT INTO services_user_time
 (id, service_id, user_id, minutes, ut_date)
 VALUES
-(1,1,2,60,'05-01-2024'),
-(2,2,2,90,'05-02-2025'),
-(3,3,2,80,'05-05-2025'),
-(4,4,2,120,'05-05-2025'),
-(5,5,2,150,'06-05-2025'),
-(6,6,2,110,'06-05-2025'),
-(7,7,2,70,'06-05-2025'),
-(8,8,2,60,'07-05-2025'),
-(9,9,2,90,'07-05-2025'),
-(10,10,2,80,'07-05-2025'),
-(11,11,2,45,'08-05-2025'),
-(12,12,2,75,'08-05-2025'),
-(13,13,2,240,'08-05-2025'),
-(14,14,2,60,'09-05-2025'),
-(15,15,2,90,'09-05-2025'),
-(16,16,2,70,'09-05-2025'),
-(17,17,2,150,'11-05-2025'),
-(18,18,2,120,'11-05-2025'),
-(19,19,2,20,'11-05-2025'),
-(20,20,2,80,'12-05-2025');
+(1,1,2,60,'2024-01-05'),
+(2,2,2,90,'2025-02-05'),
+(3,3,2,80,'2025-05-05'),
+(4,4,2,120,'2025-05-05'),
+(5,5,2,150,'2025-05-06'),
+(6,6,2,110,'2025-05-06'),
+(7,7,2,70,'2025-05-06'),
+(8,8,2,60,'2025-05-07'),
+(9,9,2,90,'2025-05-07'),
+(10,10,2,80,'2025-05-07'),
+(11,11,2,45,'2025-05-08'),
+(12,12,2,75,'2025-05-08'),
+(13,13,2,240,'2025-05-08'),
+(14,14,2,60,'2025-05-09'),
+(15,15,2,90,'2025-05-09'),
+(16,16,2,70,'2025-05-09'),
+(17,17,2,150,'2025-05-11'),
+(18,18,2,120,'2025-05-11'),
+(19,19,2,20,'2025-05-11'),
+(20,20,2,80,'2025-05-12');
 
 INSERT INTO services_applied_products
 (id, service_id, product_id, quantity, is_applied)

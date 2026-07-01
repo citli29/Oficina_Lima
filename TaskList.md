@@ -173,5 +173,40 @@
 
 ### App Actions
 
+## Funky Decisions and Some Stuff to Do
+> [!NOTE] Mudar para soft delete quase tudo em vez de total delete
+> - Users 
+>> No Funky
+> - Clients
+>> No Funky
+> - Makes
+>> No Funky
+> - Models
+>> No Funky
+> - Cars
+>> No Funky: 
+> - Schedules:
+>> Funky:
+>>> 1. Tem car_id e model_id, caso nao se saiba a matricula em especifico
+>>>> - [x] Trigger: so tem car_id ou model_id;
+> - Product Types
+>> No Funky
+> - Products
+>> Funky:
+>>> 1. Caso nao tenha referencia, dois produtos nao podem ter o mesmo nome.
+>>>> - [x] Trigger: unique_name_when_reference_null
+> - Services
+>> Funky:
+>>> 1. Checkin < Checkout
+>>>> - [x] Trigger: checkin_earliar_then_checkout
+>>> 2. Caso tenha car_id, kms != NULL
+>>>> - [x] Trigger: no_checkout_without_kms_if_car 
+> - Services User Time
+>> No Funky
+> - Services Applied Products
+>> Funky
+>>> 1. Caso is_applied = true, entao quantity nao pode ser null
+>>>> - [x] Trigger: if_is_applied_kms_not_null
+
 ## Implement Front-End
 
