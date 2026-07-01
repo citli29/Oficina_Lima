@@ -1,142 +1,134 @@
+> [!IMPORTANT] In Development
 # Oficina_Lima
 > [!NOTE]
 > api/app/
->   SQL > Triggers checking 
->   Models > ONLY database queries
->   Services > business rules + validation + combining models
+>   SQL > Data validation
+>   Models > Database queries
+>   Services > Business logic and Error Handling
 >   Controllers > HTTP layer (request → service → response)
 
-# Features
+# API Cheat Sheet
+## Methods
+GET = read  
+POST = create  
+PUT = replace/update  
+PATCH = partial update  
+DELETE = remove  
 
-## Actor
-> O - Office
-> M - Mechanic
-> B - Both
-## Calendar
-> /api/calendar
-- [ ] Search for a Schedule Instance - B
-    > GET: /api/calendar?
-- [ ] Browse Global Schedules - B 
-    > GET: /api/calendar
-- [ ] View Instance Schedule - B
-    > GET: /api/calendar/{id}
-- [ ] Add Instance Schedule - B
-    > POST: /api/calendar
-- [ ] Remove Instance Schedule - B
-    > DELETE: /api/calendar/{id}
-- [ ] Edit Instance Schedule - B
-    > PUT: /api/calendar/{id}
-- [ ] Create a Service Based on the Schedule Instance - B
-    > POST: /api/calendar/{id}/service
+## Rules
+{id} = required path param  
+?field = optional query/filter param  
+*field = required field  
+field = optional field
 
-## Services
-> /api/services
-> /api/service
+## API:
 
-- [ ] Browse a list of Services - B
-    > GET: /api/services
-- [ ] View a Service Instance - B
-    > GET: /api/service/{id}
-- [ ] Create a Service Instance - B
-    > POST: /api/service/{id}
-- [ ] Remove a Service Instance - O 
-    > DELETE: /api/service/{id}
-- [ ] Edit a Service Instance - B
-    > PUT: /api/service/{id}
+### Makes: 
+#### api/makes
+> GET *?name*
+> POST *\*name*
+#### api/makes/{id}
+> GET 
+>PUT *\*name*
+>DELETE
 
-    ### Cars
-
-- [ ] Link the Car to the Service - B
-    - [ ] Create a new instance of a Car 
-        > POST: /api/cars
-    - [ ] Associate the service to an existent instance of a Car 
-        > PUT: /api/service/{id}/car
-    - [ ] Remove the association to the Car
-        > DELETE: /api/service/{id}/car
-
-    ### Clients
-
-- [ ] Link the Client to the Service - O
-    - [ ] Create a new instance of a Client 
-        > POST: /api/clients
-    - [ ] Associate the service to an existent instance of a Car
-        > PUT: /api/service/{id}/client
-    - [ ] Remove the association to the Car
-        > DELETE: /api/service/{id}/client
-
-    ### Products
-
-- [ ] Link Products to the Service
-    > POST: /api/service/{id}/product
-- [ ] Mark the Product as Applied
-    > PUT: /api/service/{id}/product
-- [ ] Unmark the Product as Applied
-    > PUT: /api/service/{id}/product
-- [ ] Remove the Product from the Service
-    > DELETE: /api/service/{id}/product
-
-    ### User Time Register
-
-- [ ] Add User Timer Register to the Service
-    > POST: /api/service/{id}/time
-- [ ] Remove User Timer Register to the Service
-    > DELETE: /api/service/{id}/time
-- [ ] Edit User Timer Register to the Service
-    > PUT: /api/service/{id}/time
-
-## Management
-
-### Clients
-> /api/clients
-> /api/client
-
-- [x] List with Search
-    > GET: /api/clients
-- [x] Create
-    > POST: /api/clients
-- [x] Read
-    > GET: /api/client/{id}
-- [x] Update
-    > PUT: /api/client/{id}
-- [x] Delete
-    > DELETE: /api/client/{id}
-
-### Products
-> /api/products
-> /api/product
-
-> /api/product_types
-> /api/product_type
-
-- [x] List with Search 
-    > GET: /api/products
-- [x] Create
-    > POST: /api/products
-- [x] Read
-    > GET: /api/product/{id}
-- [x] Update
-    > PUT: /api/product/{id}
-- [x] Delete
-    > DELETE: /api/product/{id}
+### Models
+#### api/models
+>GET *?name* *?make_name*
+>POST *\*name* *\*make_id*
+#### api/models/{id}
+>GET
+>PUT *\*name* *\*make_id*
+>DELETE
 
 ### Cars
-> /api/cars
-> /api/car
+#### api/cars 
+>GET *?plate*  *?year* *?month* *?model_name* *?make_name* *?make_id*
+>POST *\*plate* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id* *\*make_id*
+#### api/cars/{id}
+>GET
+>PUT *\*plate* *\*make_id* *month* *year* *chassi_nr* *cc* *engine_code* *color_code* *model_id*
+>DELETE
 
-> /api/models
-> /api/model
+### Clients
+#### api/clients
+>GET *?name* *?phone* *?email*
+>POST *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
+#### api/clients/{id}
+>GET
+>PUT *\*name* *\*phone* *address* *email* *zip_code* *tax_nr*
+>DELETE
 
-> /api/makes
-> /api/make
+### Services
+#### api/services
+>GET *?client_name* *?checkin* *?checkout* *?car_plate* *?car_model* *?car_make*
+>POST *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
+#### api/services/{id}
+>GET
+>PUT *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
+>DELETE
+#### api/services/{id}/user_times
+>GET *?user_name* *?user_id* *?date* 
+>POST {*\*service_id*} *\*user_id* *\*minutes* *\*date* 
+#### api/services/{id}/user_times/{id}
+>GET
+>PUT *\*service_id* *\*user_id* *\*minutes* *\*date*
+>DELETE
+#### api/services/{id}/applied_products
+>GET *?product_name* *?product_id* *?is_applied*
+>POST *\*service_id* *\*product_id* *quantity* *is_applied*
+#### api/services/{id}/applied_products/{id}
+>GET
+>PUT *\*service_id* *\*product_id* *quantity* *is_applied*
+>DELETE
+#### api/services_user_time
+> GET *?service_id* *?user_name* *?user_id* *?minutes* *?date*
+#### api/services_applied_products
+>GET *?service_id* *?product_name* *?product_id* *?is_applied*
 
-- [x] List with Search
-    > GET: /api/cars
-- [x] Create
-    > POST: /api/cars
-- [x] Read
-    > GET: /api/car/{id}
-- [x] Update
-    > PUT: /api/car/{id}
-- [x] Delete
-    > DELETE: /api/car/{id}
+### Products
+#### api/product_types
+>GET *?name*
+>POST *\*name*
+#### api/product_types/{id}
+>GET
+>PUT *\*name*
+>DELETE
+#### api/products
+>GET *?name* *?reference* *?p_t_name* *?p_t_id*
+>POST *\*name* *reference* product_type_id*
+#### api/products/{id}
+>GET
+>PUT *\*name* *reference* product_type_id*
+>DELETE
 
+### Schedule
+#### api/schedules
+>GET *?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 
+>POST *\*date* *\*description* *car_id* *model_id* *client_id*
+#### api/schedules/{id}
+>GET
+>PUT *\*date* *\*description* *car_id* *model_id* *client_id*
+>DELETE
+#### api/schedules/{id}/create_service
+>POST *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
+
+### Users
+#### api/users
+>GET *?name* *?email* *?user_type*
+>POST *\*name* *\*email* *\*password* *\*user_type_id* *profile_pic* *nullified*
+#### api/users/{id}
+>GET
+>PUT *\*name* *\*email* *\*user_type_id* *profile_pic* *nullified*
+>DELETE
+#### api/users/{id}/change_password
+>POST *\*old_password* *\*new_password*
+#### api/users/{id}/user_times
+>GET *?service_id* *?minutes* *?date*
+#### api/user_types
+>GET *?name*
+>POST *\*name*
+#### api/user_types/{id}
+>GET
+>PUT *\*name*
+>DELETE
