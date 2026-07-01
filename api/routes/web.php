@@ -67,5 +67,8 @@ return [
 
 	/*	Service Component Controller	*/
 	['GET', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'getSUTs']], //with search
+	['POST', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'postSUTs']], //with search
 	['GET', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'getSUTById']],
+	['PUT', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'putSUT']],
+	['DELETE', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'deleteSUT']],
 ];

@@ -74,7 +74,7 @@
 >##### Create and List User Times of a Service
 >>  - [ ] api/services/{id}/user_times
 >>>    - [ ] GET *?user_name* *?user_id* *?date* 
->>>    - [ ] POST *\*service_id* *\*user_id* *\*minutes* *\*date* 
+>>>    - [ ] POST {*\*service_id*} *\*user_id* *\*minutes* *\*date* 
 
 >##### Read, Update and Delete User Time of a Service 
 >>  - [ ] api/services/{id}/user_times/{id}
