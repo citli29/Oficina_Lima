@@ -29,8 +29,10 @@ class Service
 			c.id as car_id,
 			c.plate as car_plate,
 
-			ma.name as make_name, 
-			mo.name as model_name
+			ma.id as car_make_id, 
+			ma.name as car_make_name, 
+			mo.id as car_model_id,
+			mo.name as car_model_name
 
 		FROM services s
 
@@ -69,11 +71,11 @@ class Service
 				'operator' => 'LIKE'
 			],
 			'car_model' => [
-				'column' => 'car_model',
+				'column' => 'car_model_name',
 				'operator' => 'LIKE'
 			],
 			'car_make' => [
-				'column' => 'car_make',
+				'column' => 'car_make_name',
 				'operator' => 'LIKE'
 			],
 		];
@@ -151,7 +153,7 @@ class Service
 				malfunction_description = ?,
 				service_description = ?,
 				car_id = ?,
-				schedule_id = ?,
+				schedule_id = ?
 
 			WHERE id = ?
 			");

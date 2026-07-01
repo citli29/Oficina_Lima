@@ -32,21 +32,21 @@ class ScheduleService
 	public function createSchedule(array $data): array
 	{
 		if(empty($data['date']) || empty($data['description'])) {
-			throw new InvalidArgumentException("Create Schedule [Arguments Required]: Date, Description.", 400);
+			throw new InvalidArgumentException("Create Schedule [Arguments Required]: Date [YYYY-MM-DD], Description.", 400);
 		}
 
 		try
 		{
 			return $this->scheduleModel->createSchedule($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Schedule [Argument Constraints]: Date must be provided. Description must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException("Create Schedule [Argument Constraints]: Date [YYYY-MM-DD] must be provided. Description must be provided. [{$e->errorInfo[2]}]", 400);
 		}
 	}
 
 	public function updateSchedule(int $id, array $data): array
 	{
 		if(empty($data['date']) || empty($data['description'])) {
-			throw new InvalidArgumentException("Update Schedule[Argument Required]: Date, Description.",400);
+			throw new InvalidArgumentException("Update Schedule[Argument Required]: Date [YYYY-MM-DD], Description.",400);
 		}
 		try
 		{
@@ -55,7 +55,7 @@ class ScheduleService
 			throw new InvalidArgumentException("Update Schedule [Invalid ID]: {$id}.",400);
 			return $schedule;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Schedule [Argument Required]: Date must be provided. Description must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException("Update Schedule [Argument Required]: Date [YYYY-MM-DD] must be provided. Description must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 

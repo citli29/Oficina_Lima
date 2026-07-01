@@ -61,15 +61,15 @@
 
 #### Service - MVC
 >##### Create and List Services
->>  - [ ] api/services
->>>    - [ ] GET *?client_name* *?checkin* *?checkout* *?car_plate* *?car_model* *?car_make*
->>>    - [ ] POST *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
+>>  - [x] api/services
+>>>    - [x] GET *?client_name* *?checkin* *?checkout* *?car_plate* *?car_model* *?car_make*
+>>>    - [x] POST *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
 
 >##### Read, Update and Delete Service
->>  - [ ] api/services/{id}
->>>    - [ ] GET
->>>    - [ ] PUT *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
->>>    - [ ] DELETE
+>>  - [x] api/services/{id}
+>>>    - [x] GET
+>>>    - [x] PUT *\*client_id* *kms* *checkin* *checkout* *malfunction* *service* *car_id* *schedule_id*
+>>>    - [x] DELETE
 
 >##### Create and List User Times of a Service
 >>  - [ ] api/services/{id}/user_times

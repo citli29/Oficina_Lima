@@ -63,6 +63,7 @@
 	);
 
 	-- No real business logic
+	-- 0 < Month < 13
 	CREATE TABLE cars(
 		id INTEGER PRIMARY KEY,
 		plate VARCHAR(20) UNIQUE NOT NULL,
@@ -136,11 +137,11 @@
 		kms INT,
 		checkin_date VARCHAR(20) NOT NULL CHECK(
 			date(checkin_date) IS NOT NULL
-		), -- 00/00/2000
+		), 
 		checkout_date VARCHAR(20) CHECK(
 			checkout_date IS NULL 
 			OR date(checkout_date) IS NOT NULL
-		), -- 00/00/2000
+		),
 		malfunction_description VARCHAR(512),
 		service_description VARCHAR(512),
 		car_id INT,
