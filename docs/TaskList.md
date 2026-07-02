@@ -79,18 +79,18 @@
 >##### Read, Update and Delete User Time of a Service 
 >>  - [ ] api/services/{id}/user_times/{id}
 >>>    - [ ] GET
->>>    - [ ] PUT *\*service_id* *\*user_id* *\*minutes* *\*date*
+>>>    - [ ] PUT {*\*service_id*} *\*user_id* *\*minutes* *\*date*
 >>>    - [ ] DELETE
 
 >##### Create and List Applied Products of a Service 
 >>  - [ ] api/services/{id}/applied_products
->>>    - [ ] GET *?product_name* *?product_id* *?is_applied*
+>>>    - [ ] GET *?product_name* *?product_reference* *?product_id* *?is_applied*
 >>>    - [ ] POST *\*service_id* *\*product_id* *quantity* *is_applied*
 
 >##### Read, Update and Delete Applied Products of a Service
 >>  - [ ] api/services/{id}/applied_products/{id}
 >>>    - [ ] GET
->>>    - [ ] PUT *\*service_id* *\*product_id* *quantity* *is_applied*
+>>>    - [ ] PUT {*\*service_id*} *\*product_id* *quantity* *is_applied*
 >>>    - [ ] DELETE
 
 >##### List User Times

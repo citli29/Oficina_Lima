@@ -68,7 +68,20 @@ return [
 	/*	Service Component Controller	*/
 	['GET', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'getSUTs']], //with search
 	['POST', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'postSUTs']], //with search
-	['GET', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'getSUTById']],
+	['GET', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'getSUT']],
 	['PUT', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'putSUT']],
 	['DELETE', '/api/services/{s_id:\d+}/user_times/{id:\d+}', [ServiceComponentController::class, 'deleteSUT']],
+
+
+	['GET', '/api/services/{s_id:\d+}/applied_products', [ServiceComponentController::class, 'getAppliedProducts']], //with search
+	['POST', '/api/services/{s_id:\d+}/applied_products', [ServiceComponentController::class, 'postAppliedProducts']], //with search
+	['GET', '/api/services/{s_id:\d+}/applied_products/{id:\d+}', [ServiceComponentController::class, 'getAppliedProduct']],
+	['PUT', '/api/services/{s_id:\d+}/applied_products/{id:\d+}', [ServiceComponentController::class, 'putAppliedProduct']],
+	['DELETE', '/api/services/{s_id:\d+}/applied_products/{id:\d+}', [ServiceComponentController::class, 'deleteAppliedProduct']],
+
+
+	['GET', '/api/service_applied_products', [ServiceComponentController::class, 'getServiceAppliedProducts']], //with search
+	['GET', '/api/service_user_times', [ServiceComponentController::class, 'getServiceUserTimes']], //with search
+
+
 ];

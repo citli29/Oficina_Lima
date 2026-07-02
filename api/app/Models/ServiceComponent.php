@@ -17,8 +17,12 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT 
-			sut.id AS id,
+			ROW_NUMBER() OVER (
+				PARTITION BY service_id
+				ORDER BY sut.id
+			) AS sut_id,
 			sut.service_id AS service_id,
+			sut.id AS id,
 			sut.minutes AS minutes,
 			sut.ut_date AS date,
 	       		sut.user_id AS user_id,
@@ -56,12 +60,48 @@ class ServiceComponent
 		return $stmt->fetchAll();
 	}
 
+	public function getSUTBySid_Id(int $s_id, int $id): bool|array
+	{
+
+		$stmt = $this->db->prepare("
+			SELECT *
+			FROM (
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sut.service_id
+							ORDER BY sut.id
+						) AS INTEGER
+					) AS sut_id,
+					sut.service_id,
+					sut.id,
+					sut.minutes,
+					sut.ut_date AS date,
+					sut.user_id,
+					u.name AS user_name
+				FROM services_user_time sut
+				LEFT JOIN users u
+				    ON u.id = sut.user_id
+				WHERE sut.service_id = ?
+			    ) ranked
+		    WHERE sut_id = ?
+		");
+
+		$stmt->execute(array($s_id,$id));
+		
+		return $stmt->fetch();
+	}
+
 	public function getSUTById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
 			SELECT 
-				sut.id AS id,
+				ROW_NUMBER() OVER (
+					PARTITION BY service_id
+					ORDER BY sut.id
+				) AS sut_id,
 				sut.service_id AS service_id,
+				sut.id AS id,
 				sut.minutes AS minutes,
 				sut.ut_date AS date,
 				sut.user_id AS user_id,
@@ -69,7 +109,7 @@ class ServiceComponent
 			FROM services_user_time sut
 			LEFT JOIN users u
 			ON u.id = sut.user_id
-			WHERE sut.id= ?
+			WHERE  sut.id= ?
 			");
 
 		$stmt->execute([$id]);
