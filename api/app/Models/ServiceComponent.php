@@ -173,5 +173,181 @@ class ServiceComponent
 
 		return $sut; 
 	}
+
+	public function getSAPByServiceWithFilter(int $serviceId, array $filters): array
+	{
+		$sql = "
+		SELECT 
+			ROW_NUMBER() OVER (
+				PARTITION BY service_id
+				ORDER BY pt.id ASC, sap.id ASC
+			) AS sap_id,
+			sap.service_id AS service_id,
+			sap.id AS id,
+	       		sap.product_id AS product_id,
+			sap.quantity AS quantity,
+			sap.is_applied AS is_applied,
+			p.name AS product_name,
+			p.reference AS product_reference,
+			p.product_type_id AS product_type_id,
+			pt.name AS product_type_name
+		FROM services_applied_products sap
+		LEFT JOIN products p
+		ON p.id = sap.product_id
+		LEFT JOIN product_types pt
+		ON pt.id = p.product_type_id
+		WHERE sap.service_id = ?
+		";
+
+		$params = [];
+
+		$rules = [
+			'product_name' => [
+				'column' => 'p.name',
+				'operator' => 'LIKE'
+			],
+			'product_reference' => [
+				'column' => 'p.reference',
+				'operator' => '='
+			],
+			'product_id' => [
+				'column' => 'p.id',
+				'operator' => 'LIKE'
+			],
+			'is_applied' => [
+				'column' => 'sap.is_applied',
+				'operator' => '='
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		array_unshift($params,$serviceId);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getSAPBySid_Id(int $s_id, int $id): bool|array
+	{
+
+		$stmt = $this->db->prepare("
+			SELECT *
+			FROM (
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sap.service_id
+							ORDER BY pt.id ASC, sap.id ASC
+						) AS INTEGER
+					) AS sap_id,
+					sap.service_id,
+					sap.id,
+					sap.product_id AS product_id,
+					sap.quantity AS quantity,
+					sap.is_applied AS is_applied,
+					p.name AS product_name,
+					p.reference AS product_reference,
+					p.product_type_id AS product_type_id,
+					pt.name AS product_type_name
+				FROM services_applied_products sap
+				LEFT JOIN products p
+				ON p.id = sap.product_id
+				LEFT JOIN product_types pt
+				ON pt.id = p.product_type_id
+				WHERE sap.service_id = ?
+			    ) ranked
+		    WHERE sap_id = ?
+		");
+
+		$stmt->execute(array($s_id,$id));
+		
+		return $stmt->fetch();
+	}
+
+	public function getSAPById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+			SELECT 
+				ROW_NUMBER() OVER (
+					PARTITION BY service_id
+					ORDER BY sap.id
+				) AS sap_id,
+				sap.service_id,
+				sap.id,
+				sap.product_id AS product_id,
+				sap.quantity AS quantity,
+				sap.is_applied AS is_applied,
+				p.name AS product_name,
+				p.reference AS product_reference
+			FROM services_applied_products sap
+			LEFT JOIN products p 
+			ON p.id = sap.product_id
+			WHERE  sap.id= ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateSAP(int $id, array $data): bool|array
+	{
+		$stmt = $this->db->prepare("
+			UPDATE
+			services_applied_products
+			SET
+				service_id = ?,
+				product_id = ?,
+				quantity = ?,
+				is_applied = ?,
+			WHERE id = ?
+			");
+
+		$stmt->execute([
+			$data['service_id'],
+			$data['product_id'],
+			$data['quantity'],
+			$data['is_applied'],
+			$id
+		]);
+
+		return $this->getSAPById($id);
+	}
+
+	public function createSAP(array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO services_user_time
+			(service_id, product_id, quantity, is_applied)
+			VALUES (?,?,?,?)
+			");
+
+		$stmt->execute([
+			$data['service_id'],
+			$data['product_id'],
+			$data['quantity'],
+			$data['is_applied'],
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getSAPById($newId);
+	}
+
+	public function deleteSAP(int $id): bool|array
+	{
+		$sap = $this->getSAPById($id);
+
+		if($sap)
+		{
+			$stmt = $this->db->prepare("DELETE FROM services_applied_products WHERE id = ?");
+			$stmt->execute([$id]);
+		}
+
+		return $sap; 
+	}
 }
 ?>

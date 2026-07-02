@@ -36,4 +36,24 @@ class ServiceComponentService
 			throw new RuntimeException("Show User Time [ID Not Found]: {$id}.",404);
 		return $sut;
 	}
+
+	public function listSAPByService(int $id,array $filters): array
+	{
+		return $this->serviceComponentModel->getSAPByServiceWithFilter($id,$filters);
+	}
+
+	public function showSAP(int $s_id,int $id):array
+	{
+		$sap  = $this->serviceComponentModel->getSAPBySid_Id($s_id,$id);
+		if(!$sap)
+			throw new RuntimeException("Show Applied [ID Not Found]: {$s_id} : {$id}.",404);
+		return $sap;
+	}
+
+	public function showGlobalSAP(int $id):array
+	{
+		if(!$sap = $this->serviceComponentModel->getSAPById($id))
+			throw new RuntimeException("Show User Time [ID Not Found]: {$id}.",404);
+		return $sap;
+	}
 }

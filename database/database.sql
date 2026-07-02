@@ -204,7 +204,7 @@
 		id INTEGER PRIMARY KEY,
 		service_id INTEGER NOT NULL,
 		product_id INTEGER NOT NULL,
-		quantity INT,
+		quantity INT NOT NULL DEFAULT 0,
 		is_applied BOOLEAN NOT NULL DEFAULT FALSE,
 		FOREIGN KEY(service_id)
 		REFERENCES services(id),

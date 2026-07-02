@@ -134,7 +134,7 @@ class ServiceComponentController
 				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
 				'is_applied' => isset($_GET['is_applied']) ? $_GET['is_applied'] : null,
 			];
-			$sap_list = $this->service->listSUTByService($s_id,$filters);
+			$sap_list = $this->service->listSAPByService($s_id,$filters);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
