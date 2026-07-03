@@ -80,8 +80,8 @@ return [
 	['DELETE', '/api/services/{s_id:\d+}/applied_products/{id:\d+}', [ServiceComponentController::class, 'deleteAppliedProduct']],
 
 
-	['GET', '/api/service_applied_products', [ServiceComponentController::class, 'getServiceAppliedProducts']], //with search
-	['GET', '/api/service_user_times', [ServiceComponentController::class, 'getServiceUserTimes']], //with search
+	['GET', '/api/services_applied_products', [ServiceComponentController::class, 'getServiceAppliedProducts']], //with search
+	['GET', '/api/services_user_times', [ServiceComponentController::class, 'getServiceUserTimes']], //with search
 
 
 ];

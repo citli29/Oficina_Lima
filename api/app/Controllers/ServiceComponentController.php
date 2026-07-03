@@ -232,11 +232,16 @@ class ServiceComponentController
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
+
 	public function getServiceUserTimes()
 	{
 		try{
 			$filters = [
 				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
+				'user_name' => isset($_GET['user_name']) ? $_GET['user_name'] : null,
+				'user_id' => isset($_GET['user_id']) ? $_GET['user_id'] : null,
+				'minutes' => isset($_GET['minutes']) ? $_GET['minutes'] : null,
+				'date' => isset($_GET['date']) ? $_GET['date'] : null,
 			];
 			$sut_list = $this->service->listSUTs($filters);
 
@@ -252,4 +257,5 @@ class ServiceComponentController
 		}
 
 	}
+
 }

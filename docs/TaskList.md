@@ -77,7 +77,7 @@
 >>>    - [x] POST {*\*service_id*} *\*user_id* *\*minutes* *\*date* 
 
 >##### Read, Update and Delete User Time of a Service 
->>  - [ ] api/services/{id}/user_times/{id}
+>>  - [x] api/services/{id}/user_times/{id}
 >>>    - [x] GET
 >>>    - [x] PUT {*\*service_id*} *\*user_id* *\*minutes* *\*date*
 >>>    - [x] DELETE
@@ -94,8 +94,8 @@
 >>>    - [ ] DELETE
 
 >##### List User Times
->>  - [ ] api/services_user_time
->>>    - [ ] GET *?service_id* *?user_name* *?user_id* *?minutes* *?date*
+>>  - [x] api/services_user_times
+>>>    - [x] GET *?service_id* *?user_name* *?user_id* *?minutes* *?date*
 
 >##### List Applied Products
 >>  - [ ] api/services_applied_products

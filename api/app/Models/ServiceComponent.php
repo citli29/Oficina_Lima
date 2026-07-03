@@ -376,30 +376,49 @@ class ServiceComponent
 	public function getSUTWithFilter(array $filters): array
 	{
 		$sql = "
-		SELECT 
-			ROW_NUMBER() OVER (
-				PARTITION BY service_id
-							ORDER BY service_id ASC, sut.id ASC
-			) AS sut_id,
-			sut.service_id AS service_id,
-			sut.id AS id,
-			sut.minutes AS minutes,
-			sut.ut_date AS date,
-	       		sut.user_id AS user_id,
-			u.name AS user_name
-		FROM services_user_time sut
-		LEFT JOIN users u
-		ON u.id = sut.user_id
-		WHERE 1 = 1
+			SELECT * FROM 
+				(SELECT 
+					ROW_NUMBER() OVER (
+						PARTITION BY service_id
+						ORDER BY service_id ASC, sut.id ASC
+					) AS sut_id,
+					sut.service_id AS service_id,
+					sut.id AS id,
+					sut.minutes AS minutes,
+					sut.ut_date AS date,
+					sut.user_id AS user_id,
+					u.name AS user_name
+				FROM services_user_time sut
+				LEFT JOIN users u
+				ON u.id = sut.user_id
+				WHERE 1 = 1)
+			WHERE 1 = 1
 		";
 
 		$params = [];
 
 		$rules = [
 			'service_id' => [
-				'column' => 'sut.service_id',
+				'column' => 'service_id',
 				'operator' => '='
-			]
+			],
+			'user_name' => [
+				'column' => 'user_name',
+				'operator' => 'LIKE'
+			],
+			'user_id' => [
+				'column' => 'user_id',
+				'operator' => '='
+			],
+			'minutes' => [
+				'column' => 'minutes',
+				'operator' => 'LIKE'
+			],
+			'date' => [
+				'column' => 'date',
+				'operator' => 'LIKE'
+			],
+
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);

@@ -24,6 +24,91 @@ class ServiceComponentMVCTest extends TestCase
 			'http_errors' => false
 		]);
 	}
+	public function testGETBigSUTs(){
+		printf("\n GET SUTs regular: ");
+		$response = $this->client->get('/api/services_user_times');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(79,count($body['sut_list']));
+	}
+
+	public function testGETBigSUTsWithFilters(){
+
+		printf("\n GET SUT Filter service_id 1: ");
+		$response = $this->client->get('/api/services_user_times?service_id=19');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(1,count($body['sut_list']));
+
+		printf("\n GET SUT Filter service_id 0: ");
+		$response = $this->client->get('/api/services_user_times?service_id=300');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(0,count($body['sut_list']));
+
+		printf("\n GET SUT Filter service_id multiple: ");
+		$response = $this->client->get('/api/services_user_times?service_id=2');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(5,count($body['sut_list']));
+
+		printf("\n GET SUT Filter user_name 0: ");
+		$response = $this->client->get('/api/services_user_times?user_name=300');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(0,count($body['sut_list']));
+
+		printf("\n GET SUT Filter user_name multiple: ");
+		$response = $this->client->get('/api/services_user_times?user_name=A');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(26,count($body['sut_list']));
+
+		printf("\n GET SUT Filter user_id 0: ");
+		$response = $this->client->get('/api/services_user_times?minutes=10');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(5,count($body['sut_list']));
+
+		printf("\n GET SUT Filter user_id multiple: ");
+		$response = $this->client->get('/api/services_user_times?minutes=1000');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(0,count($body['sut_list']));
+
+		printf("\n GET SUT Filter date 0: ");
+		$response = $this->client->get('/api/services_user_times?date=2027');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(0,count($body['sut_list']));
+
+		printf("\n GET SUT Filter user_id multiple: ");
+		$response = $this->client->get('/api/services_user_times?date=2025-02');
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut_list']));
+		$this->assertEquals(5,count($body['sut_list']));
+	}
+
 	public function testGETSUTsWithFilters(){
 		printf("\n GET SUTs regular: ");
 		$response = $this->client->get('/api/services/1/user_times');
