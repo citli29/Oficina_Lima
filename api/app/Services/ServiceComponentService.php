@@ -76,7 +76,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$sut = $this->serviceComponentModel->deleteSUTBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete Client [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Delete User Time [Invalid ID]: {$s_id} - {$id}.", 404);
 			return $sut;
 		}catch(PDOException $e)
 		{
@@ -84,6 +84,10 @@ class ServiceComponentService
 		}
 	}
 
+	public function listSAPs(array $filters): array
+	{
+		return $this->serviceComponentModel->getSAPWithFilter($filters);
+	}
 	public function listSAPByService(int $id,array $filters): array
 	{
 		return $this->serviceComponentModel->getSAPByServiceWithFilter($id,$filters);
@@ -93,44 +97,44 @@ class ServiceComponentService
 	{
 		$sap  = $this->serviceComponentModel->getSAPBySid_Id($s_id,$id);
 		if(!$sap)
-			throw new RuntimeException("Show Applied [ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Show Applied Products [ID Not Found]: {$s_id} : {$id}.",404);
 		return $sap;
 	}
 
 	public function showGlobalSAP(int $id):array
 	{
 		if(!$sap = $this->serviceComponentModel->getSAPById($id))
-			throw new RuntimeException("Show User Time [ID Not Found]: {$id}.",404);
+			throw new RuntimeException("Show Global ID Applied Product [ID Not Found]: {$id}.",404);
 		return $sap;
 	}
 
 	public function createSAP(int $s_id,array $data): array
 	{
 		if(empty($data['product_id'])) {
-			throw new InvalidArgumentException("Create Service Applied Product [Arguments Required]: Product ID.", 400);
+			throw new InvalidArgumentException("Create Service Applied Products Time [Arguments Required]: Product ID.", 400);
 		}
 
 		try
 		{
 			return $this->serviceComponentModel->createSAP($s_id,$data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service Applied Product [Argument Constraints]: Product ID must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException("Create Service Applied Products [Argument Constraints]: Product ID must be provided. [{$e->errorInfo[2]}]", 400);
 		}
 	}
 
 	public function updateSAP(int $s_id, int $id, array $data): array
 	{
 		if(empty($data['product_id'])) {
-			throw new InvalidArgumentException("Update Service Applied Product [Argument Required]: Product ID.",400);
+			throw new InvalidArgumentException("Update Service Applied Products [Argument Required]: Product ID.",400);
 		}
 		try
 		{
 			$sap = $this->serviceComponentModel->updateSAPBySid_Id($s_id,$id,$data);
 			if(!$sap) 
-			throw new InvalidArgumentException("Update Service Applied Product [Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Update Service Applied Products [Invalid ID]: {$s_id} - {$id}.",400);
 			return $sap;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service Applied Product [Argument Required]: Product ID must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException("Update Service Applied Products [Argument Required]: Product ID must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
 
@@ -139,7 +143,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$sap = $this->serviceComponentModel->deleteSAPBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete Applied Product [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Delete Applied Products [Invalid ID]: {$s_id} - {$id}.", 404);
 			return $sap;
 		}catch(PDOException $e)
 		{

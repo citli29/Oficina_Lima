@@ -99,7 +99,7 @@
 
 >##### List Applied Products
 >>  - [ ] api/services_applied_products
->>>    - [ ] GET *?service_id* *?product_name* *?product_id* *?is_applied*
+>>>    - [ ] GET *?service_id* *?product_name* *?product_reference* *?product_id* *?is_applied*
 
 #### Product - MVC
 >##### Create and List Product Types

@@ -13,6 +13,63 @@ class ServiceComponent
 		$this->db = $db;
 	}
 
+	public function getSUTWithFilter(array $filters): array
+	{
+		$sql = "
+			SELECT * FROM 
+				(SELECT 
+					ROW_NUMBER() OVER (
+						PARTITION BY service_id
+						ORDER BY service_id ASC, sut.id ASC
+					) AS sut_id,
+					sut.service_id AS service_id,
+					sut.id AS id,
+					sut.minutes AS minutes,
+					sut.ut_date AS date,
+					sut.user_id AS user_id,
+					u.name AS user_name
+				FROM services_user_time sut
+				LEFT JOIN users u
+				ON u.id = sut.user_id
+				WHERE 1 = 1)
+			WHERE 1 = 1
+		";
+
+		$params = [];
+
+		$rules = [
+			'service_id' => [
+				'column' => 'service_id',
+				'operator' => '='
+			],
+			'user_name' => [
+				'column' => 'user_name',
+				'operator' => 'LIKE'
+			],
+			'user_id' => [
+				'column' => 'user_id',
+				'operator' => '='
+			],
+			'minutes' => [
+				'column' => 'minutes',
+				'operator' => 'LIKE'
+			],
+			'date' => [
+				'column' => 'date',
+				'operator' => 'LIKE'
+			],
+
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
 	public function getSUTByServiceWithFilter(int $serviceId, array $filters): array
 	{
 		$sql = "
@@ -196,7 +253,7 @@ class ServiceComponent
 		SELECT 
 			ROW_NUMBER() OVER (
 				PARTITION BY service_id
-				ORDER BY pt.id ASC, sap.id ASC
+				ORDER BY service_id ASC, sap.id ASC
 			) AS sap_id,
 			sap.service_id AS service_id,
 			sap.id AS id,
@@ -218,21 +275,9 @@ class ServiceComponent
 		$params = [];
 
 		$rules = [
-			'product_name' => [
-				'column' => 'p.name',
+			'user_name' => [
+				'column' => 'u.name',
 				'operator' => 'LIKE'
-			],
-			'product_reference' => [
-				'column' => 'p.reference',
-				'operator' => '='
-			],
-			'product_id' => [
-				'column' => 'p.id',
-				'operator' => 'LIKE'
-			],
-			'is_applied' => [
-				'column' => 'sap.is_applied',
-				'operator' => '='
 			],
 		];
 
@@ -256,11 +301,11 @@ class ServiceComponent
 					CAST(
 						ROW_NUMBER() OVER (
 							PARTITION BY sap.service_id
-							ORDER BY pt.id ASC, sap.id ASC
+							ORDER BY service_id ASC, sap.id ASC
 						) AS INTEGER
 					) AS sap_id,
-					sap.service_id,
-					sap.id,
+					sap.service_id AS service_id,
+					sap.id AS id,
 					sap.product_id AS product_id,
 					sap.quantity AS quantity,
 					sap.is_applied AS is_applied,
@@ -286,43 +331,55 @@ class ServiceComponent
 	public function getSAPById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
-			SELECT 
-				ROW_NUMBER() OVER (
-					PARTITION BY service_id
-					ORDER BY sap.id
-				) AS sap_id,
-				sap.service_id,
-				sap.id,
-				sap.product_id AS product_id,
-				sap.quantity AS quantity,
-				sap.is_applied AS is_applied,
-				p.name AS product_name,
-				p.reference AS product_reference
-			FROM services_applied_products sap
-			LEFT JOIN products p 
-			ON p.id = sap.product_id
-			WHERE  sap.id= ?
+			SELECT * FROM (	
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sap.service_id
+							ORDER BY service_id ASC, sap.id ASC
+						) AS INTEGER
+					) AS sap_id,
+					sap.service_id AS service_id,
+					sap.id AS id,
+					sap.product_id AS product_id,
+					sap.quantity AS quantity,
+					sap.is_applied AS is_applied,
+					p.name AS product_name,
+					p.reference AS product_reference,
+					p.product_type_id AS product_type_id,
+					pt.name AS product_type_name
+				FROM services_applied_products sap
+				LEFT JOIN products p
+				ON p.id = sap.product_id
+				LEFT JOIN product_types pt
+				ON pt.id = p.product_type_id
+				WHERE sap.service_id = (
+					SELECT service_id
+					FROM services_applied_products
+					WHERE id = ?
+				) 
+			) WHERE id = ?
 			");
 
-		$stmt->execute([$id]);
+		$stmt->execute([$id,$id]);
 
 		return $stmt->fetch();
 	}
 
-	public function updateSAPBySid_Id(int $s_id, int $id, array $data): bool|array
+	public function updateSAPBySid_Id(int $s_id,int $id, array $data): bool|array
 	{
-		$sap = $this->getSAPBySid_Id($s_id, $id);
+		$sap = $this->getSAPBySid_Id($s_id,$id);
 
 		if($sap && isset($sap['id']))
 		{
 			$stmt = $this->db->prepare("
 				UPDATE
-				services_applied_products
+				services_user_time
 				SET
 				service_id = ?,
 				product_id = ?,
 				quantity = ?,
-				is_applied = ?,
+				is_applied = ?
 				WHERE id = ?
 				");
 
@@ -334,7 +391,7 @@ class ServiceComponent
 				$sap['id']
 			]);
 
-			$sap = $this->getSAPBySid_Id($s_id, $id);
+			$sap = $this->getSAPById($sap['id']);
 		}
 
 		return $sap;
@@ -343,13 +400,13 @@ class ServiceComponent
 	public function createSAP(int $s_id,array $data): array
 	{
 		$stmt = $this->db->prepare("
-			INSERT INTO services_user_time
+			INSERT INTO services_applied_products
 			(service_id, product_id, quantity, is_applied)
 			VALUES (?,?,?,?)
 			");
 
 		$stmt->execute([
-			$s_id,	
+			$s_id,
 			$data['product_id'],
 			$data['quantity'],
 			$data['is_applied'],
@@ -360,37 +417,43 @@ class ServiceComponent
 		return $this->getSAPById($newId);
 	}
 
-	public function deleteSAPBySid_Id(int $s_id,int $id): bool|array
+	public function deleteSAPBySid_Id(int $s_id, int $id): bool|array
 	{
 		$sap = $this->getSAPBySid_Id($s_id,$id);
 
 		if($sap && isset($sap['id']))
 		{
+
 			$stmt = $this->db->prepare("DELETE FROM services_applied_products WHERE id = ?");
-			$stmt->execute([$sap['$id']]);
+			$stmt->execute([$sap['id']]);
 		}
 
 		return $sap; 
 	}
 
-	public function getSUTWithFilter(array $filters): array
+	public function getSAPWithFilter(array $filters): array
 	{
 		$sql = "
 			SELECT * FROM 
 				(SELECT 
 					ROW_NUMBER() OVER (
 						PARTITION BY service_id
-						ORDER BY service_id ASC, sut.id ASC
-					) AS sut_id,
-					sut.service_id AS service_id,
-					sut.id AS id,
-					sut.minutes AS minutes,
-					sut.ut_date AS date,
-					sut.user_id AS user_id,
-					u.name AS user_name
-				FROM services_user_time sut
-				LEFT JOIN users u
-				ON u.id = sut.user_id
+						ORDER BY service_id ASC, sap.id ASC
+					) AS sap_id,
+					sap.service_id AS service_id,
+					sap.id AS id,
+					sap.product_id AS product_id,
+					sap.quantity AS quantity,
+					sap.is_applied AS is_applied,
+					p.name AS product_name,
+					p.reference AS product_reference,
+					p.product_type_id AS product_type_id,
+					pt.name AS product_type_name
+				FROM services_applied_products sap
+				LEFT JOIN products p
+				ON p.id = sap.product_id
+				LEFT JOIN product_types pt
+				ON pt.id = p.product_type_id
 				WHERE 1 = 1)
 			WHERE 1 = 1
 		";
@@ -402,23 +465,22 @@ class ServiceComponent
 				'column' => 'service_id',
 				'operator' => '='
 			],
-			'user_name' => [
-				'column' => 'user_name',
+			'product_name' => [
+				'column' => 'product_name',
 				'operator' => 'LIKE'
 			],
-			'user_id' => [
-				'column' => 'user_id',
+			'product_reference' => [
+				'column' => 'product_reference',
+				'operator' => 'LIKE'
+			],
+			'product_id' => [
+				'column' => 'product_id',
 				'operator' => '='
 			],
-			'minutes' => [
-				'column' => 'minutes',
-				'operator' => 'LIKE'
+			'is_applied' => [
+				'column' => 'is_applied',
+				'operator' => '='
 			],
-			'date' => [
-				'column' => 'date',
-				'operator' => 'LIKE'
-			],
-
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);

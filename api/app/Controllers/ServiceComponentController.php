@@ -258,4 +258,29 @@ class ServiceComponentController
 
 	}
 
+	public function getServiceAppliedProducts()
+	{
+		try{
+			$filters = [
+				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
+				'product_name' => isset($_GET['product_name']) ? $_GET['product_name'] : null,
+				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
+				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
+				'is_applied' => isset($_GET['is_applied']) ? $_GET['is_applied'] : null,
+			];
+			$sap_list = $this->service->listSAPs($filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sap_list'=>$sap_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+	}
+
 }
