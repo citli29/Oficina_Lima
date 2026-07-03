@@ -503,6 +503,8 @@ class ServiceMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['service']));
+		$response = $this->client->delete("/api/services/21");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEServicesIDInvalidID(){

@@ -393,6 +393,8 @@ class ScheduleMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['schedule']));
+		$response = $this->client->delete("/api/schedules/21");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 

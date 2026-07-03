@@ -176,6 +176,8 @@ class CarMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['make']));
+		$response = $this->client->delete("/api/makes/5");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEmakesIDInvalidID(){
@@ -400,6 +402,8 @@ class CarMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['model']));
+		$response = $this->client->delete("/api/models/13");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 
@@ -736,6 +740,8 @@ class CarMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['car']));
+		$response = $this->client->delete("/api/cars/9");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 

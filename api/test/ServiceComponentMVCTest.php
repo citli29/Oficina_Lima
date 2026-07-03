@@ -127,8 +127,6 @@ class ServiceComponentMVCTest extends TestCase
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['sut']));
 		$this->assertEquals(true,isset($body['sut']['sut_id']));
-		print_r($body);
-		printf("AQUIIII %d\n",$body['sut']['sut_id']);
 		$this->assertEquals(6,$body['sut']['sut_id']);
 
 		$this->assertEquals(true,isset($body['sut']['service_id']));
@@ -141,4 +139,237 @@ class ServiceComponentMVCTest extends TestCase
 		$this->assertEquals('2025-02-05',$body['sut']['date']);
 	}
 
+	public function testPOSTClientsBadRequest(){
+		printf("\n POST Clients Invalid Field: less then date ");
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => '919',
+					'date' => '2025-02-04',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: greater then date");
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => '919',
+					'date' => '2025-02-07',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: negative minutes");
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => -1,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: missing");
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'minutes' => 0,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'user_id' => 0,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+		$response = $this->client->post('/api/services/2/user_times',
+			[
+				'json' => [
+					'user_id' => 0,
+					'minutes' => 0,
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+	}
+
+	public function testGETSUT(){
+		printf("\n GET SUT/Id regular: ");
+		$response = $this->client->get("/api/services/2/user_times/4");
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut']));
+		$this->assertEquals(true,isset($body['sut']['service_id']));
+		$this->assertEquals(2,$body['sut']['service_id']);
+		$this->assertEquals(true,isset($body['sut']['sut_id']));
+		$this->assertEquals(4,$body['sut']['sut_id']);
+		$this->assertEquals(true,isset($body['sut']['id']));
+		$this->assertEquals(8,$body['sut']['id']);
+		$this->assertEquals(true,isset($body['sut']['minutes']));
+		$this->assertEquals(10,$body['sut']['minutes']);
+		$this->assertEquals(true,isset($body['sut']['date']));
+		$this->assertEquals("2025-02-05",$body['sut']['date']);
+		$this->assertEquals(true,isset($body['sut']['user_id']));
+		$this->assertEquals("4",$body['sut']['user_id']);
+		$this->assertEquals(true,isset($body['sut']['user_name']));
+		$this->assertEquals("A",$body['sut']['user_name']);
+	}
+
+	public function testGETSUTIDInvalidID(){
+		printf("\n GET SUT/Id Invalid ID: ");
+		$response = $this->client->get("/api/services/2/user_times/105");
+		$this->assertEquals(404, $response->getStatusCode());
+	}
+
+	public function testPUTSUT(){
+		printf("\n POST PUT regular: (same values)");
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => '4',
+					'minutes' => '15',
+					'date' => '2025-02-05'
+				]
+			]);
+		
+		$body = json_decode($response->getBody(), true);
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut']));
+		$this->assertEquals(true,isset($body['sut']['sut_id']));
+		$this->assertEquals(6,$body['sut']['sut_id']);
+
+		$this->assertEquals(true,isset($body['sut']['service_id']));
+		$this->assertEquals(2,$body['sut']['service_id']);
+		$this->assertEquals(true,isset($body['sut']['user_id']));
+		$this->assertEquals(4,$body['sut']['user_id']);
+		$this->assertEquals(true,isset($body['sut']['minutes']));
+		$this->assertEquals(15,$body['sut']['minutes']);
+		$this->assertEquals(true,isset($body['sut']['date']));
+		$this->assertEquals('2025-02-05',$body['sut']['date']);
+
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => '3',
+					'minutes' => '10',
+					'date' => '2025-02-06'
+				]
+			]);
+		
+		$body = json_decode($response->getBody(), true);
+		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut']));
+		$this->assertEquals(true,isset($body['sut']['sut_id']));
+		$this->assertEquals(6,$body['sut']['sut_id']);
+
+		$this->assertEquals(true,isset($body['sut']['service_id']));
+		$this->assertEquals(2,$body['sut']['service_id']);
+		$this->assertEquals(true,isset($body['sut']['user_id']));
+		$this->assertEquals(3,$body['sut']['user_id']);
+		$this->assertEquals(true,isset($body['sut']['minutes']));
+		$this->assertEquals(10,$body['sut']['minutes']);
+		$this->assertEquals(true,isset($body['sut']['date']));
+		$this->assertEquals('2025-02-06',$body['sut']['date']);
+	}
+
+	public function testPUTClientsBadRequest(){
+		printf("\n PUT Clients Invalid Field: less then date ");
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => '919',
+					'date' => '2025-02-04',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: greater then date");
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => '919',
+					'date' => '2025-02-07',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: negative minutes");
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => '1',
+					'minutes' => -1,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+
+		printf("\n POST Clients Invalid Field: missing");
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'minutes' => 0,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => 0,
+					'date' => '2025-02-06',
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+		$response = $this->client->put('/api/services/2/user_times/6',
+			[
+				'json' => [
+					'user_id' => 0,
+					'minutes' => 0,
+				]
+			]);
+		
+		$this->assertEquals(400, $response->getStatusCode());
+	}
+
+	public function testDELETESUTID(){
+		printf("\n DELETE SUT/Id regular: ");
+		$response = $this->client->delete("/api/services/2/user_times/6");
+		$this->assertEquals(200, $response->getStatusCode());
+		$body = json_decode($response->getBody(), true);
+		$this->assertIsArray($body);
+		$this->assertEquals(true,isset($body['sut']));
+
+		$response = $this->client->delete("/api/services/2/user_times/6");
+		$this->assertEquals(404, $response->getStatusCode());
+	}
+
+	public function testDELETEmakesIDInvalidID(){
+		printf("\n DELETE SUT/Id Invalid ID: ");
+		$response = $this->client->delete("/api/services/2/user_times/100");
+		$this->assertEquals(404, $response->getStatusCode());
+	}
 }

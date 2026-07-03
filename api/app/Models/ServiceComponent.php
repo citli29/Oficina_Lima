@@ -150,7 +150,7 @@ class ServiceComponent
 				$sut['id']
 			]);
 
-			$sut = $this->getSUTById($id);
+			$sut = $this->getSUTById($sut['id']);
 		}
 
 		return $sut;

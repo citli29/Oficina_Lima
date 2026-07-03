@@ -311,6 +311,8 @@ class ProductMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['product']));
+		$response = $this->client->delete("/api/products/9");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEProductsIDInvalidID(){
@@ -326,6 +328,8 @@ class ProductMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['product_type']));
+		$response = $this->client->delete("/api/product_types/5");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEProductTypesIDInvalidID(){

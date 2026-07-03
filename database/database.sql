@@ -184,12 +184,14 @@
 	END;
 
 	-- ut date needs to be >= service.checkin
-	-- minutes needs to be >= 0
+	-- minutes needs to be > 0
 	CREATE TABLE services_user_time(
 		id INTEGER PRIMARY KEY NOT NULL,
 		service_id INTEGER NOT NULL,
 		user_id INTEGER NOT NULL,
-		minutes INTEGER NOT NULL,
+		minutes INTEGER NOT NULL CHECK(
+			minutes > 0
+		),
 		ut_date VARCHAR(20) NOT NULL CHECK(
 			date(ut_date) IS NOT NULL
 		),
@@ -198,6 +200,42 @@
 		FOREIGN KEY(user_id)
 		REFERENCES users(id)
 	);
+
+	CREATE TRIGGER i_check_services_user_time
+	BEFORE INSERT ON services_user_time
+	FOR EACH ROW
+	BEGIN
+	    SELECT CASE
+		WHEN EXISTS (
+		    SELECT 1
+		    FROM services s
+		    WHERE s.id = NEW.service_id
+		      AND NOT (
+			  NEW.ut_date >= s.checkin_date
+			  AND NEW.ut_date <= s.checkout_date
+		      )
+		)
+		THEN RAISE(ABORT, 'ut_date must be between checkin_date and checkout_date')
+	    END;
+	END;
+
+	CREATE TRIGGER u_check_services_user_time
+	BEFORE UPDATE ON services_user_time
+	FOR EACH ROW
+	BEGIN
+	    SELECT CASE
+		WHEN EXISTS (
+		    SELECT 1
+		    FROM services s
+		    WHERE s.id = NEW.service_id
+		      AND NOT (
+			  NEW.ut_date >= s.checkin_date
+			  AND NEW.ut_date <= s.checkout_date
+		      )
+		)
+		THEN RAISE(ABORT, 'ut_date must be between checkin_date and checkout_date')
+	    END;
+	END;
 
 	-- if is_applied then quantity NOT NULL
 	CREATE TABLE  services_applied_products(

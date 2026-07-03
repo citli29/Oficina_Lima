@@ -213,6 +213,8 @@ class ClientMVCTest extends TestCase
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
 		$this->assertEquals(true,isset($body['client']));
+		$response = $this->client->delete("/api/clients/14");
+		$this->assertEquals(404, $response->getStatusCode());
 	}
 
 	public function testDELETEmakesIDInvalidID(){
