@@ -31,7 +31,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
-				'client_list'=>$sut_list
+				'sut_list'=>$sut_list
 			]);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
@@ -46,7 +46,7 @@ class ServiceComponentController
 			if(is_null($data))
 			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$sut = $this->service->createSUT($id,$data);
+			$sut = $this->service->createSUT($s_id,$data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -93,7 +93,7 @@ class ServiceComponentController
 			if(is_null($data))
 			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$sut = $this->service->updateSUT($id, $data);
+			$sut = $this->service->updateSUT($s_id,$id, $data);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
@@ -155,7 +155,7 @@ class ServiceComponentController
 			if(is_null($data))
 			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$sap = $this->service->createSAP($id,$data);
+			$sap = $this->service->createSAP($s_id,$data);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -202,7 +202,7 @@ class ServiceComponentController
 			if(is_null($data))
 			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$sap = $this->service->updateSAP($id, $data);
+			$sap = $this->service->updateSAP($s_id,$id, $data);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
@@ -219,7 +219,7 @@ class ServiceComponentController
 	public function deleteAppliedProduct(int $s_id, int $id): void
 	{
 		try {
-			$sap = $this->service->deleteSAP($id);
+			$sap = $this->service->deleteSAP($s_id,$id);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
@@ -231,5 +231,25 @@ class ServiceComponentController
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
+	}
+	public function getServiceUserTimes()
+	{
+		try{
+			$filters = [
+				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
+			];
+			$sut_list = $this->service->listSUTs($filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sut_list'=>$sut_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
 	}
 }

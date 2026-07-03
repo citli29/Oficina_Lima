@@ -386,7 +386,7 @@ INSERT INTO services
 (id, client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
 VALUES
 (1,1,125000,'2024-01-05','2024-01-05','Revisao','Mudanca de oleo e filtros',1,1),
-(2,1,138000,'2025-02-05','2025-02-05','Revisao','Revisao completa',1,2),
+(2,1,138000,'2025-02-05','2025-02-06','Revisao','Revisao completa',1,2),
 (3,2,98000,'2025-05-05','2025-05-06','Carro chia','Substituicao de pastilhas dianteiras',2,3),
 (4,3,184000,'2025-05-05','2025-05-06','Perda de Potencia','Substituicao filtro combustivel e velas',3,4),
 (5,4,210000,'2025-05-06','2025-05-07','Motor sobreaquece','Substituicao termostato',4,5),
@@ -418,7 +418,7 @@ VALUES
 -- Service 2 (2025-02-05)
 (5,2,4,20,'2025-02-05'),
 (6,2,6,15,'2025-02-05'),
-(7,2,5,25,'2025-02-05'),
+(7,2,5,25,'2025-02-06'),
 (8,2,4,10,'2025-02-05'),
 (9,2,6,20,'2025-02-05'),
 

@@ -19,7 +19,7 @@ class ServiceComponent
 		SELECT 
 			ROW_NUMBER() OVER (
 				PARTITION BY service_id
-				ORDER BY sut.id
+							ORDER BY service_id ASC, sut.id ASC
 			) AS sut_id,
 			sut.service_id AS service_id,
 			sut.id AS id,
@@ -70,7 +70,7 @@ class ServiceComponent
 					CAST(
 						ROW_NUMBER() OVER (
 							PARTITION BY sut.service_id
-							ORDER BY sut.id
+							ORDER BY service_id ASC, sut.id ASC
 						) AS INTEGER
 					) AS sut_id,
 					sut.service_id,
@@ -95,53 +95,68 @@ class ServiceComponent
 	public function getSUTById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
-			SELECT 
-				ROW_NUMBER() OVER (
-					PARTITION BY service_id
-					ORDER BY sut.id
-				) AS sut_id,
-				sut.service_id AS service_id,
-				sut.id AS id,
-				sut.minutes AS minutes,
-				sut.ut_date AS date,
-				sut.user_id AS user_id,
-				u.name AS user_name
-			FROM services_user_time sut
-			LEFT JOIN users u
-			ON u.id = sut.user_id
-			WHERE  sut.id= ?
+			SELECT * FROM (	
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sut.service_id
+							ORDER BY service_id ASC, sut.id ASC
+						) AS INTEGER
+					) AS sut_id,
+					sut.service_id,
+					sut.id,
+					sut.minutes,
+					sut.ut_date AS date,
+					sut.user_id,
+					u.name AS user_name
+				FROM services_user_time sut
+				LEFT JOIN users u
+				    ON u.id = sut.user_id
+				WHERE sut.service_id = (
+					SELECT service_id
+					FROM services_user_time
+					WHERE id = ?
+				) 
+			) WHERE id = ?
 			");
 
-		$stmt->execute([$id]);
+		$stmt->execute([$id,$id]);
 
 		return $stmt->fetch();
 	}
 
-	public function updateSUT(int $id, array $data): bool|array
+	public function updateSUTBySid_Id(int $s_id,int $id, array $data): bool|array
 	{
-		$stmt = $this->db->prepare("
-			UPDATE
-			services_user_time
-			SET
+		$sut = $this->getSUTBySid_Id($s_id,$id);
+
+		if($sut && isset($sut['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE
+				services_user_time
+				SET
 				service_id = ?,
 				minutes = ?,
 				ut_date = ?,
 				user_id = ?
-			WHERE id = ?
-			");
+				WHERE id = ?
+				");
 
-		$stmt->execute([
-			$data['service_id'],
-			$data['minutes'],
-			$data['ut_date'],
-			$data['user_id'],
-			$id
-		]);
+			$stmt->execute([
+				$s_id,
+				$data['minutes'],
+				$data['date'],
+				$data['user_id'],
+				$sut['id']
+			]);
 
-		return $this->getSUTById($id);
+			$sut = $this->getSUTById($id);
+		}
+
+		return $sut;
 	}
 
-	public function createSUT(array $data): array
+	public function createSUT(int $s_id,array $data): array
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO services_user_time
@@ -150,9 +165,9 @@ class ServiceComponent
 			");
 
 		$stmt->execute([
-			$data['service_id'],
+			$s_id,
 			$data['minutes'],
-			$data['ut_date'],
+			$data['date'],
 			$data['user_id'],
 		]);
 
@@ -161,14 +176,15 @@ class ServiceComponent
 		return $this->getSUTById($newId);
 	}
 
-	public function deleteSUT(int $id): bool|array
+	public function deleteSUTBySid_Id(int $s_id, int $id): bool|array
 	{
-		$sut = $this->getSUTById($id);
+		$sut = $this->getSUTBySid_Id($s_id,$id);
 
-		if($sut)
+		if($sut && isset($sut['id']))
 		{
+
 			$stmt = $this->db->prepare("DELETE FROM services_user_time WHERE id = ?");
-			$stmt->execute([$id]);
+			$stmt->execute([$sut['id']]);
 		}
 
 		return $sut; 
@@ -293,31 +309,38 @@ class ServiceComponent
 		return $stmt->fetch();
 	}
 
-	public function updateSAP(int $id, array $data): bool|array
+	public function updateSAPBySid_Id(int $s_id, int $id, array $data): bool|array
 	{
-		$stmt = $this->db->prepare("
-			UPDATE
-			services_applied_products
-			SET
+		$sap = $this->getSAPBySid_Id($s_id, $id);
+
+		if($sap && isset($sap['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE
+				services_applied_products
+				SET
 				service_id = ?,
 				product_id = ?,
 				quantity = ?,
 				is_applied = ?,
-			WHERE id = ?
-			");
+				WHERE id = ?
+				");
 
-		$stmt->execute([
-			$data['service_id'],
-			$data['product_id'],
-			$data['quantity'],
-			$data['is_applied'],
-			$id
-		]);
+			$stmt->execute([
+				$s_id,
+				$data['product_id'],
+				$data['quantity'],
+				$data['is_applied'],
+				$sap['id']
+			]);
 
-		return $this->getSAPById($id);
+			$sap = $this->getSAPBySid_Id($s_id, $id);
+		}
+
+		return $sap;
 	}
 
-	public function createSAP(array $data): array
+	public function createSAP(int $s_id,array $data): array
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO services_user_time
@@ -326,7 +349,7 @@ class ServiceComponent
 			");
 
 		$stmt->execute([
-			$data['service_id'],
+			$s_id,	
 			$data['product_id'],
 			$data['quantity'],
 			$data['is_applied'],
@@ -337,17 +360,55 @@ class ServiceComponent
 		return $this->getSAPById($newId);
 	}
 
-	public function deleteSAP(int $id): bool|array
+	public function deleteSAPBySid_Id(int $s_id,int $id): bool|array
 	{
-		$sap = $this->getSAPById($id);
+		$sap = $this->getSAPBySid_Id($s_id,$id);
 
-		if($sap)
+		if($sap && isset($sap['id']))
 		{
 			$stmt = $this->db->prepare("DELETE FROM services_applied_products WHERE id = ?");
-			$stmt->execute([$id]);
+			$stmt->execute([$sap['$id']]);
 		}
 
 		return $sap; 
+	}
+
+	public function getSUTWithFilter(array $filters): array
+	{
+		$sql = "
+		SELECT 
+			ROW_NUMBER() OVER (
+				PARTITION BY service_id
+							ORDER BY service_id ASC, sut.id ASC
+			) AS sut_id,
+			sut.service_id AS service_id,
+			sut.id AS id,
+			sut.minutes AS minutes,
+			sut.ut_date AS date,
+	       		sut.user_id AS user_id,
+			u.name AS user_name
+		FROM services_user_time sut
+		LEFT JOIN users u
+		ON u.id = sut.user_id
+		WHERE 1 = 1
+		";
+
+		$params = [];
+
+		$rules = [
+			'service_id' => [
+				'column' => 'sut.service_id',
+				'operator' => '='
+			]
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
 	}
 }
 ?>

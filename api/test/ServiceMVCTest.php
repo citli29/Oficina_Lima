@@ -102,7 +102,7 @@ class ServiceMVCTest extends TestCase
 
 		printf("\n GET Services Filter checkout 1: ");
 
-		$response = $this->client->get('/api/services?checkout=2025-02-05');
+		$response = $this->client->get('/api/services?checkout=2025-02-06');
 		$this->assertEquals(200, $response->getStatusCode());
 		$body = json_decode($response->getBody(), true);
 		$this->assertIsArray($body);
