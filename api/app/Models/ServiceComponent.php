@@ -279,6 +279,22 @@ class ServiceComponent
 				'column' => 'u.name',
 				'operator' => 'LIKE'
 			],
+			'product_name' => [
+				'column' => 'p.name',
+				'operator' => 'LIKE'
+			],
+			'product_reference' => [
+				'column' => 'p.reference',
+				'operator' => 'LIKE'
+			],
+			'product_id' => [
+				'column' => 'p.id',
+				'operator' => '='
+			],
+			'is_applied' => [
+				'column' => 'is_applied',
+				'operator' => '='
+			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
@@ -374,7 +390,7 @@ class ServiceComponent
 		{
 			$stmt = $this->db->prepare("
 				UPDATE
-				services_user_time
+				services_applied_products
 				SET
 				service_id = ?,
 				product_id = ?,
@@ -401,16 +417,31 @@ class ServiceComponent
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO services_applied_products
-			(service_id, product_id, quantity, is_applied)
-			VALUES (?,?,?,?)
-			");
+			(service_id, product_id"
+			. (isset($data['quantity']) ? ",quantity" : "") 
+			. (isset($data['is_applied']) ? ",is_applied" : "") 
+			. ")
+			VALUES (?,?"
+			. (isset($data['quantity']) ? ",?" : "")
+			. (isset($data['is_applied']) ? ",?" : "")
+			. ")"
+		);
 
-		$stmt->execute([
+
+		$params = [
 			$s_id,
 			$data['product_id'],
-			$data['quantity'],
-			$data['is_applied'],
-		]);
+		];
+
+		if (isset($data['quantity'])) {
+			$params[] = $data['quantity'];
+		}
+
+		if (isset($data['is_applied'])) {
+			$params[] = $data['is_applied'];
+		}
+
+		$stmt->execute($params);
 
 		$newId = (int)$this->db->lastInsertId();
 

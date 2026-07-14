@@ -242,7 +242,8 @@
 		id INTEGER PRIMARY KEY,
 		service_id INTEGER NOT NULL,
 		product_id INTEGER NOT NULL,
-		quantity INT NOT NULL DEFAULT 0,
+		quantity INT NOT NULL DEFAULT 0
+		CHECK (typeof(quantity) = 'integer'),
 		is_applied BOOLEAN NOT NULL DEFAULT FALSE,
 		FOREIGN KEY(service_id)
 		REFERENCES services(id),

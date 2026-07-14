@@ -83,15 +83,15 @@
 >>>    - [x] DELETE
 
 >##### Create and List Applied Products of a Service 
->>  - [ ] api/services/{id}/applied_products
->>>    - [ ] GET *?product_name* *?product_reference* *?product_id* *?is_applied*
->>>    - [ ] POST *\*service_id* *\*product_id* *quantity* *is_applied*
+>>  - [x] api/services/{id}/applied_products
+>>>    - [x] GET *?product_name* *?product_reference* *?product_id* *?is_applied*
+>>>    - [x] POST *\*service_id* *\*product_id* *quantity* *is_applied*
 
 >##### Read, Update and Delete Applied Products of a Service
->>  - [ ] api/services/{id}/applied_products/{id}
->>>    - [ ] GET
->>>    - [ ] PUT {*\*service_id*} *\*product_id* *quantity* *is_applied*
->>>    - [ ] DELETE
+>>  - [x] api/services/{id}/applied_products/{id}
+>>>    - [x] GET
+>>>    - [x] PUT {*\*service_id*} *\*product_id* *quantity* *is_applied*
+>>>    - [x] DELETE
 
 >##### List User Times
 >>  - [x] api/services_user_times
