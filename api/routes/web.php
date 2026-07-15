@@ -57,6 +57,8 @@ return [
 	['GET', '/api/schedules/{id:\d+}', [ScheduleController::class, 'getSchedule']],
 	['PUT', '/api/schedules/{id:\d+}', [ScheduleController::class, 'putSchedule']],
 	['DELETE', '/api/schedules/{id:\d+}', [ScheduleController::class, 'deleteSchedule']],
+	['POST', '/api/schedules/{id:\d+}/create_service', [ScheduleController::class, 'postCreateServiceFromSchedule']],
+
 
 	/*	Service Controller	*/
 	['GET', '/api/services', [ServiceController::class, 'getServices']], //with search

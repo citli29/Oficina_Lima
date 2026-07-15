@@ -209,5 +209,32 @@ class Service
 
 		return $service; 
 	}
+	public function createServiceFromSchedule(int $id,array $data,array $schedule):array
+	{
+		$client_id = !empty($data['client_id']) ? $data['client_id']: $schedule['client_id'];
+		$car_id = !empty($data['car_id']) ? $data['car_id']: $schedule['car_id'];
+		$checkin = !empty($data['checkin']) ? $data['checkin']: $schedule['date'];
+
+		$stmt = $this->db->prepare("
+			INSERT INTO
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
+			VALUES (?,?,?,?,?,?,?,?)
+			");
+
+		$stmt->execute([
+			$client_id ?? null,
+			$data['kms'] ?? null,
+			$checkin ?? null,
+			$data['checkout'] ?? null,
+			$data['malfunction'] ?? null,
+			$data['service'] ?? null,
+			$car_id ?? null,
+			$id ?? null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getServiceById($newId);
+	}
 }
 ?>

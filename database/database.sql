@@ -367,7 +367,7 @@
 	(15,'2025-05-09', 'Escape faz muito barulho', 8,NULL, 9),
 	(16,'2025-05-09', 'Cheiro a fases', 9,NULL, 9),
 	(17,'2025-05-11', 'Perda de anticongelante', NULL,8, 8),
-	(18,'2025-05-11', 'Fuga de oleo', NULL,3, 7),
+	(18,'2025-05-11', 'Fuga de oleo', NULL,3, NULL),
 	(19,'2025-05-11', 'Luzes de travao nao funcionam', 11,NULL, 11),
 	(20,'2025-05-12', 'Ruido ao acelerar', 13,NULL, 10);
 

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Schedule;
+use App\Models\Service;
 use App\Services\ScheduleService;
 use InvalidArgumentException;
 use RuntimeException;
@@ -14,7 +15,8 @@ class ScheduleController
 	public function __construct(PDO $db)
 	{
 		$model = new Schedule($db);
-		$this->service = new ScheduleService($model);
+		$s_model = new Service($db);
+		$this->service = new ScheduleService($model,$s_model);
 	}
 
 	public function getSchedules(): void
@@ -113,6 +115,26 @@ class ScheduleController
 			echo json_encode([
 				'success' => true,
 				'schedule'=>$schedule
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postCreateServiceFromSchedule(int $id){
+		try{
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$service = $this->service->createServiceFromSchedule($id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'service'=>$service
 			]);
 		} catch (InvalidArgumentException $e) {
 			http_response_code((int)$e->getCode());

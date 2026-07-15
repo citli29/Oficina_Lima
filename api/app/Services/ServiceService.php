@@ -44,6 +44,7 @@ class ServiceService
 		}
 	}
 
+
 	public function updateService(int $id, array $data): array
 	{
 		if(empty($data['client_id'])) {
