@@ -33,11 +33,11 @@ class Car
 			],
 			'month' => [
 				'column' => 'c.month',
-				'operator' => '='
+				'operator' => 'LIKE'
 			],
 			'year' => [
 				'column' => 'c.year',
-				'operator' => '='
+				'operator' => 'LIKE'
 			],
 			'model_name' => [
 				'column' => 'model_name',
