@@ -33,7 +33,7 @@ class Car
 			],
 			'month' => [
 				'column' => 'c.month',
-				'operator' => 'LIKE'
+				'operator' => '='
 			],
 			'year' => [
 				'column' => 'c.year',
@@ -60,7 +60,7 @@ class Car
 	public function getModelsWithFilter(array $filters): array
 	{
 		$sql = "
-		SELECT m.*, mk.name AS make_name
+		SELECT m.*, mk.name AS make_name, mk.id AS make_id
 		FROM models m 
 		LEFT JOIN makes mk ON m.make_id = mk.id
 		WHERE 1=1
@@ -76,6 +76,10 @@ class Car
 			'make_name' => [
 				'column' => 'make_name',
 				'operator' => 'LIKE'
+			],
+			'make_id' => [
+				'column' => 'mk.id',
+				'operator' => '='
 			]
 		];
 

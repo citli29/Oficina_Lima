@@ -35,7 +35,7 @@ field = optional field
 
 ### Models
 #### api/models
->GET *?name* *?make_name*
+>GET *?name* *?make_name* *?make_id*
 >POST *\*name* *\*make_id*
 #### api/models/{id}
 >GET

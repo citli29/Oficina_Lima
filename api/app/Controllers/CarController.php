@@ -43,6 +43,7 @@ class CarController
 			$filters = [
 				'name' => isset($_GET['name']) ? $_GET['name'] : null,
 				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
+				'make_id' => isset($_GET['make_id']) ? $_GET['make_id'] : null,
 			];
 
 			$model_list = $this->service->listModels($filters);
