@@ -109,6 +109,7 @@ class Schedule
 			COALESCE(car_model.id, sched_model.id) AS car_model_id,
 			COALESCE(car_model.name, sched_model.name) AS car_model,
 			ma.name AS car_make,
+			ma.id AS car_make_id,
 
 			cl.name AS client_name,
 			cl.phone AS client_phone,
