@@ -7,11 +7,19 @@ use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
 use App\Controllers\ServiceComponentController;
 use App\Controllers\ServiceController;
+use App\Controllers\UserController;
 
 return [
 	['GET', '/api/', [HomeController::class, 'index']],
 	['GET', '/api/about', [HomeController::class, 'about']],
 
+	/*	User Controller	*/
+	['GET', '/api/users', [UserController::class, 'getUsers']], //with search
+	//['POST', '/api/users', [UserController::class, 'postUsers']],
+	['GET', '/api/users/{id:\d+}', [UserController::class, 'getUser']],
+	//['PUT', '/api/users/{id:\d+}', [UserController::class, 'putUsers']],
+	//['DELETE', '/api/users/{id:\d+}', [UserController::class, 'deleteUsers']],
+	
 	/*	Car Controller	*/
 	['GET', '/api/cars', [CarController::class, 'getCars']], //with search
 	['POST', '/api/cars', [CarController::class, 'postCars']],

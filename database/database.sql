@@ -25,7 +25,7 @@
 		id INTEGER PRIMARY KEY,
 		name VARCHAR(40) NOT NULL,
 		email VARCHAR(60) UNIQUE NOT NULL,
-		password VARCHAR(60) NOT NULL,
+		password VARCHAR(60) NOT NULL DEFAULT "pass",
 		user_type_id INTEGER NOT NULL,
 		profile_pic VARCHAR(256),
 		nullified BOOLEAN NOT NULL DEFAULT 0,
