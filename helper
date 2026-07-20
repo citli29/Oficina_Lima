@@ -2,6 +2,13 @@
 
 case "$1" in
 	-s)
+		php -S $(hostname -I | awk '{print $1}'):8000 -t api/public
+		PID1=$!
+
+		echo "8000: $PID1"
+		wait
+		;;
+	-t)
 		php -S 127.0.0.1:9000 -t api/public &
 		PID1=$!
 
