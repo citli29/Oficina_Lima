@@ -29,16 +29,17 @@ CREATE TABLE clients(
 	zip_code VARCHAR(60),
 	tax_nr VARCHAR(20)
 );
-INSERT INTO clients VALUES(1,'Paula --','939187713',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(2,'Jose Silva','916633155',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(3,'Paulo Pinto','911130348',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(4,'Printerman','--',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(5,'Luiz Humberto','919229876',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(6,'Benjamim Vieira','963023272',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(7,'Cristina - Magrelos','--',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(8,'Jose Luis','964768953',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(9,'Sumar','--',NULL,NULL,NULL,NULL);
-INSERT INTO clients VALUES(10,'Antonio','912959817',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(1,'Cliente Generico','--',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(2,'Paula Solenha','939187713',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(3,'Jose Silva','916633155',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(4,'Paulo Pinto','911130348',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(5,'Printerman','--',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(6,'Luiz Humberto','919229876',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(7,'Benjamim Vieira','963023272',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(8,'Cristina - Magrelos','--',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(9,'Jose Luis','964768953',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(10,'Sumar','--',NULL,NULL,NULL,NULL);
+INSERT INTO clients VALUES(11,'Antonio','912959817',NULL,NULL,NULL,NULL);
 CREATE TABLE makes(
 	id INTEGER PRIMARY KEY,
 	name VARCHAR(60) NOT NULL UNIQUE,
@@ -122,24 +123,26 @@ CREATE TABLE schedules(
 		REFERENCES clients(id)
 		ON DELETE SET NULL
 );
-INSERT INTO schedules VALUES(1,'2026-07-21',replace('Revisao\nOleo\nFiltros x4\nCheiro Travoes\nVerificar Geral','\n',char(10)),1,NULL,1);
-INSERT INTO schedules VALUES(2,'2026-07-21',replace('Verif. Elim. \nFAP - Central\nVer Turbo - Inj','\n',char(10)),2,NULL,2);
+INSERT INTO schedules VALUES(1,'2026-07-21',replace('Revisao\nOleo\nFiltros x4\nCheiro Travoes\nVerificar Geral','\n',char(10)),1,NULL,2);
+INSERT INTO schedules VALUES(2,'2026-07-21',replace('Verif. Elim. \nFAP - Central\nVer Turbo - Inj','\n',char(10)),2,NULL,3);
 INSERT INTO schedules VALUES(3,'2026-07-21',replace('Travoes \nVerificar estado geral\nPois vai viajar 1000Kms\nPrecisa Levantar 24/7','\n',char(10)),3,NULL,NULL);
-INSERT INTO schedules VALUES(4,'2026-07-22',replace('Fuga Oleo Inj\nFalha a frio\nGrila','\n',char(10)),4,NULL,3);
-INSERT INTO schedules VALUES(5,'2026-07-23',replace('Radiador --\nou AC --\nPedir','\n',char(10)),5,NULL,4);
-INSERT INTO schedules VALUES(6,'2026-07-23',replace('Ver Ruidos e Folgas\nAmortecedor x4','\n',char(10)),6,NULL,10);
-INSERT INTO schedules VALUES(7,'2026-07-24',replace('Revisao\nOleo + Filtros','\n',char(10)),7,NULL,5);
-INSERT INTO schedules VALUES(8,'2026-07-27',replace('Luz motor acesa\nFAP','\n',char(10)),8,NULL,6);
-INSERT INTO schedules VALUES(9,'2026-07-27',replace('Desativar Sensor Pneus\nLEMBRAR','\n',char(10)),9,NULL,7);
-INSERT INTO schedules VALUES(10,'2026-07-28',replace('FAP/ Centralina\nTurbo/ Injecao Verificar','\n',char(10)),2,NULL,2);
-INSERT INTO schedules VALUES(11,'2026-07-28',replace('Embraiagem\nTurbo','\n',char(10)),10,NULL,4);
-INSERT INTO schedules VALUES(12,'2026-07-28',replace('Barulho Frente\nLEMBRAR','\n',char(10)),11,NULL,8);
-INSERT INTO schedules VALUES(13,'2026-07-30',replace('Direcao\nFoles','\n',char(10)),12,NULL,4);
-INSERT INTO schedules VALUES(14,'2026-07-30',replace('Filtro Oleo\nFiltro Gasoleo\nLEMBRAR','\n',char(10)),13,NULL,9);
+INSERT INTO schedules VALUES(4,'2026-07-22',replace('Fuga Oleo Inj\nFalha a frio\nGrila','\n',char(10)),4,NULL,4);
+INSERT INTO schedules VALUES(5,'2026-07-23',replace('Radiador --\nou AC --\nPedir','\n',char(10)),5,NULL,5);
+INSERT INTO schedules VALUES(6,'2026-07-23',replace('Ver Ruidos e Folgas\nAmortecedor x4','\n',char(10)),6,NULL,11);
+INSERT INTO schedules VALUES(7,'2026-07-24',replace('Revisao\nOleo + Filtros','\n',char(10)),7,NULL,6);
+INSERT INTO schedules VALUES(8,'2026-07-27',replace('Luz motor acesa\nFAP','\n',char(10)),8,NULL,7);
+INSERT INTO schedules VALUES(9,'2026-07-27',replace('Desativar Sensor Pneus\nLEMBRAR','\n',char(10)),9,NULL,8);
+INSERT INTO schedules VALUES(10,'2026-07-28',replace('FAP/ Centralina\nTurbo/ Injecao Verificar','\n',char(10)),2,NULL,3);
+INSERT INTO schedules VALUES(11,'2026-07-28',replace('Embraiagem\nTurbo','\n',char(10)),10,NULL,5);
+INSERT INTO schedules VALUES(12,'2026-07-28',replace('Barulho Frente\nLEMBRAR','\n',char(10)),11,NULL,9);
+INSERT INTO schedules VALUES(13,'2026-07-30',replace('Direcao\nFoles','\n',char(10)),12,NULL,5);
+INSERT INTO schedules VALUES(14,'2026-07-30',replace('Filtro Oleo\nFiltro Gasoleo\nLEMBRAR','\n',char(10)),13,NULL,10);
 CREATE TABLE product_types(
 	id INTEGER PRIMARY KEY,
 	name VARCHAR(60) NOT NULL UNIQUE
 );
+INSERT INTO product_types VALUES(1,"Generico");
+
 CREATE TABLE products (
     id INTEGER PRIMARY KEY,
     name VARCHAR(60) NOT NULL,
