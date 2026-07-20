@@ -17,7 +17,7 @@ class User
 	public function getUsersWithFilter(array $filters): array
 	{
 		$sql = "
-			SELECT u.name, u.email, u.user_type_id, ut.name as user_type_name
+			SELECT u.id, u.name, u.email, u.user_type_id, ut.name as user_type_name
 			FROM users u 
 			LEFT JOIN user_types ut
 			ON  u.user_type_id = ut.id
@@ -48,7 +48,7 @@ class User
 	public function getUserById(int $id): bool|array
 	{
 		$stmt = $this->db->prepare("
-			SELECT u.name, u.email, u.user_type_id, ut.name as user_type_name
+			SELECT u.id, u.name, u.email, u.user_type_id, ut.name as user_type_name
 			FROM users u 
 			LEFT JOIN user_types ut
 			ON  u.user_type_id = ut.id
