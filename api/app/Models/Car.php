@@ -51,6 +51,7 @@ class Car
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$sql .= "ORDER BY c.plate ASC";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
@@ -85,6 +86,8 @@ class Car
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$sql .= "ORDER BY make_name, m.name ASC";
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
@@ -109,6 +112,7 @@ class Car
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$sql .= "ORDER BY name ASC";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 

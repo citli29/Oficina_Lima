@@ -40,6 +40,7 @@ class User
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+		$sql .= "ORDER BY u.name ASC";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 		return $stmt->fetchAll();

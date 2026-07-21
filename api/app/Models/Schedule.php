@@ -89,6 +89,7 @@ class Schedule
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$sql .= "ORDER BY s.date ASC";
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 

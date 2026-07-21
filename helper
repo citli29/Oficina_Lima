@@ -2,7 +2,7 @@
 
 case "$1" in
 	-s)
-		pm2 start bash --name oficina-be -- -c "exec php -S 0.0.0.0:8000 -t $HOME/Desktop/Oficina_Lima/api/public"
+		pm2 start bash --name oficina-be -- -c "exec php -S 0.0.0.0:8000 -t $HOME/Desktop/Server/Oficina_Lima/api/public"
 		wait
 		;;
 	-t)

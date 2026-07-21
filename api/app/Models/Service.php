@@ -85,6 +85,7 @@ class Service
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+		$sql .= "ORDER BY checkin,checkout, car_plate ASC";
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
