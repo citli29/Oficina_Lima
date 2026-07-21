@@ -2,10 +2,7 @@
 
 case "$1" in
 	-s)
-		php -S $(hostname -I | awk '{print $1}'):8000 -t api/public
-		PID1=$!
-
-		echo "8000: $PID1"
+		pm2 start bash --name oficina-be -- -c "exec php -S 0.0.0.0:8000 -t $HOME/Desktop/Oficina_Lima/api/public"
 		wait
 		;;
 	-t)
