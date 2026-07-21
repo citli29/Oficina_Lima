@@ -12,7 +12,7 @@ class Database
 	public static function getConnection(): PDO
 	{
 		if (self::$instance === null) {
-			self::$instance= new PDO('sqlite:' . __DIR__ . '/../../../database/database.db');
+			self::$instance= new PDO('sqlite:' . $_ENV['DB_PATH'] );
 			self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			self::$instance->exec("PRAGMA foreign_keys = on");

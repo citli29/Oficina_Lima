@@ -1,5 +1,10 @@
 <?php
-header("Access-Control-Allow-Origin: http://192.168.1.73:5174");
+require __DIR__ . '/../../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__."/../..");
+$dotenv->load();
+
+header("Access-Control-Allow-Origin: ". $_ENV['CORS_IP']);
 //header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -10,9 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require __DIR__ . '/../../vendor/autoload.php';
 
 use App\Database\Database;
+
 
 $db = Database::getConnection();
 $routes = require __DIR__ . '/../routes/web.php';
