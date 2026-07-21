@@ -23,6 +23,7 @@ class ServiceController
 			$filters = [
 				'client_name' => isset($_GET['client_name']) ? $_GET['client_name'] : null,
 				'checkin' => isset($_GET['checkin']) ? $_GET['checkin'] : null,
+				'schedule_id' => isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null,
 				'checkout' => isset($_GET['checkout']) ? $_GET['checkout'] : null,
 				'car_plate' => isset($_GET['car_plate']) ? $_GET['car_plate'] : null,
 				'car_model' => isset($_GET['car_model']) ? $_GET['car_model'] : null,

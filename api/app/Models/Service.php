@@ -78,6 +78,10 @@ class Service
 				'column' => 'car_make_name',
 				'operator' => 'LIKE'
 			],
+			'schedule_id' => [
+				'column' => 's.schedule_id',
+				'operator' => '='
+			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
@@ -95,6 +99,7 @@ class Service
 				s.id,
 				s.checkin_date as checkin,
 				s.checkout_date as checkout,
+				s.schedule_id as schedule_id,
 				s.kms as kms,
 
 				s.client_id as client_id,
