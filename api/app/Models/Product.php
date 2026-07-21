@@ -46,7 +46,7 @@ class Product
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
-		$sql .= "ORDER BY p.name, p.reference, p_t_name ASC";
+		$sql .= "ORDER BY p.name, p.reference, pt.name ASC";
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
