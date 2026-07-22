@@ -107,7 +107,7 @@ class Service
 				s.checkout_date as checkout,
 				s.schedule_id as schedule_id,
 				s.kms as kms,
-				s.is_finished as is_finished
+				s.is_finished as is_finished,
 
 				s.client_id as client_id,
 				cl.name as client_name,
