@@ -16,8 +16,7 @@ class Service
 	public function getServicesWithFilter(array $filters): array
 	{
 		$sql = "
-		SELECT 
-			s.id,
+		SELECT s.id,
 			s.kms,
 			s.checkin_date as checkin,
 			s.checkout_date as checkout,
