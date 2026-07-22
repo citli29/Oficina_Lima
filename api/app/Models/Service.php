@@ -167,7 +167,7 @@ class Service
 				malfunction_description = ?,
 				service_description = ?,
 				car_id = ?,
-				schedule_id = ?
+				schedule_id = ?,
 				is_finished = ?
 
 			WHERE id = ?
