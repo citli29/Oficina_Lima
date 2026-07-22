@@ -193,8 +193,8 @@ class Service
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
-			VALUES (?,?,?,?,?,?,?,?)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id, is_finished)
+			VALUES (?,?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
