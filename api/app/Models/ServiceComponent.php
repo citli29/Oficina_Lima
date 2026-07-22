@@ -404,7 +404,7 @@ class ServiceComponent
 				$s_id,
 				!empty($data['product_id'])?$data['product_id']:null,
 				!empty($data['quantity'])?$data['quantity']:0,
-				!empty($data['is_applied'])?$data['is_applied']:null,
+				!empty($data['is_applied'])?$data['is_applied']:false,
 				$sap['id']
 			]);
 

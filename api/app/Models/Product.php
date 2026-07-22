@@ -148,7 +148,7 @@ class Product
 			");
 
 		$stmt->execute([
-			$data['name'],
+			!empty($data['name']) ? $data['name']:null,
 			!empty($data['reference']) ? $data['reference']:null,
 			!empty($data['product_type_id']) ?$data['product_type_id']: null,
 		]);
