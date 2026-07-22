@@ -234,7 +234,7 @@ class Service
 			!empty($data['kms']) ?$data['kms']: null,
 			$checkin ?? null,
 			!empty($data['checkout']) ?$data['checkout']: null,
-			!empty($data['malfunction']) ?$data['malfunction']: null,
+			!empty($schedule['description']) ?$schedule['description']: null,
 			!empty($data['service']) ?$data['service']: null,
 			$car_id ?? null,
 			$id ?? null,
