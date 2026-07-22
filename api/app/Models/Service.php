@@ -21,7 +21,8 @@ class Service
 			s.kms,
 			s.checkin_date as checkin,
 			s.checkout_date as checkout,
-			s.schedule_id,
+			s.schedule_id as schedule_id,
+			s.note as note,
 			s.is_finished as is_finished,
 
 			cl.name as client_name,
@@ -107,6 +108,7 @@ class Service
 				s.checkout_date as checkout,
 				s.schedule_id as schedule_id,
 				s.kms as kms,
+				s.note as note,
 				s.is_finished as is_finished,
 
 				s.client_id as client_id,
@@ -168,6 +170,7 @@ class Service
 				service_description = ?,
 				car_id = ?,
 				schedule_id = ?,
+				note = ?,
 				is_finished = ?
 
 			WHERE id = ?
@@ -182,6 +185,7 @@ class Service
 			!empty($data['service']) ?$data['service']: null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
+			!empty($data['note']) ?$data['note']: null,
 			!empty($data['is_finished']) ?$data['is_finished']: false,
 			$id
 		]);
@@ -193,8 +197,8 @@ class Service
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id, is_finished)
-			VALUES (?,?,?,?,?,?,?,?,?)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id,note, is_finished)
+			VALUES (?,?,?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
@@ -206,6 +210,7 @@ class Service
 			!empty($data['service']) ?$data['service']: null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
+			!empty($data['note']) ?$data['note']: null,
 			!empty($data['is_finished']) ?$data['is_finished']: false,
 		]);
 

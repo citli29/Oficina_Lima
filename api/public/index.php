@@ -5,7 +5,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__."/../..");
 $dotenv->load();
 
 header("Access-Control-Allow-Origin: ". $_ENV['CORS_IP']);
-//header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
@@ -15,9 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-
 use App\Database\Database;
-
 
 $db = Database::getConnection();
 $routes = require __DIR__ . '/../routes/web.php';
@@ -41,7 +38,6 @@ if (($pos = strpos($uri, '?')) !== false) {
 $uri = rawurldecode($uri);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
