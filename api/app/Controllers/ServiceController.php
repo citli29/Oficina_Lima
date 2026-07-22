@@ -28,6 +28,11 @@ class ServiceController
 				'car_plate' => isset($_GET['car_plate']) ? $_GET['car_plate'] : null,
 				'car_model' => isset($_GET['car_model']) ? $_GET['car_model'] : null,
 				'car_make' => isset($_GET['car_make']) ? $_GET['car_make'] : null,
+				'is_finished' => match ($_GET['is_finished'] ?? null) {
+					'true' => true,
+					'false' => 0,
+					default => null,
+				}
 			];
 			$service_list = $this->service->listServices($filters);
 

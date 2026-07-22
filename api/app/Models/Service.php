@@ -22,6 +22,7 @@ class Service
 			s.checkin_date as checkin,
 			s.checkout_date as checkout,
 			s.schedule_id,
+			s.is_finished as is_finished,
 
 			cl.name as client_name,
 			cl.phone as client_phone,
@@ -82,6 +83,10 @@ class Service
 				'column' => 's.schedule_id',
 				'operator' => '='
 			],
+			'is_finished' => [
+				'column' => 's.is_finished',
+				'operator' => '='
+			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
@@ -102,6 +107,7 @@ class Service
 				s.checkout_date as checkout,
 				s.schedule_id as schedule_id,
 				s.kms as kms,
+				s.is_finished as is_finished
 
 				s.client_id as client_id,
 				cl.name as client_name,
@@ -162,6 +168,7 @@ class Service
 				service_description = ?,
 				car_id = ?,
 				schedule_id = ?
+				is_finished = ?
 
 			WHERE id = ?
 			");
@@ -175,6 +182,7 @@ class Service
 			!empty($data['service']) ?$data['service']: null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
+			!empty($data['is_finished']) ?$data['is_finished']: false,
 			$id
 		]);
 
@@ -198,6 +206,7 @@ class Service
 			!empty($data['service']) ?$data['service']: null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
+			!empty($data['is_finished']) ?$data['is_finished']: false,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
