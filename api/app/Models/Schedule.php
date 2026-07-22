@@ -160,11 +160,11 @@ class Schedule
 			");
 
 		$stmt->execute([
-			$data['date'],
-			$data['description'],
-			$data['car_id'] ?? null,
-			$data['model_id'] ?? null,
-			$data['client_id'] ?? null,
+			!empty($data['date']) ?$data['date']: null,
+			!empty($data['description']) ?$data['description']: null,
+			!empty($data['car_id']) ?$data['car_id']: null,
+			!empty($data['model_id']) ?$data['model_id']: null,
+			!empty($data['client_id']) ?$data['client_id']: null,
 			$id
 		]);
 
@@ -178,11 +178,11 @@ class Schedule
 			");
 
 		$stmt->execute([
-			$data['date'],
-			$data['description'],
-			$data['car_id'] ?? null,
-			$data['model_id'] ?? null,
-			$data['client_id'] ?? null,
+			!empty($data['date']) ?$data['date']: null,
+			!empty($data['description']) ?$data['description']: null,
+			!empty($data['car_id']) ?$data['car_id']: null,
+			!empty($data['model_id']) ?$data['model_id']: null,
+			!empty($data['client_id']) ?$data['client_id']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

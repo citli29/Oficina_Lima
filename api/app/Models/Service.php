@@ -167,14 +167,14 @@ class Service
 			");
 
 		$stmt->execute([
-			$data['client_id'],
-			$data['kms'] ?? null,
-			$data['checkin'] ?? null,
-			$data['checkout'] ?? null,
-			$data['malfunction'] ?? null,
-			$data['service'] ?? null,
-			$data['car_id'] ?? null,
-			$data['schedule_id'] ?? null,
+			!empty($data['client_id']) ?$data['client_id']: null,
+			!empty($data['kms']) ?$data['kms']: null,
+			!empty($data['checkin']) ?$data['checkin']: null,
+			!empty($data['checkout']) ?$data['checkout']: null,
+			!empty($data['malfunction']) ?$data['malfunction']: null,
+			!empty($data['service']) ?$data['service']: null,
+			!empty($data['car_id']) ?$data['car_id']: null,
+			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			$id
 		]);
 
@@ -190,14 +190,14 @@ class Service
 			");
 
 		$stmt->execute([
-			$data['client_id'],
-			$data['kms'] ?? null,
-			$data['checkin'] ?? null,
-			$data['checkout'] ?? null,
-			$data['malfunction'] ?? null,
-			$data['service'] ?? null,
-			$data['car_id'] ?? null,
-			$data['schedule_id'] ?? null,
+			!empty($data['client_id']) ?$data['client_id']: null,
+			!empty($data['kms']) ?$data['kms']: null,
+			!empty($data['checkin']) ?$data['checkin']: null,
+			!empty($data['checkout']) ?$data['checkout']: null,
+			!empty($data['malfunction']) ?$data['malfunction']: null,
+			!empty($data['service']) ?$data['service']: null,
+			!empty($data['car_id']) ?$data['car_id']: null,
+			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -231,11 +231,11 @@ class Service
 
 		$stmt->execute([
 			$client_id ?? null,
-			$data['kms'] ?? null,
+			!empty($data['kms']) ?$data['kms']: null,
 			$checkin ?? null,
-			$data['checkout'] ?? null,
-			$data['malfunction'] ?? null,
-			$data['service'] ?? null,
+			!empty($data['checkout']) ?$data['checkout']: null,
+			!empty($data['malfunction']) ?$data['malfunction']: null,
+			!empty($data['service']) ?$data['service']: null,
 			$car_id ?? null,
 			$id ?? null,
 		]);

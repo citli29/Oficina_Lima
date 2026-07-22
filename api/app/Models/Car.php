@@ -229,15 +229,15 @@ class Car
 			");
 
 		$stmt->execute([
-			$data['plate'],
-			$data['make_id'],
-			$data['model_id'] ?? null,
-			$data['chassi_nr'] ?? null,
-			$data['year'] ?? null,
-			$data['month'] ?? null,
-			$data['cc'] ?? null,
-			$data['engine_code'] ?? null,
-			$data['color_code'] ?? null,
+			!empty($data['plate']) ?$data['plate']: null,
+			!empty($data['make_id']) ?$data['make_id']: null,
+			!empty($data['model_id']) ?$data['model_id']: null,
+			!empty($data['chassi_nr']) ?$data['chassi_nr']: null,
+			!empty($data['year']) ?$data['year']: null,
+			!empty($data['month']) ?$data['month']: null,
+			!empty($data['cc']) ?$data['cc']: null,
+			!empty($data['engine_code']) ?$data['engine_code']: null,
+			!empty($data['color_code']) ?$data['color_code']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -254,8 +254,8 @@ class Car
 			");
 
 		$stmt->execute([
-			$data['name'],
-			$data['make_id']
+			!empty($data['name']) ?$data['name']: null,
+			!empty($data['make_id']) ?$data['make_id']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -272,8 +272,8 @@ class Car
 			");
 
 		$stmt->execute([
-			$data['name'],
-			$data['logo'] ?? null
+			!empty($data['name']) ?$data['name']: null,
+			!empty($data['logo']) ?$data['logo']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

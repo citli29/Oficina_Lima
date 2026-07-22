@@ -201,9 +201,10 @@ class ServiceComponent
 
 			$stmt->execute([
 				$s_id,
-				$data['minutes'],
-				$data['date'],
-				$data['user_id'],
+				!empty($data['minutes'])? $data['minutes']:0,
+				!empty($data['date'])? $data['date']:null,
+				!empty($data['user_id'])? $data['user_id']:null,
+				!empty($data['user_id'])? $data['user_id']:null,
 				$sut['id']
 			]);
 
@@ -223,9 +224,9 @@ class ServiceComponent
 
 		$stmt->execute([
 			$s_id,
-			$data['minutes'],
-			$data['date'],
-			$data['user_id'],
+			!empty($data['minutes'])? $data['minutes']:0,
+			!empty($data['date'])? $data['date']:null,
+			!empty($data['user_id'])? $data['user_id']:null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -401,9 +402,9 @@ class ServiceComponent
 
 			$stmt->execute([
 				$s_id,
-				$data['product_id'],
-				$data['quantity'],
-				$data['is_applied'],
+				!empty($data['product_id'])?$data['product_id']:null,
+				!empty($data['quantity'])?$data['quantity']:0,
+				!empty($data['is_applied'])?$data['is_applied']:null,
 				$sap['id']
 			]);
 
@@ -430,15 +431,15 @@ class ServiceComponent
 
 		$params = [
 			$s_id,
-			$data['product_id'],
+			!empty($data['product_id'])?$data['product_id']:null,
 		];
 
 		if (isset($data['quantity'])) {
-			$params[] = $data['quantity'];
+			$params[] =!empty($data['quantity'])?$data['quantity']:0; 
 		}
 
 		if (isset($data['is_applied'])) {
-			$params[] = $data['is_applied'];
+			$params[] = !empty($data['is_applied'])?$data['is_applied']:false;
 		}
 
 		$stmt->execute($params);
