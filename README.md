@@ -75,6 +75,17 @@ field = optional field
 >GET
 >PUT *\*service_id* *\*user_id* *\*minutes* *\*date*
 >DELETE
+#### api/services/{id}/user_times_punches
+>GET 
+>POST {*\*service_id*} *\*user_id* *\*date* 
+#### api/services/{id}/user_times_punches/{id}
+>GET
+>PUT *\*service_id* *\*user_id* *\*date*
+>DELETE
+#### api/services/{id}/user_times_punches/{id}/start
+POST
+#### api/services/{id}/user_times_punches/{id}/stop
+POST
 #### api/services/{id}/applied_products
 >GET *?product_name* *?product_id* *?is_applied*
 >POST *\*service_id* *\*product_id* *quantity* *is_applied*

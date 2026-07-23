@@ -195,6 +195,8 @@ class ServiceComponentService
 			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
 		if($sutp['hours_f']!== null && $sutp['minutes_f'] !==null )
 			throw new RuntimeException("Show User Time Punches[Already Ended]: {$s_id} : {$id}.",400);
+		if($sutp['hours_s']=== null && $sutp['minutes_s'] ===null )
+			throw new RuntimeException("Show User Time Punches[Didn't Started]: {$s_id} : {$id}.",400);
 		$sutp = $this->serviceComponentModel->stopSUTP($sutp);
 		return $sutp;
 	}
