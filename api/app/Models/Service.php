@@ -185,7 +185,7 @@ class Service
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
-			!empty($data['is_finished']) ?$data['is_finished']: false,
+			!empty($data['is_finished']) ?$data['is_finished']: 0,
 			$id
 		]);
 
