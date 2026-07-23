@@ -2,6 +2,8 @@
 namespace App\Models;
 
 use App\Database\Database;
+use DateTime;
+use DateTimeZone;
 use PDO;
 
 class ServiceComponent
@@ -203,7 +205,6 @@ class ServiceComponent
 				$s_id,
 				!empty($data['minutes'])? $data['minutes']:0,
 				!empty($data['date'])? $data['date']:null,
-				!empty($data['user_id'])? $data['user_id']:null,
 				!empty($data['user_id'])? $data['user_id']:null,
 				$sut['id']
 			]);
@@ -522,6 +523,220 @@ class ServiceComponent
 		$stmt->execute($params);
 
 		return $stmt->fetchAll();
+	}
+
+	public function getSUTPByServiceWithFilter(int $serviceId, array $filters): array
+	{
+		$sql = "
+		SELECT 
+			ROW_NUMBER() OVER (
+				PARTITION BY service_id
+							ORDER BY service_id ASC, sutp.id ASC
+			) AS sutp_id,
+			sutp.service_id AS service_id,
+			sutp.id AS id,
+			sutp.minutes AS minutes,
+			sutp.ut_date AS date,
+	       		sutp.user_id AS user_id,
+			u.name AS user_name
+		FROM services_user_time_punches sutp
+		LEFT JOIN users u
+		ON u.id = sutp.user_id
+		WHERE sutp.service_id = ?
+		";
+
+		$params = [];
+
+		$rules = [
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		array_unshift($params,$serviceId);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getSUTPById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+			SELECT * FROM (	
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sutp.service_id
+							ORDER BY service_id ASC, sutp.id ASC
+						) AS INTEGER
+					) AS sutp_id,
+					sutp.service_id,
+					sutp.id,
+					sutp.hours_s,
+					sutp.minutes_s,
+					sutp.hours_f,
+					sutp.minutes_f,
+					sutp.minutes,
+					sutp.ut_date AS date,
+					sutp.user_id,
+					u.name AS user_name
+				FROM services_user_time_punches sutp
+				LEFT JOIN users u
+				    ON u.id = sutp.user_id
+				WHERE sutp.service_id = (
+					SELECT service_id
+					FROM services_user_time_punches
+					WHERE id = ?
+				) 
+			) WHERE id = ?
+			");
+
+		$stmt->execute([$id,$id]);
+
+		return $stmt->fetch();
+	}
+	
+	public function createSUTP(int $s_id,array $data): array 
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO services_user_time_punches
+			(service_id, ut_date, user_id)
+			VALUES (?,?,?)
+			");
+
+		$stmt->execute([
+			$s_id,
+			!empty($data['date'])? $data['date']:null,
+			!empty($data['user_id'])? $data['user_id']:null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getSUTPById($newId);
+	}
+
+	public function getSUTPBySid_Id(int $s_id, int $id): bool|array
+	{
+
+		$stmt = $this->db->prepare("
+			SELECT *
+			FROM (
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY sutp.service_id
+							ORDER BY service_id ASC, sutp.id ASC
+						) AS INTEGER
+					) AS sutp_id,
+					sutp.service_id,
+					sutp.id,
+					sutp.hours_s,
+					sutp.minutes_s,
+					sutp.hours_f,
+					sutp.minutes_f,
+					sutp.minutes,
+					sutp.ut_date AS date,
+					sutp.user_id,
+					u.name AS user_name
+				FROM services_user_time_punches sutp
+				LEFT JOIN users u
+				    ON u.id = sutp.user_id
+				WHERE sutp.service_id = ?
+			    ) ranked
+		    WHERE sutp_id = ?
+		");
+
+		$stmt->execute(array($s_id,$id));
+		
+		return $stmt->fetch();
+	}
+
+	public function startSUTP(array $sutp): bool|array
+	{
+		$now = new DateTime('now', new DateTimeZone('Europe/Lisbon'));
+
+		$hour = (int) $now->format('H');
+		$minute = (int) $now->format('i');
+		$id = $sutp['id'];
+
+		$stmt = $this->db->prepare("
+			UPDATE 
+				services_user_time_punches 
+			SET 
+				hours_s= ?, 
+				minutes_s= ? 
+			WHERE 
+				id= ?;
+		");
+
+		$stmt->execute(array($hour,$minute,$id));
+
+		return $this->getSUTPById($id);
+	}
+
+	public function stopSUTP(array $sutp): bool|array
+	{
+		$now = new DateTime('now', new DateTimeZone('Europe/Lisbon'));
+
+		$hour = (int) $now->format('H');
+		$minute = (int) $now->format('i');
+		$id = $sutp['id'];
+
+		$stmt = $this->db->prepare("
+			UPDATE 
+				services_user_time_punches 
+			SET 
+				hours_f= ?, 
+				minutes_f= ? 
+			WHERE 
+				id= ?;
+		");
+
+		$stmt->execute(array($hour,$minute,$id));
+
+		return $this->getSUTPById($id);
+	}
+
+	public function deleteSUTPBySid_Id(int $s_id, int $id): bool|array
+	{
+		$sutp = $this->getSUTPBySid_Id($s_id,$id);
+
+		if($sutp && isset($sutp['id']))
+		{
+
+			$stmt = $this->db->prepare("DELETE FROM services_user_time_punches WHERE id = ?");
+			$stmt->execute([$sutp['id']]);
+		}
+
+		return $sutp; 
+	}
+
+	public function updateSUTPBySid_Id(int $s_id,int $id, array $data): bool|array
+	{
+		$sutp = $this->getSUTPBySid_Id($s_id,$id);
+
+		if($sutp && isset($sutp['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE
+				services_user_time
+				SET
+				ut_date = ?,
+				user_id = ?
+				WHERE id = ?
+				");
+
+			$stmt->execute([
+				!empty($data['date'])? $data['date']:null,
+				!empty($data['user_id'])? $data['user_id']:null,
+				$sutp['id']
+			]);
+
+			$sutp = $this->getSUTById($sutp['id']);
+		}
+
+		return $sutp;
 	}
 }
 ?>

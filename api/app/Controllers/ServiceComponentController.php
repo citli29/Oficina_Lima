@@ -292,4 +292,135 @@ class ServiceComponentController
 
 	}
 
+	public function getSUTPs(int $s_id)
+	{
+		try{
+			$filters = [
+			];
+			$sutp_list = $this->service->listSUTPsByService($s_id,$filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp_list'=>$sutp_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postSUTPs(int $s_id)
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$sutp = $this->service->createSUTP($s_id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp'=>$sutp
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getSUTP(int $s_id, int $id)
+	{
+		try{
+			$sutp = $this->service->showSUTP($s_id,$id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp'=>$sutp
+			]);
+		} catch (RuntimeException$e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postSUTPstart(int $s_id, int $id)
+	{
+		try{
+			$sutp = $this->service->startSUTP($s_id,$id);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp'=>$sutp
+			]);
+		} catch (RuntimeException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postSUTPstop(int $s_id,int $id)
+	{
+		try{
+			$sutp = $this->service->stopSUTP($s_id,$id);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp'=>$sutp
+			]);
+		} catch (RuntimeException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+
+	public function putSUTP(int $s_id,int $id)
+	{
+		try{
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$sutp = $this->service->updateSUTP($s_id,$id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp'=>$sutp
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+	}
+
+	public function deleteSUTP(int $s_id,int$id)
+	{
+		try {
+
+			$sutp = $this->service->deleteSUTP($s_id,$id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sut' => $sutp
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
 }

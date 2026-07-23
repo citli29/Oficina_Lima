@@ -150,4 +150,81 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Delete Applied Product [Error]: [{$e->errorInfo[2]}]", 409);
 		}
 	}
+
+	public function listSUTPsByService(int $s_id,array $filters): array
+	{
+		return $this->serviceComponentModel->getSUTPByServiceWithFilter($s_id,$filters);
+	}
+
+	public function createSUTP(int $s_id, array $data){
+		if(empty($data['user_id'])||empty($data['date'])) {
+			throw new InvalidArgumentException("Create Service User Time Punches[Arguments Required]: User ID, Date.", 400);
+		}
+
+		try
+		{
+			return $this->serviceComponentModel->createSUTP($s_id,$data);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException("Create Service User Time Punches[Argument Constraints]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]", 400);
+		}
+	}
+
+	public function showSUTP(int $s_id,int $id):array
+	{
+		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
+		if(!$sutp)
+			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+		return $sutp;
+	}
+
+	public function startSUTP(int $s_id,int $id):array
+	{
+		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
+		if(!$sutp)
+			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+		if($sutp['hours_s']!== null && $sutp['minutes_s'] !==null )
+			throw new RuntimeException("Show User Time Punches[Already Started]: {$s_id} : {$id}.",400);
+		$sutp = $this->serviceComponentModel->startSUTP($sutp);
+		return $sutp;
+	}
+
+	public function stopSUTP(int $s_id,int $id):array
+	{
+		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
+		if(!$sutp)
+			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+		if($sutp['hours_f']!== null && $sutp['minutes_f'] !==null )
+			throw new RuntimeException("Show User Time Punches[Already Ended]: {$s_id} : {$id}.",400);
+		$sutp = $this->serviceComponentModel->stopSUTP($sutp);
+		return $sutp;
+	}
+
+	public function deleteSUTP(int $s_id, int $id): array
+	{
+		try
+		{
+			if(!$sutp = $this->serviceComponentModel->deleteSUTPBySid_Id($s_id,$id))
+				throw new InvalidArgumentException("Delete User Time Punches[Invalid ID]: {$s_id} - {$id}.", 404);
+			return $sutp;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException("Delete User Time Punches [Error]: [{$e->errorInfo[2]}]", 409);
+		}
+	}
+
+	public function updateSUTP(int $s_id, int $id, array $data): array
+	{
+		if(empty($data['user_id'])|| empty($data['date'])) {
+			throw new InvalidArgumentException("Update Service User Time Punches[Argument Required]: User ID, Date.",400);
+		}
+		try
+		{
+			$sutp = $this->serviceComponentModel->updateSUTPBySid_Id($s_id,$id,$data);
+			if(!$sutp) 
+			throw new InvalidArgumentException("Update Service User Time Punches[Invalid ID]: {$s_id} - {$id}.",400);
+			return $sutp;
+		} catch (PDOException $e){
+			throw new InvalidArgumentException("Update Service User Time Punches[Argument Required]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]",400);
+		}
+	}
 }
