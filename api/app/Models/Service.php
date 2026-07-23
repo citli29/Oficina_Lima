@@ -60,23 +60,23 @@ class Service
 				'operator' => 'LIKE'
 			],
 			'checkin' => [
-				'column' => 'checkin',
+				'column' => 's.checkin',
 				'operator' => 'LIKE'
 			],
 			'checkout' => [
-				'column' => 'checkout',
+				'column' => 's.checkout',
 				'operator' => 'LIKE'
 			],
 			'car_plate' => [
-				'column' => 'car_plate',
+				'column' => 'c.plate',
 				'operator' => 'LIKE'
 			],
 			'car_model' => [
-				'column' => 'car_model_name',
+				'column' => 'mo.name',
 				'operator' => 'LIKE'
 			],
 			'car_make' => [
-				'column' => 'car_make_name',
+				'column' => 'ma.name',
 				'operator' => 'LIKE'
 			],
 			'schedule_id' => [
@@ -100,7 +100,7 @@ class Service
 
 	public function getServiceById(int $id): bool|array
 	{
-		$stmt = $this->db->query( "
+		$stmt = $this->db->prepare( "
 			SELECT 
 				s.id,
 				s.checkin_date as checkin,
@@ -210,7 +210,7 @@ class Service
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
-			!empty($data['is_finished']) ?$data['is_finished']: false,
+			0,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -232,25 +232,24 @@ class Service
 	}
 	public function createServiceFromSchedule(int $id,array $data,array $schedule):array
 	{
-		$client_id = !empty($data['client_id']) ? $data['client_id']: $schedule['client_id'];
-		$car_id = !empty($data['car_id']) ? $data['car_id']: $schedule['car_id'];
-		$checkin = !empty($data['checkin']) ? $data['checkin']: $schedule['date'];
+		$client_id =  $schedule['client_id'];
+		$car_id =  $schedule['car_id'];
 
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, car_id, schedule_id,is_finished)
 			VALUES (?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
 			$client_id ?? null,
 			!empty($data['kms']) ?$data['kms']: null,
-			$checkin ?? null,
+			!empty($data['checkin']) ?$data['checkin']: null,
 			!empty($data['checkout']) ?$data['checkout']: null,
 			!empty($schedule['description']) ?$schedule['description']: null,
-			!empty($data['service']) ?$data['service']: null,
 			$car_id ?? null,
 			$id ?? null,
+			0
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
