@@ -33,7 +33,11 @@ class Schedule
 
 		cl.name AS client_name,
 		cl.phone AS client_phone,
-		cl.id AS client_id
+		cl.id AS client_id,
+
+		ss.id AS service_id,
+		ss.is_finished AS service_is_finished,
+		ss.checkout_date AS service_checkout
 
 		FROM schedules s
 
@@ -52,6 +56,9 @@ class Schedule
 		sched_model.make_id,
 		c.make_id
 		)
+
+		LEFT JOIN services ss
+		ON s.id = ss.schedule_id
 
 		LEFT JOIN clients cl
 		ON cl.id = s.client_id

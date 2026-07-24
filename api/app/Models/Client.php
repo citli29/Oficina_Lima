@@ -88,7 +88,6 @@ class Client
 			!empty($data['phone']) ?$data['phone']: null,
 			!empty($data['address']) ?$data['address']: null,
 			!empty($data['email']) ?$data['email']: null,
-			!empty($data['phone']) ?$data['phone']: null,
 			!empty($data['zip_code']) ?$data['zip_code']: null,
 			!empty($data['tax_nr']) ?$data['tax_nr']: null,
 			$id
