@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+
 class ProductController
 {
 	private ProductService $service;
@@ -21,9 +23,9 @@ class ProductController
 	{
 		try{
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'reference' => isset($_GET['reference']) ? $_GET['reference'] : null,
-				'p_t_name' => isset($_GET['p_t_name']) ? $_GET['p_t_name'] : null,
+				'p_t_name' => isset($_GET['p_t_name']) ? normalize($_GET['p_t_name']) : null,
 				'p_t_id' => isset($_GET['p_t_id']) ? $_GET['p_t_id'] : null,
 			];
 
@@ -47,7 +49,7 @@ class ProductController
 	{
 		try{
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
 
 			$product_type_list = $this->service->listProductTypes($filters);

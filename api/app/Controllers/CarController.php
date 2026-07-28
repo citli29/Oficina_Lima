@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+
 class CarController
 {
 	private CarService $service;
@@ -21,7 +23,7 @@ class CarController
 	{
 		try {
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
 			$make_list = $this->service->listMakes($filters);
 
@@ -41,9 +43,9 @@ class CarController
 	{
 		try {
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
-				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
-				'make_id' => isset($_GET['make_id']) ? $_GET['make_id'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
+				'make_name' => isset($_GET['make_name']) ? normalize($_GET['make_name']) : null,
+				'make_id' => isset($_GET['make_id']) ? normalize($_GET['make_id']) : null,
 			];
 
 			$model_list = $this->service->listModels($filters);
@@ -64,11 +66,11 @@ class CarController
 	{
 		try {
 			$filters = [
-				'plate' => $_GET['plate'] ?? null,
+				'plate' => isset($_GET['plate']) ? normalize($_GET['plate']) : null,
 				'year' => isset($_GET['year']) ? (int) $_GET['year'] : null,
 				'month' => isset($_GET['month']) ? (int) $_GET['month'] : null,
-				'model_name' => isset($_GET['model_name']) ? $_GET['model_name'] : null,
-				'make_name' => isset($_GET['make_name']) ? $_GET['make_name'] : null,
+				'model_name' => isset($_GET['model_name']) ? normalize($_GET['model_name']) : null,
+				'make_name' => isset($_GET['make_name']) ? normalize($_GET['make_name']) : null,
 			];
 
 			$car_list = $this->service->listCars($filters);

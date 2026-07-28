@@ -26,7 +26,7 @@ class User
 		$params = [];
 		$rules = [
 			'name' => [
-				'column' => 'u.name',
+				'column' => 'u.search_name',
 				'operator' => 'LIKE'
 			],
 			'email' => [
@@ -34,7 +34,7 @@ class User
 				'operator' => 'LIKE'
 			],
 			'user_type' => [
-				'column' => 'ut.name',
+				'column' => 'ut.search_name',
 				'operator' => 'LIKE'
 			],
 		];

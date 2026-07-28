@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Models;
-
 use App\Database\Database;
 use PDO;
+
+require_once __DIR__ . '/../../../utils/normalize.php';
 
 class Car
 {
@@ -28,7 +29,7 @@ class Car
 
 		$rules = [
 			'plate' => [
-				'column' => 'c.plate',
+				'column' => 'c.search_plate',
 				'operator' => 'LIKE'
 			],
 			'month' => [
@@ -40,11 +41,11 @@ class Car
 				'operator' => 'LIKE'
 			],
 			'model_name' => [
-				'column' => 'model_name',
+				'column' => 'm.search_name',
 				'operator' => 'LIKE'
 			],
 			'make_name' => [
-				'column' => 'make_name',
+				'column' => 'mk.search_name',
 				'operator' => 'LIKE'
 			]
 		];
@@ -71,11 +72,11 @@ class Car
 
 		$rules = [
 			'name' => [
-				'column' => 'm.name',
+				'column' => 'm.search_name',
 				'operator' => 'LIKE'
 			],
 			'make_name' => [
-				'column' => 'make_name',
+				'column' => 'mk.search_name',
 				'operator' => 'LIKE'
 			],
 			'make_id' => [
@@ -97,7 +98,7 @@ class Car
 	public function getMakesWithFilter(array $filters): array
 	{
 		$sql = "
-		SELECT * FROM makes 
+		SELECT id,name FROM makes 
 		WHERE 1=1
 		";
 
@@ -105,7 +106,7 @@ class Car
 
 		$rules = [
 			'name' => [
-				'column' => 'name',
+				'column' => 'search_name',
 				'operator' => 'LIKE'
 			]
 		];
@@ -165,7 +166,7 @@ class Car
 			UPDATE cars
 			SET plate = ?, make_id = ?,model_id = ?, chassi_nr = ?,
 			year = ?, month = ?, cc = ?, 
-			engine_code = ?, color_code = ? 
+			engine_code = ?, color_code = ? , search_plate = ? 
 			WHERE id = ?
 			");
 
@@ -179,6 +180,7 @@ class Car
 			!empty($data['cc'])?$data['cc']:null,
 			!empty($data['engine_code'])?$data['engine_code']:null,
 			!empty($data['color_code'])?$data['color_code']:null,
+			!empty($data['plate'])?normalize($data['plate']):null,
 			$id
 		]);
 
@@ -189,13 +191,14 @@ class Car
 	{
 		$stmt = $this->db->prepare("
 			UPDATE models
-			SET name = ? , make_id = ? 
+			SET name = ? , make_id = ? , search_name = ?
 			WHERE id = ?
 			");
 
 		$stmt->execute([
 			!empty($data['name'])?$data['name']:null,
 			!empty($data['make_id'])?$data['make_id']:null,
+			!empty($data['name'])?normalize($data['name']):null,
 			$id
 		]);
 
@@ -206,13 +209,14 @@ class Car
 	{
 		$stmt = $this->db->prepare("
 			UPDATE makes
-			SET name = ? , logo = ? 
+			SET name = ? , logo = ?, search_name = ?
 			WHERE id = ?
 			");
 
 		$stmt->execute([
 			!empty($data['name'])?$data['name']:null,
 			!empty($data['logo'])?$data['logo']:null,
+			!empty($data['name'])?normalize($data['name']):null,
 			$id
 		]);
 
@@ -224,8 +228,8 @@ class Car
 		$stmt = $this->db->prepare("
 			INSERT INTO cars
 			(plate, make_id, model_id, chassi_nr,
-		       	year, month, cc, engine_code, color_code)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		       	year, month, cc, engine_code, color_code,search_plate)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			");
 
 		$stmt->execute([
@@ -238,6 +242,7 @@ class Car
 			!empty($data['cc']) ?$data['cc']: null,
 			!empty($data['engine_code']) ?$data['engine_code']: null,
 			!empty($data['color_code']) ?$data['color_code']: null,
+			!empty($data['plate']) ?normalize($data['plate']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -249,13 +254,14 @@ class Car
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO models
-			(name, make_id)
-			VALUES (?, ?)
+			(name, make_id,search_name)
+			VALUES (?, ?, ?)
 			");
 
 		$stmt->execute([
 			!empty($data['name']) ?$data['name']: null,
 			!empty($data['make_id']) ?$data['make_id']: null,
+			!empty($data['name']) ?normalize($data['name']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -267,13 +273,14 @@ class Car
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO makes
-			(name, logo)
-			VALUES (?, ?)
+			(name, logo,search_name)
+			VALUES (?, ?, ?)
 			");
 
 		$stmt->execute([
 			!empty($data['name']) ?$data['name']: null,
 			!empty($data['logo']) ?$data['logo']: null,
+			!empty($data['name']) ?normalize($data['name']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
 use App\Database\Database;
 use PDO;
 
@@ -24,7 +25,7 @@ class Client
 		$params = [];
 		$rules = [
 			'name' => [
-				'column' => 'c.name',
+				'column' => 'c.search_name',
 				'operator' => 'LIKE'
 			],
 			'phone' => [
@@ -79,7 +80,7 @@ class Client
 		$stmt = $this->db->prepare("
 			UPDATE clients
 			SET name = ?, phone = ?, address = ?, email = ?,
-			zip_code = ?, tax_nr = ?
+			zip_code = ?, tax_nr = ?, search_name = ?
 			WHERE id = ?
 			");
 
@@ -90,6 +91,7 @@ class Client
 			!empty($data['email']) ?$data['email']: null,
 			!empty($data['zip_code']) ?$data['zip_code']: null,
 			!empty($data['tax_nr']) ?$data['tax_nr']: null,
+			!empty($data['name']) ?normalize($data['name']): null,
 			$id
 		]);
 
@@ -102,7 +104,7 @@ class Client
 			INSERT INTO clients
 			(name, phone, address, email,
 		       	zip_code, tax_nr)
-			VALUES (?, ?, ?, ?, ?, ?)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
 			");
 
 		$stmt->execute([
@@ -112,6 +114,7 @@ class Client
 			!empty($data['email']) ?$data['email']: null,
 			!empty($data['zip_code']) ?$data['zip_code']: null,
 			!empty($data['tax_nr']) ?$data['tax_nr']: null,
+			!empty($data['name']) ?normalize($data['name']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

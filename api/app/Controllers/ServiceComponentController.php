@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+
 class ServiceComponentController
 {
 	private ServiceComponentService $service;
@@ -21,7 +23,7 @@ class ServiceComponentController
 	{
 		try{
 			$filters = [
-				'user_name' => isset($_GET['user_name']) ? $_GET['user_name'] : null,
+				'user_name' => isset($_GET['user_name']) ? normalize($_GET['user_name']) : null,
 				'user_id' => isset($_GET['user_id']) ? $_GET['user_id'] : null,
 				'date' => isset($_GET['date']) ? $_GET['date'] : null,
 			];
@@ -129,9 +131,9 @@ class ServiceComponentController
 	{
 		try{
 			$filters = [
-				'product_name' => isset($_GET['product_name']) ? $_GET['product_name'] : null,
+				'product_name' => isset($_GET['product_name']) ? normalize($_GET['product_name']) : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
-				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
+				'product_reference' => isset($_GET['product_reference']) ? normalize($_GET['product_reference']) : null,
 				'is_applied' => match ($_GET['is_applied'] ?? null) {
 					'true' => true,
 					'false' => 0,
@@ -242,7 +244,7 @@ class ServiceComponentController
 		try{
 			$filters = [
 				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
-				'user_name' => isset($_GET['user_name']) ? $_GET['user_name'] : null,
+				'user_name' => isset($_GET['user_name']) ? normalize($_GET['user_name']) : null,
 				'user_id' => isset($_GET['user_id']) ? $_GET['user_id'] : null,
 				'minutes' => isset($_GET['minutes']) ? $_GET['minutes'] : null,
 				'date' => isset($_GET['date']) ? $_GET['date'] : null,
@@ -267,7 +269,7 @@ class ServiceComponentController
 		try{
 			$filters = [
 				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
-				'product_name' => isset($_GET['product_name']) ? $_GET['product_name'] : null,
+				'product_name' => isset($_GET['product_name']) ? normalize($_GET['product_name']) : null,
 				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
 

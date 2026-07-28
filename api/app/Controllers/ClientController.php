@@ -21,9 +21,9 @@ class ClientController
 	{
 		try{
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
-				'phone' => isset($_GET['phone']) ? $_GET['phone'] : null,
-				'email' => isset($_GET['email']) ? $_GET['email'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
+				'phone' => isset($_GET['phone']) ? normalize($_GET['phone']) : null,
+				'email' => isset($_GET['email']) ? normalize($_GET['email']) : null,
 			];
 			$client_list = $this->service->listClients($filters);
 

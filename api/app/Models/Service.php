@@ -56,7 +56,7 @@ class Service
 
 		$rules = [
 			'client_name' => [
-				'column' => 'cl.name',
+				'column' => 'cl.search_name',
 				'operator' => 'LIKE'
 			],
 			'checkin' => [
@@ -68,15 +68,15 @@ class Service
 				'operator' => 'LIKE'
 			],
 			'car_plate' => [
-				'column' => 'c.plate',
+				'column' => 'c.search_plate',
 				'operator' => 'LIKE'
 			],
 			'car_model' => [
-				'column' => 'mo.name',
+				'column' => 'mo.search_name',
 				'operator' => 'LIKE'
 			],
 			'car_make' => [
-				'column' => 'ma.name',
+				'column' => 'ma.search_name',
 				'operator' => 'LIKE'
 			],
 			'schedule_id' => [

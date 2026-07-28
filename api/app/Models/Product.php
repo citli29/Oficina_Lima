@@ -27,7 +27,7 @@ class Product
 
 		$rules = [
 			'name' => [
-				'column' => 'p.name',
+				'column' => 'p.search_name',
 				'operator' => 'LIKE'
 			],
 			'reference' => [
@@ -35,7 +35,7 @@ class Product
 				'operator' => 'LIKE'
 			],
 			'p_t_name' => [
-				'column' => 'pt.name',
+				'column' => 'pt.search_name',
 				'operator' => 'LIKE'
 			],
 			'p_t_id' => [
@@ -64,7 +64,7 @@ class Product
 
 		$rules = [
 			'name' => [
-				'column' => 'name',
+				'column' => 'search_name',
 				'operator' => 'LIKE'
 			],
 		];
@@ -109,7 +109,7 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			UPDATE products
-			SET name = ? , reference = ?, product_type_id = ? 
+			SET name = ? , reference = ?, product_type_id = ? , search_name = ?
 			WHERE id = ?
 			");
 
@@ -117,6 +117,7 @@ class Product
 			!empty($data['name']) ? $data['name']: null,
 			!empty($data['reference']) ? $data['reference']: null,
 			!empty($data['product_type_id']) ? $data['product_type_id']: null,
+			!empty($data['name']) ? normalize($data['name']): null,
 			$id
 		]);
 
@@ -127,12 +128,14 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			UPDATE product_types
-			SET name = ? 
+			SET name = ? , search_name = ?
 			WHERE id = ?
 			");
 
 		$stmt->execute([
 			!empty($data['name']) ? $data['name']: null,
+			!empty($data['name']) ? normalize($data['name']): null,
+			!empty($data['name']) ? normalize($data['name']): null,
 			$id
 		]);
 
@@ -143,14 +146,15 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO products
-			(name, reference, product_type_id)
-			VALUES (?, ?, ?)
+			(name, reference, product_type_id, search_name)
+			VALUES (?, ?, ?, ?)
 			");
 
 		$stmt->execute([
 			!empty($data['name']) ? $data['name']:null,
 			!empty($data['reference']) ? $data['reference']:null,
 			!empty($data['product_type_id']) ?$data['product_type_id']: null,
+			!empty($data['name']) ? normalize($data['name']):null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
@@ -162,12 +166,13 @@ class Product
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO product_types
-			(name)
-			VALUES (?)
+			(name, search_name)
+			VALUES (?, ?)
 			");
 
 		$stmt->execute([
 			!empty($data['name']) ?$data['name']: null,
+			!empty($data['name']) ?normalize($data['name']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+
 class UserController
 {
 	private UserService $service;
@@ -21,7 +23,7 @@ class UserController
 	{
 		try {
 			$filters = [
-				'name' => isset($_GET['name']) ? $_GET['name'] : null,
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'email' => isset($_GET['email']) ? $_GET['email'] : null,
 				'user_type' => isset($_GET['user_type']) ? $_GET['user_type'] : null,
 			];

@@ -45,7 +45,7 @@ class ServiceComponent
 				'operator' => '='
 			],
 			'user_name' => [
-				'column' => 'user_name',
+				'column' => 'u.search_name',
 				'operator' => 'LIKE'
 			],
 			'user_id' => [
@@ -96,7 +96,7 @@ class ServiceComponent
 
 		$rules = [
 			'user_name' => [
-				'column' => 'u.name',
+				'column' => 'u.search_name',
 				'operator' => 'LIKE'
 			],
 			'user_id' => [
@@ -278,11 +278,11 @@ class ServiceComponent
 
 		$rules = [
 			'user_name' => [
-				'column' => 'u.name',
+				'column' => 'u.search_name',
 				'operator' => 'LIKE'
 			],
 			'product_name' => [
-				'column' => 'p.name',
+				'column' => 'p.search_name',
 				'operator' => 'LIKE'
 			],
 			'product_reference' => [

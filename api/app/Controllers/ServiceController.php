@@ -8,6 +8,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+
 class ServiceController
 {
 	private ServiceService $service;
@@ -21,13 +23,13 @@ class ServiceController
 	{
 		try{
 			$filters = [
-				'client_name' => isset($_GET['client_name']) ? $_GET['client_name'] : null,
+				'client_name' => isset($_GET['client_name']) ? normalize($_GET['client_name']) : null,
 				'checkin' => isset($_GET['checkin']) ? $_GET['checkin'] : null,
 				'schedule_id' => isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null,
 				'checkout' => isset($_GET['checkout']) ? $_GET['checkout'] : null,
-				'car_plate' => isset($_GET['car_plate']) ? $_GET['car_plate'] : null,
-				'car_model' => isset($_GET['car_model']) ? $_GET['car_model'] : null,
-				'car_make' => isset($_GET['car_make']) ? $_GET['car_make'] : null,
+				'car_plate' => isset($_GET['car_plate']) ? normalize($_GET['car_plate']) : null,
+				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
+				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']) : null,
 				'is_finished' => match ($_GET['is_finished'] ?? null) {
 					'true' => true,
 					'false' => 0,

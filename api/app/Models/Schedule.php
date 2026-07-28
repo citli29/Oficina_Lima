@@ -73,19 +73,19 @@ class Schedule
 				'operator'=> 'LIKE'
 			],
 			'car_plate' => [
-				'column' => 'c.plate',
+				'column' => 'c.search_plate',
 				'operator' => 'LIKE'
 			],
 			'car_model' => [
-				'column' => 'car_model',
+				'column' => 'car_model.search_name',
 				'operator' => 'LIKE'
 			],
 			'car_make' => [
-				'column' => 'car_make',
+				'column' => 'ma.search_name',
 				'operator' => 'LIKE'
 			],
 			'client_name' => [
-				'column' => 'cl.name',
+				'column' => 'cl.search_name',
 				'operator' => 'LIKE'
 			],
 			'client_id' => [
