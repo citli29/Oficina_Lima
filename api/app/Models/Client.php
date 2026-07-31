@@ -103,7 +103,7 @@ class Client
 		$stmt = $this->db->prepare("
 			INSERT INTO clients
 			(name, phone, address, email,
-		       	zip_code, tax_nr)
+		       	zip_code, tax_nr, search_name)
 			VALUES (?, ?, ?, ?, ?, ?, ?)
 			");
 
