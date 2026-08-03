@@ -29,6 +29,8 @@ class ScheduleController
 				'car_make' => isset($_GET['car_make']) ? $_GET['car_make'] : null,
 				'client_id' => isset($_GET['client_id']) ? $_GET['client_id'] : null,
 				'client_name' => isset($_GET['client_name']) ? $_GET['client_name'] : null,
+				'end_date' => isset($_GET['end_date']) ? $_GET['end_date'] : null,
+				'start_date' => isset($_GET['start_date']) ? $_GET['start_date'] : null,
 			];
 			$schedule_list = $this->service->listSchedules($filters);
 

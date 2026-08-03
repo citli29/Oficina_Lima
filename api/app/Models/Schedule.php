@@ -92,6 +92,14 @@ class Schedule
 				'column' => 'cl.id',
 				'operator' => '='
 			],
+			'start_date' => [
+				'column' => 's.date',
+				'operator' => '>='
+			],
+			'end_date' => [
+				'column' => 's.date',
+				'operator' => '<='
+			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
