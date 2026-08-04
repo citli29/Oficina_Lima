@@ -1,8 +1,9 @@
-Client Picker [ ]
-Schedule Calendar [ ]
-SAP Table [ ] -> Product Picker [x]
-SUT Table [ ] -> User Picker [ ]
-Car Picker [ ] -> Models [x] , Makes [x]
+Client Picker [x]
+Schedule Calendar [x]
+Schedule Picker
+SAP Table [x] -> Product Picker [x]
+SUT Table [x] -> User Picker [x]
+Car Picker [x] -> Models [x] , Makes [x]
 Service Table ->  Client, Car, SAP, SUT
 
 Marcacoes:
@@ -31,6 +32,6 @@ Servicos:
     SUT:
         Adicionar Notas
 
-    
+Inputs: Opcao de highlights    
 
 

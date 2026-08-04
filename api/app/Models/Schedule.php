@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Database\Database;
 use PDO;
 
+
 class Schedule
 {
 	private PDO $db;
