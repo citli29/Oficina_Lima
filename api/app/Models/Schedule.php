@@ -15,6 +15,22 @@ class Schedule
 		$this->db = $db;
 	}
 
+	public function getSchedulesFree(): array
+	{
+		$sql = "
+		SELECT *
+		FROM schedules
+		WHERE id NOT IN (
+		SELECT schedule_id
+		FROM services
+		WHERE schedule_id IS NOT NULL
+		)
+		";
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute();
+
+		return $stmt->fetchAll();
+	}
 	public function getScheduleWithFilter(array $filters): array
 	{
 		//*?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 

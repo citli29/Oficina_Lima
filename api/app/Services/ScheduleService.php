@@ -20,6 +20,10 @@ class ScheduleService
 		$this->serviceModel = $serviceModel;
 	}
 
+	public function listSchedulesFree(): array
+	{
+		return $this->scheduleModel->getSchedulesFree();
+	}
 	public function listSchedules(array $filters): array
 	{
 		return $this->scheduleModel->getScheduleWithFilter($filters);

@@ -20,6 +20,23 @@ class ScheduleController
 		$this->service = new ScheduleService($model,$s_model);
 	}
 
+	public function getSchedulesFree(): void
+	{
+		try{
+			$schedule_list = $this->service->listSchedulesFree();
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'schedule_list'=>$schedule_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+	}
 	public function getSchedules(): void
 	{
 		try{
