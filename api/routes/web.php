@@ -47,6 +47,7 @@ return [
 	['DELETE', '/api/product_types/{id:\d+}', [ProductController::class, 'deleteProductType']],
 
 	['GET', '/api/products', [ProductController::class, 'getProducts']], //with search
+	['GET', '/api/productsOr', [ProductController::class, 'getProductsOr']], //with search
 	['POST', '/api/products', [ProductController::class, 'postProducts']],
 	['GET', '/api/products/{id:\d+}', [ProductController::class, 'getProduct']],
 	['PUT', '/api/products/{id:\d+}', [ProductController::class, 'putProduct']],

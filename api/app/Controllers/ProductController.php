@@ -19,6 +19,28 @@ class ProductController
 		$this->service = new ProductService($model);
 	}
 
+	public function getProductsOr(): void
+	{
+		try{
+			$filters = [
+				'q' => isset($_GET['q']) ? normalize($_GET['q']) : "",
+			];
+
+			$product_list = $this->service->listProductsOr($filters['q']);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+
+			echo json_encode([
+				'success' => true,
+				'product_list'=>$product_list
+			]);
+
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
 	public function getProducts(): void
 	{
 		try{

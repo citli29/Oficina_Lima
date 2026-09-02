@@ -418,7 +418,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
-				'sut' => $sutp
+				'sutp' => $sutp
 			]);
 		} catch (InvalidArgumentException $e) {
 			http_response_code((int)$e->getCode());

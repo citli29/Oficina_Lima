@@ -14,6 +14,25 @@ class Product
 		$this->db = $db;
 	}
 
+	public function getProductsWithOrFilter(string $str): array
+	{
+		$sql = "
+		SELECT p.*, pt.name AS product_type_name, pt.id AS product_type_id
+		FROM products p
+		LEFT JOIN product_types pt ON p.product_type_id = pt.id
+		WHERE UPPER(p.search_name) LIKE UPPER(?)
+		OR UPPER(p.reference) LIKE UPPER(?)
+		OR UPPER(pt.name) LIKE UPPER(?)
+		ORDER BY p.name, p.reference, pt.name ASC
+		";
+
+		$search = '%' . $str . '%';
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([$search, $search, $search]);
+
+		return $stmt->fetchAll();
+	}
 	public function getProductsWithFilter(array $filters): array
 	{
 		$sql = "

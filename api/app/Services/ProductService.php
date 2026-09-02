@@ -21,6 +21,10 @@ class ProductService
 	{
 		return $this->productModel->getProductsWithFilter($filters);
 	}
+	public function listProductsOr(string $str): array
+	{
+		return $this->productModel->getProductsWithOrFilter($str);
+	}
 
 	public function listProductTypes(array $filters): array
 	{

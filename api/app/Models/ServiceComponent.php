@@ -724,7 +724,7 @@ class ServiceComponent
 		{
 			$stmt = $this->db->prepare("
 				UPDATE
-				services_user_time
+				services_user_time_punches
 				SET
 				ut_date = ?,
 				user_id = ?
@@ -737,7 +737,7 @@ class ServiceComponent
 				$sutp['id']
 			]);
 
-			$sutp = $this->getSUTById($sutp['id']);
+			$sutp = $this->getSUTPById($sutp['id']);
 		}
 
 		return $sutp;
