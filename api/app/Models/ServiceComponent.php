@@ -742,5 +742,188 @@ class ServiceComponent
 
 		return $sutp;
 	}
+
+	public function getSPRByServiceWithFilter(int $serviceId, array $filters): array
+	{
+		$sql = "
+		SELECT 
+			ROW_NUMBER() OVER (
+				PARTITION BY service_id
+							ORDER BY service_id ASC, spr.id ASC
+			) AS spr_id,
+			spr.service_id AS service_id,
+			spr.id AS id,
+			spr.quantity as quantity,
+			spr.is_ordered as is_ordered,
+			spr.is_delivered as is_delivered,
+			spr.product_id as product_id,
+			p.name as product_name,
+			p.reference as product_reference,
+			p.product_type_id as product_type_id,
+			pt.name as product_type_name
+		FROM services_products_requested spr
+		LEFT JOIN products p
+		ON p.id = spr.product_id
+		LEFT JOIN product_types pt
+		ON pt.id = p.product_type_id
+		WHERE spr.service_id = ?
+		";
+
+		$params = [];
+
+		$rules = [
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		array_unshift($params,$serviceId);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getSPRById(int $id): bool|array
+	{
+		$stmt = $this->db->query( "
+			SELECT * FROM (	
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY spr.service_id
+							ORDER BY service_id ASC, spr.id ASC
+						) AS INTEGER
+					) AS spr_id,
+					spr.service_id AS service_id,
+					spr.id AS id,
+					spr.quantity as quantity,
+					spr.is_ordered as is_ordered,
+					spr.is_delivered as is_delivered,
+					spr.product_id as product_id,
+					p.name as product_name,
+					p.reference as product_reference,
+					p.product_type_id as product_type_id,
+					pt.name as product_type_name
+				FROM services_products_requested spr
+				LEFT JOIN products p
+				    ON p.id = spr.product_id
+				LEFT JOIN product_types pt
+				    ON pt.id = p.product_type_id
+				WHERE spr.service_id = (
+					SELECT service_id
+					FROM services_products_requested
+					WHERE id = ?
+				) 
+			) WHERE id = ?
+			");
+
+		$stmt->execute([$id,$id]);
+
+		return $stmt->fetch();
+	}
+	
+	public function createSPR(int $s_id,array $data): array 
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO services_products_requested
+			(service_id, product_id, quantity)
+			VALUES (?,?,?)
+			");
+
+		$stmt->execute([
+			$s_id,
+			!empty($data['product_id'])? $data['product_id']:null,
+			isset($data['quantity'])? $data['quantity']:null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getSPRById($newId);
+	}
+
+	public function getSPRBySid_Id(int $s_id, int $id): bool|array
+	{
+
+		$stmt = $this->db->prepare("
+			SELECT *
+			FROM (
+				SELECT 
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY spr.service_id
+							ORDER BY service_id ASC, spr.id ASC
+						) AS INTEGER
+					) AS spr_id,
+					spr.service_id AS service_id,
+					spr.id AS id,
+					spr.quantity as quantity,
+					spr.is_ordered as is_ordered,
+					spr.is_delivered as is_delivered,
+					spr.product_id as product_id,
+					p.name as product_name,
+					p.reference as product_reference,
+					p.product_type_id as product_type_id,
+					pt.name as product_type_name
+				FROM services_products_requested spr
+				LEFT JOIN products p 
+				    ON p.id = spr.product_id
+				LEFT JOIN product_types pt 
+				    ON pt.id = p.product_type_id
+				WHERE spr.service_id = ?
+			    ) ranked
+		    WHERE spr_id = ?
+		");
+
+		$stmt->execute(array($s_id,$id));
+		
+		return $stmt->fetch();
+	}
+
+	public function deleteSPRBySid_Id(int $s_id, int $id): bool|array
+	{
+		$spr = $this->getSPRBySid_Id($s_id,$id);
+
+		if($spr && isset($spr['id']))
+		{
+
+			$stmt = $this->db->prepare("DELETE FROM services_products_requested WHERE id = ?");
+			$stmt->execute([$spr['id']]);
+		}
+
+		return $spr; 
+	}
+
+	public function updateSPRBySid_Id(int $s_id,int $id, array $data): bool|array
+	{
+		$spr = $this->getSPRBySid_Id($s_id,$id);
+
+		if($spr && isset($spr['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE
+				services_products_requested
+				SET
+				product_id = ?,
+				quantity = ?,
+				is_ordered = ?,
+				is_delivered = ?
+				WHERE id = ?
+				");
+
+			$stmt->execute([
+				!empty($data['product_id'])? $data['product_id']:null,
+				isset($data['quantity'])? $data['quantity']:null,
+				isset($data['is_ordered'])? $data['is_ordered']:null,
+				isset($data['is_delivered'])? $data['is_delivered']:null,
+				$spr['id']
+			]);
+
+			$spr = $this->getSPRById($spr['id']);
+		}
+
+		return $spr;
+	}
 }
+
 ?>

@@ -425,4 +425,101 @@ class ServiceComponentController
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
+
+	public function getSPRs(int $s_id)
+	{
+		try{
+			$filters = [
+			];
+			$spr_list = $this->service->listSPRsByService($s_id,$filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'spr_list'=>$spr_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postSPR(int $s_id)
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$spr = $this->service->createSPR($s_id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'spr'=>$spr
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getSPR(int $s_id, int $id)
+	{
+		try{
+			$spr = $this->service->showSPR($s_id,$id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'spr'=>$spr
+			]);
+		} catch (RuntimeException$e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putSPR(int $s_id,int $id)
+	{
+		try{
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$spr = $this->service->updateSPR($s_id,$id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'spr'=>$spr
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+	}
+
+	public function deleteSPR(int $s_id,int$id)
+	{
+		try {
+
+			$spr = $this->service->deleteSPR($s_id,$id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'spr' => $spr
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
 }

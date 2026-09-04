@@ -229,4 +229,59 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Update Service User Time Punches[Argument Required]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]",400);
 		}
 	}
+	public function listSPRsByService(int $s_id,array $filters): array
+	{
+		return $this->serviceComponentModel->getSPRByServiceWithFilter($s_id,$filters);
+	}
+
+	public function createSPR(int $s_id, array $data){
+		if(empty($data['product_id'])){
+			throw new InvalidArgumentException("Create Service Product Request[Arguments Required]: Product ID.", 400);
+		}
+
+		try
+		{
+			return $this->serviceComponentModel->createSPR($s_id,$data);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException("Create Service Product Request[Argument Constraints]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]", 400);
+		}
+	}
+
+	public function showSPR(int $s_id,int $id):array
+	{
+		$spr  = $this->serviceComponentModel->getSPRBySid_Id($s_id,$id);
+		if(!$spr)
+			throw new RuntimeException("Show Product Request[ID Not Found]: {$s_id} : {$id}.",404);
+		return $spr;
+	}
+
+
+	public function deleteSPR(int $s_id, int $id): array
+	{
+		try
+		{
+			if(!$spr = $this->serviceComponentModel->deleteSPRBySid_Id($s_id,$id))
+				throw new InvalidArgumentException("Delete Product Request[Invalid ID]: {$s_id} - {$id}.", 404);
+			return $spr;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException("Delete Product Request[Error]: [{$e->errorInfo[2]}]", 409);
+		}
+	}
+
+	public function updateSPR(int $s_id, int $id, array $data): array
+	{
+		if(empty($data['product_id'])) {
+			throw new InvalidArgumentException("Update Service Product Request[Argument Required]: Product ID.",400);
+		}
+		try
+		{
+			$spr = $this->serviceComponentModel->updateSPRBySid_Id($s_id,$id,$data);
+			if(!$spr) 
+			throw new InvalidArgumentException("Update Service Product Request[Invalid ID]: {$s_id} - {$id}.",400);
+			return $spr;
+		} catch (PDOException $e){
+			throw new InvalidArgumentException("Update Service Product Request[Argument Required]: Product ID must be provided. [{$e->errorInfo[2]}]",400);
+		}
+	}
 }

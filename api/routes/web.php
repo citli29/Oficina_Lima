@@ -102,5 +102,11 @@ return [
 	['GET', '/api/services_applied_products', [ServiceComponentController::class, 'getServiceAppliedProducts']], //with search
 	['GET', '/api/services_user_times', [ServiceComponentController::class, 'getServiceUserTimes']], //with search
 
+	['GET', '/api/services/{s_id:\d+}/products_requested', [ServiceComponentController::class, 'getSPRs']], //with search
+	['POST', '/api/services/{s_id:\d+}/products_requested', [ServiceComponentController::class, 'postSPR']], //with search
+	['GET', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'getSPR']],
+	['PUT', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'putSPR']],
+	['DELETE', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'deleteSPR']],
+
 
 ];
