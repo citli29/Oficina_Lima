@@ -30,6 +30,7 @@ class ServiceController
 				'car_plate' => isset($_GET['car_plate']) ? normalize($_GET['car_plate']) : null,
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']) : null,
+				'service_type_id' => isset($_GET['service_type_id']) ? $_GET['service_type_id'] : null,
 				'is_finished' => match ($_GET['is_finished'] ?? null) {
 					'true' => true,
 					'false' => 0,

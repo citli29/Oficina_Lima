@@ -23,6 +23,8 @@ class Service
 			s.schedule_id as schedule_id,
 			s.note as note,
 			s.is_finished as is_finished,
+			s.service_type_id as service_type_id,
+			st.name as service_type_name,
 
 			cl.name as client_name,
 			cl.phone as client_phone,
@@ -36,6 +38,9 @@ class Service
 			mo.name as car_model_name
 
 		FROM services s
+
+		LEFT JOIN service_types st
+		ON st.id=s.service_type_id
 
 		LEFT JOIN clients cl
 		ON cl.id=s.client_id
@@ -87,6 +92,10 @@ class Service
 				'column' => 's.is_finished',
 				'operator' => '='
 			],
+			'service_type_id' => [
+				'column' => 's.service_type_id',
+				'operator' => '='
+			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
@@ -109,6 +118,8 @@ class Service
 				s.kms as kms,
 				s.note as note,
 				s.is_finished as is_finished,
+				s.service_type_id as service_type_id,
+				st.name as service_type_name,
 
 				s.client_id as client_id,
 				cl.name as client_name,
@@ -135,6 +146,9 @@ class Service
 				s.service_description as service
 				
 			FROM services s
+
+			LEFT JOIN service_types st
+			ON st.id = s.service_type_id
 
 			LEFT JOIN clients cl
 			ON cl.id = s.client_id
