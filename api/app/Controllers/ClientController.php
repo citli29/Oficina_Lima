@@ -116,5 +116,4 @@ class ClientController
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
-
 }

@@ -3,6 +3,7 @@
 use App\Controllers\HomeController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
+use App\Controllers\NotificationController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
 use App\Controllers\ServiceComponentController;
@@ -108,5 +109,10 @@ return [
 	['PUT', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'putSPR']],
 	['DELETE', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'deleteSPR']],
 
+	/*	Notification Controller	*/
+	['GET', '/api/notifications', [NotificationController::class, 'getNotifications']], //with search
+	['GET', '/api/notifications/{id:\d+}', [NotificationController::class, 'getNotification']],
+	['PUT', '/api/notifications/{id:\d+}/check', [NotificationController::class, 'putNotificationCheck']],
+	['PUT', '/api/notifications/{id:\d+}/uncheck', [NotificationController::class, 'putNotificationUnCheck']],
 
 ];
