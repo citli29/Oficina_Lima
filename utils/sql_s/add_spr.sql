@@ -48,3 +48,6 @@
 --ALTER TABLE services ADD COLUMN r_name VARCHAR(255);
 --ALTER TABLE services ADD COLUMN r_phone VARCHAR(50);
 
+--ALTER TABLE services ADD COLUMN checkout_predict VARCHAR(20);
+--ALTER TABLE services ADD COLUMN signed_service VARCHAR(512);
+

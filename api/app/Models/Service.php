@@ -225,7 +225,10 @@ class Service
 				s.service_description as service,
 
 				s.r_name as r_name,
-				s.r_phone as r_phone
+				s.r_phone as r_phone,
+
+				s.checkout_predict as checkout_predict,
+				s.signed_service as signed_service
 
 			FROM services s
 
@@ -268,7 +271,9 @@ class Service
 				note = ?,
 				is_finished = ?,
 				r_name = ?,
-				r_phone = ?
+				r_phone = ?,
+				checkout_predict = ?,
+				signed_service = ?
 
 			WHERE id = ?
 			");
@@ -286,6 +291,8 @@ class Service
 			!empty($data['is_finished']) ?$data['is_finished']: 0,
 			!empty($data['r_name']) ?$data['r_name']: null,
 			!empty($data['r_phone']) ?$data['r_phone']: null,
+			!empty($data['checkout_predict']) ?$data['checkout_predict']: null,
+			!empty($data['signed_service']) ?$data['signed_service']: null,
 			$id
 		]);
 
@@ -296,8 +303,8 @@ class Service
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id,note, is_finished)
-			VALUES (?,?,?,?,?,?,?,?,?,?)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, service_description, car_id, schedule_id, note, is_finished, service_type_id, r_name, r_phone, checkout_predict, signed_service)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
@@ -311,6 +318,11 @@ class Service
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
 			0,
+			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
+			!empty($data['r_name']) ?$data['r_name']: null,
+			!empty($data['r_phone']) ?$data['r_phone']: null,
+			!empty($data['checkout_predict']) ?$data['checkout_predict']: null,
+			!empty($data['signed_service']) ?$data['signed_service']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
