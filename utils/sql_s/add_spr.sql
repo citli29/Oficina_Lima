@@ -45,3 +45,6 @@
 
 --INSERT INTO notifications(title,message,data) VALUES ("ititulo","emessage","{url:gang}");
 
+--ALTER TABLE services ADD COLUMN r_name VARCHAR(255);
+--ALTER TABLE services ADD COLUMN r_phone VARCHAR(50);
+

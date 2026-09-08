@@ -415,7 +415,7 @@ class ServiceComponent
 				$s_id,
 				!empty($data['product_id'])?$data['product_id']:null,
 				!empty($data['quantity'])?$data['quantity']:0,
-				!empty($data['is_applied'])?$data['is_applied']:false,
+				!empty($data['is_applied'])?$data['is_applied']:0,
 				$sap['id']
 			]);
 
@@ -477,8 +477,8 @@ class ServiceComponent
 	public function getSAPWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
-			SELECT * FROM 
-				(SELECT 
+			SELECT * FROM
+				(SELECT
 					ROW_NUMBER() OVER (
 						PARTITION BY service_id
 						ORDER BY service_id ASC, sap.id ASC
@@ -491,12 +491,26 @@ class ServiceComponent
 					p.name AS product_name,
 					p.reference AS product_reference,
 					p.product_type_id AS product_type_id,
-					pt.name AS product_type_name
+					pt.name AS product_type_name,
+					c.plate AS car_plate,
+					ma.name AS car_make,
+					mo.name AS car_model,
+					cl.name AS client_name
 				FROM services_applied_products sap
 				LEFT JOIN products p
 				ON p.id = sap.product_id
 				LEFT JOIN product_types pt
 				ON pt.id = p.product_type_id
+				LEFT JOIN services s
+				ON s.id = sap.service_id
+				LEFT JOIN cars c
+				ON c.id = s.car_id
+				LEFT JOIN models mo
+				ON mo.id = c.model_id
+				LEFT JOIN makes ma
+				ON ma.id = COALESCE(mo.make_id, c.make_id)
+				LEFT JOIN clients cl
+				ON cl.id = s.client_id
 				WHERE 1 = 1)
 			WHERE 1 = 1
 		";
@@ -520,13 +534,124 @@ class ServiceComponent
 				'column' => 'product_id',
 				'operator' => '='
 			],
-			'is_applied' => [
-				'column' => 'is_applied',
+		];
+
+		// Older rows were written with '' or NULL instead of 0 for
+		// is_applied (a prior insert/update bug bound PHP false as an
+		// empty string), and neither matches "= 0" in SQL — treat both
+		// as "not applied" so those rows aren't invisible to that filter.
+		if (isset($filters['is_applied'])) {
+			$sql .= $filters['is_applied']
+				? " AND is_applied = 1"
+				: " AND (is_applied = 0 OR is_applied IS NULL OR is_applied = '')";
+		}
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		// Group same-service rows together in the output so callers (e.g.
+		// a "work through one service at a time" list) don't have to
+		// re-sort client-side.
+		$sql .= " ORDER BY service_id ASC, id ASC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
+		$stmt = $this->db->prepare($sql);
+
+		$stmt->execute($params);
+
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
+	}
+
+	public function getSPRWithFilter(array $filters, ?array $pagination = null): array
+	{
+		$sql = "
+			SELECT * FROM
+				(SELECT
+					ROW_NUMBER() OVER (
+						PARTITION BY service_id
+						ORDER BY service_id ASC, spr.id ASC
+					) AS spr_id,
+					spr.service_id AS service_id,
+					spr.id AS id,
+					spr.product_id AS product_id,
+					spr.quantity AS quantity,
+					spr.is_ordered AS is_ordered,
+					spr.is_delivered AS is_delivered,
+					p.name AS product_name,
+					p.reference AS product_reference,
+					p.product_type_id AS product_type_id,
+					pt.name AS product_type_name,
+					c.plate AS car_plate,
+					ma.name AS car_make,
+					mo.name AS car_model,
+					cl.name AS client_name
+				FROM services_products_requested spr
+				LEFT JOIN products p
+				ON p.id = spr.product_id
+				LEFT JOIN product_types pt
+				ON pt.id = p.product_type_id
+				LEFT JOIN services s
+				ON s.id = spr.service_id
+				LEFT JOIN cars c
+				ON c.id = s.car_id
+				LEFT JOIN models mo
+				ON mo.id = c.model_id
+				LEFT JOIN makes ma
+				ON ma.id = COALESCE(mo.make_id, c.make_id)
+				LEFT JOIN clients cl
+				ON cl.id = s.client_id
+				WHERE 1 = 1)
+			WHERE 1 = 1
+		";
+
+		$params = [];
+
+		$rules = [
+			'service_id' => [
+				'column' => 'service_id',
+				'operator' => '='
+			],
+			'product_name' => [
+				'column' => 'product_name',
+				'operator' => 'LIKE'
+			],
+			'product_reference' => [
+				'column' => 'product_reference',
+				'operator' => 'LIKE'
+			],
+			'product_id' => [
+				'column' => 'product_id',
 				'operator' => '='
 			],
 		];
 
+		// Same NULL-vs-0 gap as services_applied_products.is_applied.
+		if (isset($filters['is_ordered'])) {
+			$sql .= $filters['is_ordered']
+				? " AND is_ordered = 1"
+				: " AND (is_ordered = 0 OR is_ordered IS NULL)";
+		}
+
+		if (isset($filters['is_delivered'])) {
+			$sql .= $filters['is_delivered']
+				? " AND is_delivered = 1"
+				: " AND (is_delivered = 0 OR is_delivered IS NULL)";
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		// Group same-service rows together in the output so callers (e.g.
+		// a "work through one service at a time" list) don't have to
+		// re-sort client-side.
+		$sql .= " ORDER BY service_id ASC, id ASC";
 
 		$total = null;
 

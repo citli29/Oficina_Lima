@@ -221,9 +221,12 @@ class Service
 				ca.color_code as car_color_code,
 				ca.plate as car_plate, 
 				
-				s.malfunction_description as malfunction, 
-				s.service_description as service
-				
+				s.malfunction_description as malfunction,
+				s.service_description as service,
+
+				s.r_name as r_name,
+				s.r_phone as r_phone
+
 			FROM services s
 
 			LEFT JOIN service_types st
@@ -253,17 +256,19 @@ class Service
 	{
 		$stmt = $this->db->prepare("
 			UPDATE services
-			SET 
+			SET
 				client_id = ?,
-				kms = ?, 
-				checkin_date = ?, 
+				kms = ?,
+				checkin_date = ?,
 				checkout_date = ?,
 				malfunction_description = ?,
 				service_description = ?,
 				car_id = ?,
 				schedule_id = ?,
 				note = ?,
-				is_finished = ?
+				is_finished = ?,
+				r_name = ?,
+				r_phone = ?
 
 			WHERE id = ?
 			");
@@ -279,6 +284,8 @@ class Service
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
 			!empty($data['is_finished']) ?$data['is_finished']: 0,
+			!empty($data['r_name']) ?$data['r_name']: null,
+			!empty($data['r_phone']) ?$data['r_phone']: null,
 			$id
 		]);
 
@@ -330,8 +337,8 @@ class Service
 
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, car_id, schedule_id,is_finished)
-			VALUES (?,?,?,?,?,?,?,?)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, car_id, schedule_id, is_finished, service_type_id)
+			VALUES (?,?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
@@ -342,7 +349,8 @@ class Service
 			!empty($schedule['description']) ?$schedule['description']: null,
 			$car_id ?? null,
 			$id ?? null,
-			0
+			0,
+			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

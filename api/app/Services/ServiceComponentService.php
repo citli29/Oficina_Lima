@@ -88,6 +88,11 @@ class ServiceComponentService
 	{
 		return $this->serviceComponentModel->getSAPWithFilter($filters, $pagination);
 	}
+
+	public function listSPRs(array $filters, ?array $pagination = null): array
+	{
+		return $this->serviceComponentModel->getSPRWithFilter($filters, $pagination);
+	}
 	public function listSAPByService(int $id,array $filters): array
 	{
 		return $this->serviceComponentModel->getSAPByServiceWithFilter($id,$filters);
