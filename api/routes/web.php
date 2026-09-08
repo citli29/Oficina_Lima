@@ -78,6 +78,8 @@ return [
 	['PUT', '/api/services/{id:\d+}', [ServiceController::class, 'putService']],
 	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
 
+	['GET', '/api/service_types', [ServiceController::class, 'getServiceTypes']], //with search
+
 	/*	Service Component Controller	*/
 	['GET', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'getSUTs']], //with search
 	['POST', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'postSUTs']], //with search

@@ -9,6 +9,7 @@ use RuntimeException;
 use PDO;
 
 require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
 
 class ServiceController
 {
@@ -31,20 +32,66 @@ class ServiceController
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']) : null,
 				'service_type_id' => isset($_GET['service_type_id']) ? $_GET['service_type_id'] : null,
-				'is_finished' => match ($_GET['is_finished'] ?? null) {
-					'true' => true,
-					'false' => 0,
-					default => null,
-				}
+				'start_date' => isset($_GET['start_date']) ? $_GET['start_date'] : null,
+				'end_date' => isset($_GET['end_date']) ? $_GET['end_date'] : null,
+				'status' => isset($_GET['status']) ? $_GET['status'] : null,
 			];
-			$service_list = $this->service->listServices($filters);
+			$pagination = parsePagination($_GET);
+			$sort = parseSort($_GET);
+
+			$result = $this->service->listServices($filters, $pagination, $sort);
+
+			$response = [
+				'success' => true,
+				'service_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
+			echo json_encode($response);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getServiceTypes(): void
+	{
+		try{
+			$filters = [
+				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
+			];
+
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listServiceTypes($filters, $pagination);
+
+			$response = [
 				'success' => true,
-				'service_list'=>$service_list
-			]);
+				'service_type_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode($response);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

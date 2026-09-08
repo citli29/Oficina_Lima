@@ -17,9 +17,9 @@ class ServiceComponentService
 		$this->serviceComponentModel = $serviceComponent;
 	}
 
-	public function listSUTs(array $filters): array
+	public function listSUTs(array $filters, ?array $pagination = null): array
 	{
-		return $this->serviceComponentModel->getSUTWithFilter($filters);
+		return $this->serviceComponentModel->getSUTWithFilter($filters, $pagination);
 	}
 	public function listSUTByService(int $id,array $filters): array
 	{
@@ -84,9 +84,9 @@ class ServiceComponentService
 		}
 	}
 
-	public function listSAPs(array $filters): array
+	public function listSAPs(array $filters, ?array $pagination = null): array
 	{
-		return $this->serviceComponentModel->getSAPWithFilter($filters);
+		return $this->serviceComponentModel->getSAPWithFilter($filters, $pagination);
 	}
 	public function listSAPByService(int $id,array $filters): array
 	{

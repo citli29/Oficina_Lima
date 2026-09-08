@@ -9,6 +9,7 @@ use RuntimeException;
 use PDO;
 
 require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
 
 class ProductController
 {
@@ -51,15 +52,28 @@ class ProductController
 				'p_t_id' => isset($_GET['p_t_id']) ? $_GET['p_t_id'] : null,
 			];
 
-			$product_list = $this->service->listProducts($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listProducts($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'product_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
 
-			echo json_encode([
-				'success' => true,
-				'product_list'=>$product_list
-			]);
+			echo json_encode($response);
 
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
@@ -74,15 +88,28 @@ class ProductController
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
 
-			$product_type_list = $this->service->listProductTypes($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listProductTypes($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'product_type_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
 
-			echo json_encode([
-				'success' => true,
-				'product_type_list'=>$product_type_list
-			]);
+			echo json_encode($response);
 
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());

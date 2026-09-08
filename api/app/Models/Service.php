@@ -13,7 +13,43 @@ class Service
 		$this->db = $db;
 	}
 
-	public function getServicesWithFilter(array $filters): array
+	public function getServiceTypesWithFilter(array $filters, ?array $pagination = null): array
+	{
+		$sql = "
+		SELECT id, name FROM service_types
+		WHERE 1=1
+		";
+
+		$params = [];
+
+		$rules = [
+			'name' => [
+				'column' => 'name',
+				'operator' => 'LIKE'
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$sql .= "ORDER BY name ASC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
+	}
+
+	public function getServicesWithFilter(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
 		$sql = "
 		SELECT s.id,
@@ -65,11 +101,11 @@ class Service
 				'operator' => 'LIKE'
 			],
 			'checkin' => [
-				'column' => 's.checkin',
+				'column' => 's.checkin_date',
 				'operator' => 'LIKE'
 			],
 			'checkout' => [
-				'column' => 's.checkout',
+				'column' => 's.checkout_date',
 				'operator' => 'LIKE'
 			],
 			'car_plate' => [
@@ -88,23 +124,66 @@ class Service
 				'column' => 's.schedule_id',
 				'operator' => '='
 			],
-			'is_finished' => [
-				'column' => 's.is_finished',
-				'operator' => '='
-			],
 			'service_type_id' => [
 				'column' => 's.service_type_id',
 				'operator' => '='
 			],
+			'start_date' => [
+				'column' => 's.checkin_date',
+				'operator' => '>='
+			],
+			'end_date' => [
+				'column' => 's.checkin_date',
+				'operator' => '<='
+			],
 		];
 
+		if (!empty($filters['status'])) {
+			switch ($filters['status']) {
+				case 'unfinished':
+					$sql .= " AND s.checkout_date IS NULL AND (s.is_finished IS NULL OR s.is_finished != 1)";
+					break;
+				case 'finished':
+					$sql .= " AND s.checkout_date IS NULL AND s.is_finished = 1";
+					break;
+				case 'delivered':
+					$sql .= " AND s.checkout_date IS NOT NULL";
+					break;
+			}
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
-		$sql .= "ORDER BY checkin,checkout, car_plate ASC";
+
+		$sortableColumns = [
+			'checkin' => 'checkin',
+			'checkout' => 'checkout',
+			'client_name' => 'client_name',
+			'car_plate' => 'car_plate',
+			'kms' => 's.kms',
+		];
+
+		$sql = Database::applySort(
+			$sql,
+			$sortableColumns,
+			$sort['column'] ?? null,
+			$sort['direction'] ?? 'ASC',
+			'checkin, checkout, car_plate ASC'
+		);
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getServiceById(int $id): bool|array

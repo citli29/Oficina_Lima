@@ -15,10 +15,10 @@ class Client
 		$this->db = $db;
 	}
 
-	public function getClientsWithFilter(array $filters): array
+	public function getClientsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
-		SELECT c.* 
+		SELECT c.*
 		FROM clients c
 		WHERE 1=1
 		";
@@ -40,9 +40,21 @@ class Client
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 		$sql .= "ORDER BY c.name ASC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		return $stmt->fetchAll();
+
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getClientById(int $id): bool|array

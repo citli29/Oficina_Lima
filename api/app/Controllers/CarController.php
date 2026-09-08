@@ -9,6 +9,7 @@ use RuntimeException;
 use PDO;
 
 require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
 
 class CarController
 {
@@ -25,14 +26,28 @@ class CarController
 			$filters = [
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
-			$make_list = $this->service->listMakes($filters);
+
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listMakes($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'make_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'make_list'=>$make_list
-			]);
+			echo json_encode($response);
 		} catch (RuntimeException $e) {
 			http_response_code($e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
@@ -48,14 +63,27 @@ class CarController
 				'make_id' => isset($_GET['make_id']) ? normalize($_GET['make_id']) : null,
 			];
 
-			$model_list = $this->service->listModels($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listModels($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'model_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'model_list'=>$model_list
-			]);
+			echo json_encode($response);
 		} catch (RuntimeException$e) {
 			http_response_code($e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
@@ -71,16 +99,30 @@ class CarController
 				'month' => isset($_GET['month']) ? (int) $_GET['month'] : null,
 				'model_name' => isset($_GET['model_name']) ? normalize($_GET['model_name']) : null,
 				'make_name' => isset($_GET['make_name']) ? normalize($_GET['make_name']) : null,
+				'make_id' => isset($_GET['make_id']) ? $_GET['make_id'] : null,
 			];
 
-			$car_list = $this->service->listCars($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listCars($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'car_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'car_list'=>$car_list
-			]);
+			echo json_encode($response);
 		} catch (RuntimeException$e) {
 			http_response_code($e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

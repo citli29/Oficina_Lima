@@ -17,18 +17,18 @@ class ProductService
 		$this->productModel = $productModel;
 	}
 
-	public function listProducts(array $filters): array
+	public function listProducts(array $filters, ?array $pagination = null): array
 	{
-		return $this->productModel->getProductsWithFilter($filters);
+		return $this->productModel->getProductsWithFilter($filters, $pagination);
 	}
 	public function listProductsOr(string $str): array
 	{
 		return $this->productModel->getProductsWithOrFilter($str);
 	}
 
-	public function listProductTypes(array $filters): array
+	public function listProductTypes(array $filters, ?array $pagination = null): array
 	{
-		return $this->productModel->getProductTypesWithFilter($filters);
+		return $this->productModel->getProductTypesWithFilter($filters, $pagination);
 	}
 
 	public function showProduct(int $id): array

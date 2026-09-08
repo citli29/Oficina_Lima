@@ -9,6 +9,7 @@ use RuntimeException;
 use PDO;
 
 require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
 
 class ServiceComponentController
 {
@@ -249,14 +250,27 @@ class ServiceComponentController
 				'minutes' => isset($_GET['minutes']) ? $_GET['minutes'] : null,
 				'date' => isset($_GET['date']) ? $_GET['date'] : null,
 			];
-			$sut_list = $this->service->listSUTs($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listSUTs($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'sut_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'sut_list'=>$sut_list
-			]);
+			echo json_encode($response);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
@@ -279,14 +293,27 @@ class ServiceComponentController
 					default => null,
 				}			
 			];
-			$sap_list = $this->service->listSAPs($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listSAPs($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'sap_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'sap_list'=>$sap_list
-			]);
+			echo json_encode($response);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

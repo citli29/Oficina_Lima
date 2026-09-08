@@ -17,19 +17,19 @@ class CarService
 		$this->carModel = $carModel;
 	}
 
-	public function listCars(array $filters): array
+	public function listCars(array $filters, ?array $pagination = null): array
 	{
-		return $this->carModel->getCarsWithFilter($filters);
+		return $this->carModel->getCarsWithFilter($filters, $pagination);
 	}
 
-	public function listModels(array $filters): array
+	public function listModels(array $filters, ?array $pagination = null): array
 	{
-		return $this->carModel->getModelsWithFilter($filters);
+		return $this->carModel->getModelsWithFilter($filters, $pagination);
 	}
 
-	public function listMakes(array $filters): array
+	public function listMakes(array $filters, ?array $pagination = null): array
 	{
-		return $this->carModel->getMakesWithFilter($filters);
+		return $this->carModel->getMakesWithFilter($filters, $pagination);
 	}
 
 	public function showCar(int $id): array

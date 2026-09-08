@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
+
 class ClientController
 {
 	private ClientService $service;
@@ -25,14 +28,27 @@ class ClientController
 				'phone' => isset($_GET['phone']) ? normalize($_GET['phone']) : null,
 				'email' => isset($_GET['email']) ? normalize($_GET['email']) : null,
 			];
-			$client_list = $this->service->listClients($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listClients($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'client_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'client_list'=>$client_list
-			]);
+			echo json_encode($response);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

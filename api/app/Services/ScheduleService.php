@@ -24,9 +24,9 @@ class ScheduleService
 	{
 		return $this->scheduleModel->getSchedulesFree();
 	}
-	public function listSchedules(array $filters): array
+	public function listSchedules(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
-		return $this->scheduleModel->getScheduleWithFilter($filters);
+		return $this->scheduleModel->getScheduleWithFilter($filters, $pagination, $sort);
 	}
 
 	public function showSchedule(int $id):array

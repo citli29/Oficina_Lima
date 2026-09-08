@@ -8,6 +8,9 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 
+require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
+
 class NotificationController
 {
 	private NotificationService $service;
@@ -28,14 +31,27 @@ class NotificationController
 					default => null,
 				}
 			];
-			$notification_list = $this->service->listNotifications($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listNotifications($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'notification_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo(json_encode([
-				'success'=>true,
-				'notification_list'=> $notification_list
-			]));
+			echo(json_encode($response));
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

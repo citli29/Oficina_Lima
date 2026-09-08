@@ -17,9 +17,9 @@ class ClientService
 		$this->clientModel = $clientModel;
 	}
 
-	public function listClients(array $filters): array
+	public function listClients(array $filters, ?array $pagination = null): array
 	{
-		return $this->clientModel->getClientsWithFilter($filters);
+		return $this->clientModel->getClientsWithFilter($filters, $pagination);
 	}
 
 	public function showClient(int $id):array

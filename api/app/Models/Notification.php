@@ -14,11 +14,11 @@ class Notification
 		return $this->db = $db;
 	}
 
-	public function getNotificationsWithFilter(array $filters): array
+	public function getNotificationsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
 		SELECT n.*
-		FROM notifications n 
+		FROM notifications n
 		LEFT JOIN notification_types nt
 		ON nt.id = n.notification_type_id
 		WHERE 1=1
@@ -37,9 +37,21 @@ class Notification
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 		$sql .= "ORDER BY n.created_at DESC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
-		return $stmt->fetchAll();
+
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getNotificationById(int $id): bool|array

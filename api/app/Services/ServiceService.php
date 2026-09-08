@@ -18,9 +18,14 @@ class ServiceService
 		$this->serviceModel = $serviceModel;
 	}
 
-	public function listServices(array $filters): array
+	public function listServices(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
-		return $this->serviceModel->getServicesWithFilter($filters);
+		return $this->serviceModel->getServicesWithFilter($filters, $pagination, $sort);
+	}
+
+	public function listServiceTypes(array $filters, ?array $pagination = null): array
+	{
+		return $this->serviceModel->getServiceTypesWithFilter($filters, $pagination);
 	}
 
 	public function showService(int $id):array

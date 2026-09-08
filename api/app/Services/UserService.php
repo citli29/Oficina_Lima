@@ -18,9 +18,9 @@ class UserService
 		$this->userModel = $userModel;
 	}
 
-	public function listUsers(array $filters): array
+	public function listUsers(array $filters, ?array $pagination = null): array
 	{
-		return $this->userModel->getUsersWithFilter($filters);
+		return $this->userModel->getUsersWithFilter($filters, $pagination);
 	}
 
 	public function showUser(int $id):array

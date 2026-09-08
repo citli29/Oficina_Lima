@@ -17,9 +17,9 @@ class NotificationService
 		return $this->notificationModel = $notificationModel;
 	}
 
-	public function listNotifications(array $filters): array
+	public function listNotifications(array $filters, ?array $pagination = null): array
 	{
-		return $this->notificationModel->getNotificationsWithFilter($filters);
+		return $this->notificationModel->getNotificationsWithFilter($filters, $pagination);
 	}
 
 	public function showNotification(int $id):array

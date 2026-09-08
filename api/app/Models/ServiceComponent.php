@@ -15,7 +15,7 @@ class ServiceComponent
 		$this->db = $db;
 	}
 
-	public function getSUTWithFilter(array $filters): array
+	public function getSUTWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
 			SELECT * FROM 
@@ -65,11 +65,21 @@ class ServiceComponent
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getSUTByServiceWithFilter(int $serviceId, array $filters): array
@@ -464,7 +474,7 @@ class ServiceComponent
 		return $sap; 
 	}
 
-	public function getSAPWithFilter(array $filters): array
+	public function getSAPWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
 			SELECT * FROM 
@@ -518,11 +528,21 @@ class ServiceComponent
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getSUTPByServiceWithFilter(int $serviceId, array $filters): array

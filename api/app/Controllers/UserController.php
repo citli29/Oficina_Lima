@@ -9,6 +9,7 @@ use RuntimeException;
 use PDO;
 
 require_once __DIR__ .'/../../../utils/normalize.php';
+require_once __DIR__ .'/../../../utils/util.php';
 
 class UserController
 {
@@ -28,14 +29,27 @@ class UserController
 				'user_type' => isset($_GET['user_type']) ? $_GET['user_type'] : null,
 			];
 
-			$user_list = $this->service->listUsers($filters);
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listUsers($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'user_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'user_list'=>$user_list
-			]);
+			echo json_encode($response);
 		} catch (RuntimeException$e) {
 			http_response_code($e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

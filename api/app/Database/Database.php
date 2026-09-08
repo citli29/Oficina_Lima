@@ -59,4 +59,38 @@ class Database
 		return $sql;
 	}
 
+	public static function applyPagination(string $sql, array &$params, int $page, int $perPage): string
+	{
+		$sql .= " LIMIT ? OFFSET ?";
+
+		$params[] = $perPage;
+		$params[] = ($page - 1) * $perPage;
+
+		return $sql;
+	}
+
+	public static function getTotalCount(PDO $db, string $sql, array $params): int
+	{
+		$stmt = $db->prepare("SELECT COUNT(*) AS total FROM ({$sql}) sub");
+		$stmt->execute($params);
+
+		return (int) $stmt->fetchColumn();
+	}
+
+	public static function applySort(
+		string $sql,
+		array $sortableColumns,
+		?string $sortKey,
+		string $direction,
+		string $defaultOrderBy
+	): string {
+		$direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+
+		if ($sortKey !== null && isset($sortableColumns[$sortKey])) {
+			return $sql . " ORDER BY {$sortableColumns[$sortKey]} {$direction}";
+		}
+
+		return $sql . " ORDER BY {$defaultOrderBy}";
+	}
+
 }

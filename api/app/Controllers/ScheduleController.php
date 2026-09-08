@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use RuntimeException;
 use PDO;
 require_once __DIR__ . "./../../../utils/normalize.php";
+require_once __DIR__ . "./../../../utils/util.php";
 
 class ScheduleController
 {
@@ -47,17 +48,33 @@ class ScheduleController
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']): null,
 				'client_id' => isset($_GET['client_id']) ? $_GET['client_id'] : null,
 				'client_name' => isset($_GET['client_name']) ? normalize($_GET['client_name']): null,
+				'service_type_id' => isset($_GET['service_type_id']) && $_GET['service_type_id'] !== '' ? (int)$_GET['service_type_id'] : null,
+				'status' => isset($_GET['status']) ? $_GET['status'] : null,
 				'end_date' => isset($_GET['end_date']) ? $_GET['end_date'] : null,
 				'start_date' => isset($_GET['start_date']) ? $_GET['start_date'] : null,
 			];
-			$schedule_list = $this->service->listSchedules($filters);
+			$pagination = parsePagination($_GET);
+			$sort = parseSort($_GET);
+
+			$result = $this->service->listSchedules($filters, $pagination, $sort);
+
+			$response = [
+				'success' => true,
+				'schedule_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
 
 			http_response_code(200);
 			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'schedule_list'=>$schedule_list
-			]);
+			echo json_encode($response);
 		}catch(RuntimeException $e){
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);

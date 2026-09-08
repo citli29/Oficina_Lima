@@ -33,10 +33,10 @@ class Product
 
 		return $stmt->fetchAll();
 	}
-	public function getProductsWithFilter(array $filters): array
+	public function getProductsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
-		SELECT p.*, pt.name AS product_type_name,pt.id AS product_type_id 
+		SELECT p.*, pt.name AS product_type_name,pt.id AS product_type_id
 		FROM products p
 		LEFT JOIN product_types pt ON p.product_type_id = pt.id
 		WHERE 1=1
@@ -59,7 +59,7 @@ class Product
 			],
 			'p_t_id' => [
 				'column' => 'pt.id',
-				'operator' => 'LIKE'
+				'operator' => '='
 			],
 		];
 
@@ -67,14 +67,24 @@ class Product
 
 		$sql .= "ORDER BY p.name, p.reference, pt.name ASC";
 
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
-	public function getProductTypesWithFilter(array $filters):bool|array
-	{		
+	public function getProductTypesWithFilter(array $filters, ?array $pagination = null): array
+	{
 		$sql = "
 		SELECT * FROM product_types WHERE 1=1
 		";
@@ -91,10 +101,20 @@ class Product
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 		$sql .= "ORDER BY name ASC";
 
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getProductById(int $id): bool|array

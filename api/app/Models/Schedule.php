@@ -31,9 +31,9 @@ class Schedule
 
 		return $stmt->fetchAll();
 	}
-	public function getScheduleWithFilter(array $filters): array
+	public function getScheduleWithFilter(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
-		//*?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* 
+		//*?date* *?car_model* *?car_make* *?car_plate* *?client_name* *?client_id* *?service_type_id* *?status*
 
 		$sql = "
 		SELECT
@@ -54,7 +54,9 @@ class Schedule
 
 		ss.id AS service_id,
 		ss.is_finished AS service_is_finished,
-		ss.checkout_date AS service_checkout
+		ss.checkout_date AS service_checkout,
+		ss.service_type_id AS service_type_id,
+		st.name AS service_type_name
 
 		FROM schedules s
 
@@ -76,6 +78,9 @@ class Schedule
 
 		LEFT JOIN services ss
 		ON s.id = ss.schedule_id
+
+		LEFT JOIN service_types st
+		ON st.id = ss.service_type_id
 
 		LEFT JOIN clients cl
 		ON cl.id = s.client_id
@@ -109,6 +114,10 @@ class Schedule
 				'column' => 'cl.id',
 				'operator' => '='
 			],
+			'service_type_id' => [
+				'column' => 'ss.service_type_id',
+				'operator' => '='
+			],
 			'start_date' => [
 				'column' => 's.date',
 				'operator' => '>='
@@ -119,13 +128,53 @@ class Schedule
 			],
 		];
 
+		if (!empty($filters['status'])) {
+			switch ($filters['status']) {
+				case 'without_service':
+					$sql .= " AND ss.id IS NULL";
+					break;
+				case 'with_service':
+					$sql .= " AND ss.id IS NOT NULL AND ss.checkout_date IS NULL AND (ss.is_finished IS NULL OR ss.is_finished != 1)";
+					break;
+				case 'finished':
+					$sql .= " AND ss.checkout_date IS NULL AND ss.is_finished = 1";
+					break;
+				case 'delivered':
+					$sql .= " AND ss.checkout_date IS NOT NULL";
+					break;
+			}
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
-		$sql .= "ORDER BY s.date ASC";
+		$sortableColumns = [
+			'date' => 's.date',
+			'client_name' => 'client_name',
+			'car_plate' => 'car_plate',
+		];
+
+		$sql = Database::applySort(
+			$sql,
+			$sortableColumns,
+			$sort['column'] ?? null,
+			$sort['direction'] ?? 'ASC',
+			's.date ASC'
+		);
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getScheduleById(int $id): bool|array

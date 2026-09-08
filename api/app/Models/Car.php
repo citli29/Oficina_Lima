@@ -15,7 +15,7 @@ class Car
 		$this->db = $db;
 	}
 
-	public function getCarsWithFilter(array $filters): array
+	public function getCarsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
 		SELECT c.*, m.name AS model_name, mk.name AS make_name
@@ -47,23 +47,38 @@ class Car
 			'make_name' => [
 				'column' => 'mk.search_name',
 				'operator' => 'LIKE'
+			],
+			'make_id' => [
+				'column' => 'c.make_id',
+				'operator' => '='
 			]
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
 		$sql .= "ORDER BY c.plate ASC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
-	public function getModelsWithFilter(array $filters): array
+	public function getModelsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
 		SELECT m.*, mk.name AS make_name, mk.id AS make_id
-		FROM models m 
+		FROM models m
 		LEFT JOIN makes mk ON m.make_id = mk.id
 		WHERE 1=1
 		";
@@ -89,16 +104,26 @@ class Car
 
 		$sql .= "ORDER BY make_name, m.name ASC";
 
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
-	public function getMakesWithFilter(array $filters): array
+	public function getMakesWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
-		SELECT id,name FROM makes 
+		SELECT id,name FROM makes
 		WHERE 1=1
 		";
 
@@ -114,10 +139,21 @@ class Car
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
 		$sql .= "ORDER BY name ASC";
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute($params);
 
-		return $stmt->fetchAll();
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
 	}
 
 	public function getCarById(int $id): bool|array
