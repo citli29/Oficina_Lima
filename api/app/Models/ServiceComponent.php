@@ -592,7 +592,16 @@ class ServiceComponent
 					c.plate AS car_plate,
 					ma.name AS car_make,
 					mo.name AS car_model,
-					cl.name AS client_name
+					cl.name AS client_name,
+
+					-- 1 when every product requested for this service has
+					-- been delivered (nothing left pending), so the caller
+					-- can flag the whole service as ready to work on.
+					CASE WHEN NOT EXISTS (
+						SELECT 1 FROM services_products_requested spr3
+						WHERE spr3.service_id = spr.service_id
+						AND (spr3.is_delivered IS NULL OR spr3.is_delivered != 1)
+					) THEN 1 ELSE 0 END AS service_ready
 				FROM services_products_requested spr
 				LEFT JOIN products p
 				ON p.id = spr.product_id
@@ -644,6 +653,17 @@ class ServiceComponent
 			$sql .= $filters['is_delivered']
 				? " AND is_delivered = 1"
 				: " AND (is_delivered = 0 OR is_delivered IS NULL)";
+		}
+
+		// Same name/reference/type OR-search as productsOr, so a single
+		// search box can match any of the three (see Product::getProductsWithOrFilter).
+		if (!empty($filters['q'])) {
+			$sql .= " AND (UPPER(product_name) LIKE UPPER(?) OR UPPER(product_reference) LIKE UPPER(?) OR UPPER(product_type_name) LIKE UPPER(?))";
+
+			$search = '%' . $filters['q'] . '%';
+			$params[] = $search;
+			$params[] = $search;
+			$params[] = $search;
 		}
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);

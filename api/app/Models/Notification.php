@@ -17,7 +17,7 @@ class Notification
 	public function getNotificationsWithFilter(array $filters, ?array $pagination = null): array
 	{
 		$sql = "
-		SELECT n.*
+		SELECT n.*, nt.name AS notification_type_name
 		FROM notifications n
 		LEFT JOIN notification_types nt
 		ON nt.id = n.notification_type_id
@@ -57,8 +57,8 @@ class Notification
 	public function getNotificationById(int $id): bool|array
 	{
 		$stmt = $this->db->prepare("
-			SELECT n.* 
-			FROM notifications n 
+			SELECT n.*, nt.name AS notification_type_name
+			FROM notifications n
 			LEFT JOIN notification_types nt
 			ON nt.id = n.notification_type_id
 			WHERE n.id = ?

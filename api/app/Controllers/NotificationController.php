@@ -20,6 +20,15 @@ class NotificationController
 		$this->service = new NotificationService($model);
 	}
 
+	// The `data` column stores a JSON string (e.g. {"url":"/s/25"}) — decode
+	// it into a nested object so the frontend doesn't have to parse it, and
+	// fall back to null when it's missing or not valid JSON.
+	private function decodeNotificationData(array $notification): array
+	{
+		$notification['data'] = json_decode($notification['data'] ?? '', true);
+		return $notification;
+	}
+
 	public function getNotifications(): void
 	{
 		try{
@@ -37,7 +46,7 @@ class NotificationController
 
 			$response = [
 				'success' => true,
-				'notification_list' => $result['rows'],
+				'notification_list' => array_map([$this, 'decodeNotificationData'], $result['rows']),
 			];
 
 			if ($pagination !== null) {
@@ -66,7 +75,7 @@ class NotificationController
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success'=>true,
-				'notification' => $notification
+				'notification' => $this->decodeNotificationData($notification)
 
 			]);
 		}catch(RuntimeException $e){
@@ -84,7 +93,7 @@ class NotificationController
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
-				'notification'=>$notification
+				'notification'=>$this->decodeNotificationData($notification)
 			]);
 		} catch (InvalidArgumentException $e) {
 			http_response_code((int)$e->getCode());
@@ -100,7 +109,7 @@ class NotificationController
 			header('Content-Type: application/json');
 			echo json_encode([
 				'success' => true,
-				'notification'=>$notification
+				'notification'=>$this->decodeNotificationData($notification)
 			]);
 		} catch (InvalidArgumentException $e) {
 			http_response_code((int)$e->getCode());

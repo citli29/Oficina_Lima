@@ -329,6 +329,7 @@ class ServiceComponentController
 				'product_name' => isset($_GET['product_name']) ? normalize($_GET['product_name']) : null,
 				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
+				'q' => isset($_GET['q']) ? normalize($_GET['q']) : null,
 
 				'is_ordered' => match ($_GET['is_ordered'] ?? null) {
 					'true' => true,
@@ -339,7 +340,7 @@ class ServiceComponentController
 					'true' => true,
 					'false' => 0,
 					default => null,
-				}
+				},
 			];
 			$pagination = parsePagination($_GET);
 
