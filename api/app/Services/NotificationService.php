@@ -22,6 +22,11 @@ class NotificationService
 		return $this->notificationModel->getNotificationsWithFilter($filters, $pagination);
 	}
 
+	public function listNotificationTypes(): array
+	{
+		return $this->notificationModel->getAllNotificationTypes();
+	}
+
 	public function showNotification(int $id):array
 	{
 		if(!$notification = $this->notificationModel->getNotificationById($id))

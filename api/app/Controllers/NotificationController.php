@@ -34,6 +34,7 @@ class NotificationController
 		try{
 			$filters = [
 				'n-type' => isset($_GET['n-type']) ? normalize($_GET['n-type']):null,
+				'n-type-in' => isset($_GET['n-type-in']) ? $_GET['n-type-in'] : null,
 				'is_checked' => match ($_GET['is_checked'] ?? null) {
 					'true' => 1,
 					'false' => 0,
@@ -65,6 +66,18 @@ class NotificationController
 			http_response_code((int)$e->getCode());
 			echo json_encode(['error' => $e->getMessage()]);
 		}
+	}
+
+	public function getNotificationTypes(): void
+	{
+		$notificationTypes = $this->service->listNotificationTypes();
+
+		http_response_code(200);
+		header('Content-Type: application/json');
+		echo json_encode([
+			'success' => true,
+			'notification_type_list' => $notificationTypes
+		]);
 	}
 
 	public function getNotification(int $id):void

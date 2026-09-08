@@ -35,6 +35,22 @@ class Notification
 			],
 		];
 
+		// Multiple type ids at once (e.g. Geral + whichever specific type the
+		// viewer picked), since the generic applyFilters helper only does
+		// single-value equality.
+		if (!empty($filters['n-type-in'])) {
+			$ids = array_filter(array_map('intval', explode(',', (string) $filters['n-type-in'])));
+
+			if (!empty($ids)) {
+				$placeholders = implode(',', array_fill(0, count($ids), '?'));
+				$sql .= " AND n.notification_type_id IN ({$placeholders})";
+
+				foreach ($ids as $id) {
+					$params[] = $id;
+				}
+			}
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 		$sql .= "ORDER BY n.created_at DESC";
 
@@ -52,6 +68,13 @@ class Notification
 			'rows' => $stmt->fetchAll(),
 			'total' => $total,
 		];
+	}
+
+	public function getAllNotificationTypes(): array
+	{
+		$stmt = $this->db->query("SELECT * FROM notification_types ORDER BY id ASC");
+
+		return $stmt->fetchAll();
 	}
 
 	public function getNotificationById(int $id): bool|array

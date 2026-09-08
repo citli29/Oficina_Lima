@@ -113,6 +113,7 @@ return [
 	['DELETE', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'deleteSPR']],
 
 	/*	Notification Controller	*/
+	['GET', '/api/notification_types', [NotificationController::class, 'getNotificationTypes']],
 	['GET', '/api/notifications', [NotificationController::class, 'getNotifications']], //with search
 	['GET', '/api/notifications/{id:\d+}', [NotificationController::class, 'getNotification']],
 	['PUT', '/api/notifications/{id:\d+}/check', [NotificationController::class, 'putNotificationCheck']],
