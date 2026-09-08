@@ -174,7 +174,6 @@ class Product
 		$stmt->execute([
 			!empty($data['name']) ? $data['name']: null,
 			!empty($data['name']) ? normalize($data['name']): null,
-			!empty($data['name']) ? normalize($data['name']): null,
 			$id
 		]);
 

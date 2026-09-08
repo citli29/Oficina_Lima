@@ -450,7 +450,7 @@ class ServiceComponent
 		}
 
 		if (isset($data['is_applied'])) {
-			$params[] = !empty($data['is_applied'])?$data['is_applied']:false;
+			$params[] = !empty($data['is_applied'])?$data['is_applied']:0;
 		}
 
 		$stmt->execute($params);
