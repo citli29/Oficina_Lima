@@ -43,23 +43,16 @@ class ServiceComponentService
 
 	public function createSUT(int $s_id,array $data): array
 	{
-		if(empty($data['user_id'])|| empty($data['minutes'])||empty($data['date'])) {
-			throw new InvalidArgumentException("Create Service User Time [Arguments Required]: User ID, Minutes, Date.", 400);
-		}
-
 		try
 		{
 			return $this->serviceComponentModel->createSUT($s_id,$data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service User Time [Argument Constraints]: User ID must be provided. Minutes must be provided. Date must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
 	public function updateSUT(int $s_id, int $id, array $data): array
 	{
-		if(empty($data['user_id'])|| empty($data['minutes'])||empty($data['date'])) {
-			throw new InvalidArgumentException("Update Service User Time [Argument Required]: User ID, Minutes, Date.",400);
-		}
 		try
 		{
 			$sut = $this->serviceComponentModel->updateSUTBySid_Id($s_id,$id,$data);
@@ -67,7 +60,7 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Update Service User Time [Invalid ID]: {$s_id} - {$id}.",400);
 			return $sut;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service User Time [Argument Required]: User ID must be provided. Minutes must be provided. Date must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -80,7 +73,7 @@ class ServiceComponentService
 			return $sut;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Applied Product [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 
@@ -123,7 +116,7 @@ class ServiceComponentService
 		{
 			return $this->serviceComponentModel->createSAP($s_id,$data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service Applied Products [Argument Constraints]: Product ID must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -139,7 +132,7 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Update Service Applied Products [Invalid ID]: {$s_id} - {$id}.",400);
 			return $sap;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service Applied Products [Argument Required]: Product ID must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -152,7 +145,7 @@ class ServiceComponentService
 			return $sap;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Applied Product [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 
@@ -170,7 +163,7 @@ class ServiceComponentService
 		{
 			return $this->serviceComponentModel->createSUTP($s_id,$data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service User Time Punches[Argument Constraints]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -215,7 +208,7 @@ class ServiceComponentService
 			return $sutp;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete User Time Punches [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 
@@ -231,7 +224,7 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Update Service User Time Punches[Invalid ID]: {$s_id} - {$id}.",400);
 			return $sutp;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service User Time Punches[Argument Required]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 	public function listSPRsByService(int $s_id,array $filters): array
@@ -248,7 +241,7 @@ class ServiceComponentService
 		{
 			return $this->serviceComponentModel->createSPR($s_id,$data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service Product Request[Argument Constraints]: User ID must be provided. Date must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -270,7 +263,7 @@ class ServiceComponentService
 			return $spr;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Product Request[Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 
@@ -286,7 +279,7 @@ class ServiceComponentService
 			throw new InvalidArgumentException("Update Service Product Request[Invalid ID]: {$s_id} - {$id}.",400);
 			return $spr;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service Product Request[Argument Required]: Product ID must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 }

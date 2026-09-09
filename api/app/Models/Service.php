@@ -163,11 +163,14 @@ class Service
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
 		$sortableColumns = [
+			'id' => 's.id',
 			'checkin' => 'checkin',
 			'checkout' => 'checkout',
 			'client_name' => 'client_name',
 			'car_plate' => 'car_plate',
 			'kms' => 's.kms',
+			'service_type_name' => 'service_type_name',
+			'schedule_id' => 's.schedule_id',
 		];
 
 		$sql = Database::applySort(
@@ -205,6 +208,7 @@ class Service
 				s.kms as kms,
 				s.note as note,
 				s.is_finished as is_finished,
+				s.office_check as office_check,
 				s.service_type_id as service_type_id,
 				st.name as service_type_name,
 
@@ -278,6 +282,7 @@ class Service
 				schedule_id = ?,
 				note = ?,
 				is_finished = ?,
+				office_check = ?,
 				service_type_id = ?,
 				r_name = ?,
 				r_phone = ?,
@@ -298,6 +303,7 @@ class Service
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
 			!empty($data['is_finished']) ?$data['is_finished']: 0,
+			!empty($data['office_check']) ?$data['office_check']: 0,
 			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
 			!empty($data['r_name']) ?$data['r_name']: null,
 			!empty($data['r_phone']) ?$data['r_phone']: null,

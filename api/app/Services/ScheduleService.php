@@ -46,7 +46,7 @@ class ScheduleService
 		{
 			return $this->scheduleModel->createSchedule($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Schedule [Argument Constraints]: Date [YYYY-MM-DD] must be provided. Description must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -65,7 +65,7 @@ class ScheduleService
 			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
 			return $service;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service [Argument Required]: Client ID must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 
 	}
@@ -82,7 +82,7 @@ class ScheduleService
 			throw new InvalidArgumentException("Update Schedule [Invalid ID]: {$id}.",400);
 			return $schedule;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Schedule [Argument Required]: Date [YYYY-MM-DD] must be provided. Description must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -95,7 +95,7 @@ class ScheduleService
 			return $schedule;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Schedule [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 

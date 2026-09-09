@@ -54,7 +54,7 @@ class ProductService
 {
 			return $this->productModel->createProduct($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Product [Argument Constraints]: Name must be provided. Reference must be unique. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -67,7 +67,7 @@ class ProductService
 {
 			return $this->productModel->createProductType($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Product Type [Argument Constraints]: Name must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 	public function deleteProductType(int $id): array
@@ -79,7 +79,7 @@ class ProductService
 		return $product_type;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Product Type [Error]: [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -92,7 +92,7 @@ class ProductService
 		return $product;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Product Type [Error]: [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -108,7 +108,7 @@ class ProductService
 			throw new InvalidArgumentException("Update Product Type [Invalid ID]: {$id}.",404);
 			return $product_type;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Product Type [Argument constraints]: Name must be unique. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -125,7 +125,7 @@ class ProductService
 			throw new InvalidArgumentException("Update Product [Invalid ID]: {$id}.",404);
 			return $product;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Product [Argument constraints]: Name must be provided. Reference must be unique. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 }

@@ -1,4 +1,13 @@
-<?php 
+<?php
+function dbErrorMessage(\PDOException $e): string
+{
+    $driverMessage = $e->errorInfo[2] ?? null;
+
+    return $driverMessage !== null && $driverMessage !== ''
+        ? $driverMessage
+        : 'Erro ao processar o pedido na base de dados.';
+}
+
 function nullableInt(?int $value): ?int
 {
     return $value === null ? null : (int) $value;

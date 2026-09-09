@@ -42,7 +42,7 @@ class NotificationService
 			throw new InvalidArgumentException("Update Notification [Invalid ID]: {$id}.",400);
 			return $notification;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Notification Check. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 }

@@ -39,7 +39,7 @@ class ClientService
 		{
 			return $this->clientModel->createClient($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Client [Argument Constraints]: Name must be provided. Phone must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -55,7 +55,7 @@ class ClientService
 			throw new InvalidArgumentException("Update Client [Invalid ID]: {$id}.",400);
 			return $client;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Client [Argument Required]: Name must be provided. Phone must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -68,7 +68,7 @@ class ClientService
 			return $client;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Client [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 }

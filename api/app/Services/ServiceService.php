@@ -45,7 +45,7 @@ class ServiceService
 		{
 			return $this->serviceModel->createService($data);
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Create Service [Argument Constraints]: Client ID must be provided. [{$e->errorInfo[2]}]", 400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -62,7 +62,7 @@ class ServiceService
 			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
 			return $service;
 		} catch (PDOException $e){
-			throw new InvalidArgumentException("Update Service [Argument Required]: Client ID must be provided. [{$e->errorInfo[2]}]",400);
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
@@ -75,7 +75,7 @@ class ServiceService
 			return $service;
 		}catch(PDOException $e)
 		{
-			throw new InvalidArgumentException("Delete Service [Error]: [{$e->errorInfo[2]}]", 409);
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}
 	}
 
