@@ -35,6 +35,7 @@ class ServiceController
 				'start_date' => isset($_GET['start_date']) ? $_GET['start_date'] : null,
 				'end_date' => isset($_GET['end_date']) ? $_GET['end_date'] : null,
 				'status' => isset($_GET['status']) ? $_GET['status'] : null,
+				'q' => isset($_GET['q']) ? normalize($_GET['q']) : null,
 			];
 			$pagination = parsePagination($_GET);
 			$sort = parseSort($_GET);

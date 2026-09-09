@@ -152,6 +152,14 @@ class Service
 			}
 		}
 
+		if (!empty($filters['q'])) {
+			$q = '%' . $filters['q'] . '%';
+			$sql .= " AND (UPPER(cl.search_name) LIKE UPPER(?) OR UPPER(c.search_plate) LIKE UPPER(?) OR cl.phone LIKE ?)";
+			$params[] = $q;
+			$params[] = $q;
+			$params[] = $q;
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
 		$sortableColumns = [
@@ -270,6 +278,7 @@ class Service
 				schedule_id = ?,
 				note = ?,
 				is_finished = ?,
+				service_type_id = ?,
 				r_name = ?,
 				r_phone = ?,
 				checkout_predict = ?,
@@ -289,6 +298,7 @@ class Service
 			!empty($data['schedule_id']) ?$data['schedule_id']: null,
 			!empty($data['note']) ?$data['note']: null,
 			!empty($data['is_finished']) ?$data['is_finished']: 0,
+			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
 			!empty($data['r_name']) ?$data['r_name']: null,
 			!empty($data['r_phone']) ?$data['r_phone']: null,
 			!empty($data['checkout_predict']) ?$data['checkout_predict']: null,
@@ -349,8 +359,8 @@ class Service
 
 		$stmt = $this->db->prepare("
 			INSERT INTO
-			services(client_id, kms, checkin_date, checkout_date, malfunction_description, car_id, schedule_id, is_finished, service_type_id)
-			VALUES (?,?,?,?,?,?,?,?,?)
+			services(client_id, kms, checkin_date, checkout_date, malfunction_description, car_id, schedule_id, is_finished, service_type_id, r_name, r_phone)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
@@ -363,6 +373,8 @@ class Service
 			$id ?? null,
 			0,
 			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
+			!empty($data['r_name']) ?$data['r_name']: null,
+			!empty($data['r_phone']) ?$data['r_phone']: null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();
