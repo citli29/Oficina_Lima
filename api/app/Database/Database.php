@@ -16,6 +16,8 @@ class Database
 			self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 			self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			self::$instance->exec("PRAGMA foreign_keys = on");
+			self::$instance->exec("PRAGMA journal_mode = WAL");
+			self::$instance->exec("PRAGMA busy_timeout = 5000");
 		}
 		return self::$instance;
 	}
