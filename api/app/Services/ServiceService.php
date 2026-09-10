@@ -37,10 +37,6 @@ class ServiceService
 
 	public function createService(array $data): array
 	{
-		if(empty($data['client_id'])) {
-			throw new InvalidArgumentException("Create Service [Arguments Required]: Client ID.", 400);
-		}
-
 		try
 		{
 			return $this->serviceModel->createService($data);
@@ -52,9 +48,6 @@ class ServiceService
 
 	public function updateService(int $id, array $data): array
 	{
-		if(empty($data['client_id'])) {
-			throw new InvalidArgumentException("Update Service [Argument Required]: Client ID.",400);
-		}
 		try
 		{
 			$service = $this->serviceModel->updateService($id,$data);

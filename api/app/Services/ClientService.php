@@ -31,10 +31,6 @@ class ClientService
 
 	public function createClient(array $data): array
 	{
-		if(empty($data['name']) || empty($data['phone'])) {
-			throw new InvalidArgumentException("Create Client [Arguments Required]: Name, Phone.", 400);
-		}
-
 		try
 		{
 			return $this->clientModel->createClient($data);
@@ -45,9 +41,6 @@ class ClientService
 
 	public function updateClient(int $id, array $data): array
 	{
-		if(empty($data['name']) || empty($data['phone'])) {
-			throw new InvalidArgumentException("Update Client[Argument Required]: Name, Phone.",400);
-		}
 		try
 		{
 			$client = $this->clientModel->updateClient($id,$data);

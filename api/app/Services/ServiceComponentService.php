@@ -108,10 +108,6 @@ class ServiceComponentService
 
 	public function createSAP(int $s_id,array $data): array
 	{
-		if(empty($data['product_id'])) {
-			throw new InvalidArgumentException("Create Service Applied Products Time [Arguments Required]: Product ID.", 400);
-		}
-
 		try
 		{
 			return $this->serviceComponentModel->createSAP($s_id,$data);
@@ -122,9 +118,6 @@ class ServiceComponentService
 
 	public function updateSAP(int $s_id, int $id, array $data): array
 	{
-		if(empty($data['product_id'])) {
-			throw new InvalidArgumentException("Update Service Applied Products [Argument Required]: Product ID.",400);
-		}
 		try
 		{
 			$sap = $this->serviceComponentModel->updateSAPBySid_Id($s_id,$id,$data);
@@ -155,10 +148,6 @@ class ServiceComponentService
 	}
 
 	public function createSUTP(int $s_id, array $data){
-		if(empty($data['user_id'])||empty($data['date'])) {
-			throw new InvalidArgumentException("Create Service User Time Punches[Arguments Required]: User ID, Date.", 400);
-		}
-
 		try
 		{
 			return $this->serviceComponentModel->createSUTP($s_id,$data);
@@ -214,9 +203,6 @@ class ServiceComponentService
 
 	public function updateSUTP(int $s_id, int $id, array $data): array
 	{
-		if(empty($data['user_id'])|| empty($data['date'])) {
-			throw new InvalidArgumentException("Update Service User Time Punches[Argument Required]: User ID, Date.",400);
-		}
 		try
 		{
 			$sutp = $this->serviceComponentModel->updateSUTPBySid_Id($s_id,$id,$data);
@@ -233,10 +219,6 @@ class ServiceComponentService
 	}
 
 	public function createSPR(int $s_id, array $data){
-		if(empty($data['product_id'])){
-			throw new InvalidArgumentException("Create Service Product Request[Arguments Required]: Product ID.", 400);
-		}
-
 		try
 		{
 			return $this->serviceComponentModel->createSPR($s_id,$data);
@@ -269,9 +251,6 @@ class ServiceComponentService
 
 	public function updateSPR(int $s_id, int $id, array $data): array
 	{
-		if(empty($data['product_id'])) {
-			throw new InvalidArgumentException("Update Service Product Request[Argument Required]: Product ID.",400);
-		}
 		try
 		{
 			$spr = $this->serviceComponentModel->updateSPRBySid_Id($s_id,$id,$data);

@@ -492,6 +492,7 @@ class ServiceComponent
 					p.reference AS product_reference,
 					p.product_type_id AS product_type_id,
 					pt.name AS product_type_name,
+					s.car_id AS car_id,
 					c.plate AS car_plate,
 					ma.name AS car_make,
 					mo.name AS car_model,
@@ -532,6 +533,10 @@ class ServiceComponent
 			],
 			'product_id' => [
 				'column' => 'product_id',
+				'operator' => '='
+			],
+			'car_id' => [
+				'column' => 'car_id',
 				'operator' => '='
 			],
 		];

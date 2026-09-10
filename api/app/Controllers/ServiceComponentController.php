@@ -286,6 +286,7 @@ class ServiceComponentController
 				'product_name' => isset($_GET['product_name']) ? normalize($_GET['product_name']) : null,
 				'product_reference' => isset($_GET['product_reference']) ? $_GET['product_reference'] : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
+				'car_id' => isset($_GET['car_id']) ? $_GET['car_id'] : null,
 
 				'is_applied' => match ($_GET['is_applied'] ?? null) {
 					'true' => true,

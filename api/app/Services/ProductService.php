@@ -47,9 +47,6 @@ class ProductService
 
 	public function createProduct(array $data): array
 	{
-		if(empty($data['name'])) {
-			throw new InvalidArgumentException("Create Product [Arguments Required]: Name.",400);
-		}
 		try
 {
 			return $this->productModel->createProduct($data);
@@ -60,9 +57,6 @@ class ProductService
 
 	public function createProductType(array $data): array
 	{
-		if(empty($data['name'])) {
-			throw new InvalidArgumentException("Create Product Type [Arguments Required]: Name.",400);
-		}
 		try
 {
 			return $this->productModel->createProductType($data);
@@ -98,9 +92,6 @@ class ProductService
 
 	public function updateProductType(int $id, array $data): array
 	{
-		if(empty($data['name'])) {
-			throw new InvalidArgumentException("Update Product Type [Argument required]: Name.",400);
-		}
 		try
 		{
 			$product_type = $this->productModel->updateProductType($id,$data);
@@ -114,10 +105,6 @@ class ProductService
 
 	public function updateProduct(int $id, array $data): array
 	{
-		if(empty($data['name'])) {
-			throw new InvalidArgumentException("Update Make [Arguments required]: name.",400);
-		}
-
 		try
 		{
 			$product= $this->productModel->updateProduct($id,$data);

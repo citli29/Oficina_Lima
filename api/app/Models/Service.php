@@ -58,6 +58,7 @@ class Service
 			s.checkout_date as checkout,
 			s.schedule_id as schedule_id,
 			s.note as note,
+			s.service_description as service,
 			s.is_finished as is_finished,
 			s.service_type_id as service_type_id,
 			st.name as service_type_name,
@@ -122,6 +123,10 @@ class Service
 			],
 			'schedule_id' => [
 				'column' => 's.schedule_id',
+				'operator' => '='
+			],
+			'car_id' => [
+				'column' => 's.car_id',
 				'operator' => '='
 			],
 			'service_type_id' => [

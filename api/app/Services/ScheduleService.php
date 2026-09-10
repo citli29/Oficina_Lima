@@ -38,10 +38,6 @@ class ScheduleService
 
 	public function createSchedule(array $data): array
 	{
-		if(empty($data['date']) || empty($data['description'])) {
-			throw new InvalidArgumentException("Create Schedule [Arguments Required]: Date [YYYY-MM-DD], Description.", 400);
-		}
-
 		try
 		{
 			return $this->scheduleModel->createSchedule($data);
@@ -55,11 +51,8 @@ class ScheduleService
 		try
 		{
 			$schedule = $this->scheduleModel->getScheduleById($id);
-			if(!$schedule) 
+			if(!$schedule)
 			throw new InvalidArgumentException("Create Service From Schedule [Invalid ID]: {$id}.",400);
-			if(empty($data['client_id']) && empty($schedule['client_id'])) {
-				throw new InvalidArgumentException("Create Service From Schedule [Argument Required]: Client ID.",400);
-			}
 			$service = $this->serviceModel->createServiceFromSchedule($id,$data,$schedule);
 			if(!$service) 
 			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
@@ -72,9 +65,6 @@ class ScheduleService
 
 	public function updateSchedule(int $id, array $data): array
 	{
-		if(empty($data['date']) || empty($data['description'])) {
-			throw new InvalidArgumentException("Update Schedule[Argument Required]: Date [YYYY-MM-DD], Description.",400);
-		}
 		try
 		{
 			$schedule = $this->scheduleModel->updateSchedule($id,$data);

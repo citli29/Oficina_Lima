@@ -28,6 +28,7 @@ class ServiceController
 				'checkin' => isset($_GET['checkin']) ? $_GET['checkin'] : null,
 				'schedule_id' => isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null,
 				'checkout' => isset($_GET['checkout']) ? $_GET['checkout'] : null,
+				'car_id' => isset($_GET['car_id']) ? $_GET['car_id'] : null,
 				'car_plate' => isset($_GET['car_plate']) ? normalize($_GET['car_plate']) : null,
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']) : null,
