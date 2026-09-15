@@ -147,6 +147,11 @@ class ServiceComponentService
 		return $this->serviceComponentModel->getSUTPByServiceWithFilter($s_id,$filters);
 	}
 
+	public function listOpenSUTPs(): array
+	{
+		return $this->serviceComponentModel->getOpenSUTPs();
+	}
+
 	public function createSUTP(int $s_id, array $data){
 		try
 		{

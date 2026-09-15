@@ -390,6 +390,23 @@ class ServiceComponentController
 		}
 	}
 
+	public function getOpenSUTPs()
+	{
+		try{
+			$sutp_list = $this->service->listOpenSUTPs();
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'sutp_list'=>$sutp_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 	public function postSUTPs(int $s_id)
 	{
 		try {

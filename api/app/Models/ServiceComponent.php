@@ -734,6 +734,47 @@ class ServiceComponent
 		return $stmt->fetchAll();
 	}
 
+	public function getOpenSUTPs(): array
+	{
+		$stmt = $this->db->query("
+		SELECT
+			sutp.id AS id,
+			sutp.service_id AS service_id,
+			sutp.hours_s,
+			sutp.minutes_s,
+			sutp.ut_date AS date,
+			sutp.user_id AS user_id,
+			u.name AS user_name,
+
+			c.plate AS car_plate,
+			ma.name AS car_make_name,
+			mo.name AS car_model_name
+
+		FROM services_user_time_punches sutp
+
+		LEFT JOIN users u
+		ON u.id = sutp.user_id
+
+		LEFT JOIN services s
+		ON s.id = sutp.service_id
+
+		LEFT JOIN cars c
+		ON c.id = s.car_id
+
+		LEFT JOIN models mo
+		ON mo.id = c.model_id
+
+		LEFT JOIN makes ma
+		ON ma.id = COALESCE(mo.make_id, c.make_id)
+
+		WHERE sutp.hours_f IS NULL
+
+		ORDER BY sutp.ut_date ASC, sutp.hours_s ASC, sutp.minutes_s ASC
+		");
+
+		return $stmt->fetchAll();
+	}
+
 	public function getSUTPById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "

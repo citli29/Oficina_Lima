@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Database\Database;
+use InvalidArgumentException;
 use PDO;
 
 class Service
@@ -205,8 +206,9 @@ class Service
 	public function getServiceById(int $id): bool|array
 	{
 		$stmt = $this->db->prepare( "
-			SELECT 
+			SELECT
 				s.id,
+				s.version as version,
 				s.checkin_date as checkin,
 				s.checkout_date as checkout,
 				s.schedule_id as schedule_id,
@@ -294,7 +296,7 @@ class Service
 				checkout_predict = ?,
 				signed_service = ?
 
-			WHERE id = ?
+			WHERE id = ? AND version = ?
 			");
 
 		$stmt->execute([
@@ -314,8 +316,20 @@ class Service
 			!empty($data['r_phone']) ?$data['r_phone']: null,
 			!empty($data['checkout_predict']) ?$data['checkout_predict']: null,
 			!empty($data['signed_service']) ?$data['signed_service']: null,
-			$id
+			$id,
+			$data['version'] ?? null,
 		]);
+
+		if ($stmt->rowCount() === 0) {
+			if (!$this->getServiceById($id)) {
+				return false;
+			}
+
+			throw new InvalidArgumentException(
+				"Este serviço foi alterado por outro utilizador entretanto. Recarregue a página para ver as alterações mais recentes.",
+				409
+			);
+		}
 
 		return $this->getServiceById($id);
 	}
