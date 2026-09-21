@@ -152,6 +152,26 @@ class ServiceComponentService
 		return $this->serviceComponentModel->getOpenSUTPs();
 	}
 
+	public function listMonthlyUserTimeStats(string $year): array
+	{
+		return $this->serviceComponentModel->getMonthlyUserTimeStats($year);
+	}
+
+	public function listWeeklyUserTimeStats(string $year, string $month): array
+	{
+		return $this->serviceComponentModel->getWeeklyUserTimeStats($year, $month);
+	}
+
+	public function listYearlyDailyUserTimeStats(string $year): array
+	{
+		return $this->serviceComponentModel->getYearlyDailyUserTimeStats($year);
+	}
+
+	public function listDailyUserTimeStats(string $year, string $month, ?int $week = null): array
+	{
+		return $this->serviceComponentModel->getDailyUserTimeStats($year, $month, $week);
+	}
+
 	public function createSUTP(int $s_id, array $data){
 		try
 		{

@@ -407,6 +407,109 @@ class ServiceComponentController
 		}
 	}
 
+	public function getMonthlyUserTimeStats()
+	{
+		try{
+			$year = isset($_GET['year']) && preg_match('/^\d{4}$/', $_GET['year'])
+				? $_GET['year']
+				: date('Y');
+
+			$stats_list = $this->service->listMonthlyUserTimeStats($year);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'year' => $year,
+				'stats_list' => $stats_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getWeeklyUserTimeStats()
+	{
+		try{
+			$year = isset($_GET['year']) && preg_match('/^\d{4}$/', $_GET['year'])
+				? $_GET['year']
+				: date('Y');
+
+			$month = isset($_GET['month']) && preg_match('/^(0[1-9]|1[0-2])$/', $_GET['month'])
+				? $_GET['month']
+				: date('m');
+
+			$stats_list = $this->service->listWeeklyUserTimeStats($year, $month);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'year' => $year,
+				'month' => $month,
+				'stats_list' => $stats_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getDailyUserTimeStats()
+	{
+		try{
+			$year = isset($_GET['year']) && preg_match('/^\d{4}$/', $_GET['year'])
+				? $_GET['year']
+				: date('Y');
+
+			$month = isset($_GET['month']) && preg_match('/^(0[1-9]|1[0-2])$/', $_GET['month'])
+				? $_GET['month']
+				: date('m');
+
+			$week = isset($_GET['week']) && preg_match('/^[1-5]$/', $_GET['week'])
+				? (int)$_GET['week']
+				: null;
+
+			$stats_list = $this->service->listDailyUserTimeStats($year, $month, $week);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'year' => $year,
+				'month' => $month,
+				'week' => $week,
+				'stats_list' => $stats_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getYearlyDailyUserTimeStats()
+	{
+		try{
+			$year = isset($_GET['year']) && preg_match('/^\d{4}$/', $_GET['year'])
+				? $_GET['year']
+				: date('Y');
+
+			$stats_list = $this->service->listYearlyDailyUserTimeStats($year);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'year' => $year,
+				'stats_list' => $stats_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 	public function postSUTPs(int $s_id)
 	{
 		try {

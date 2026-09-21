@@ -95,6 +95,10 @@ return [
 	['POST', '/api/services/{s_id:\d+}/user_time_punches/{id:\d+}/stop', [ServiceComponentController::class, 'postSUTPstop']],
 	['DELETE', '/api/services/{s_id:\d+}/user_time_punches/{id:\d+}', [ServiceComponentController::class, 'deleteSUTP']],
 	['GET', '/api/user_time_punches/open', [ServiceComponentController::class, 'getOpenSUTPs']],
+	['GET', '/api/user_times/monthly_stats', [ServiceComponentController::class, 'getMonthlyUserTimeStats']],
+	['GET', '/api/user_times/weekly_stats', [ServiceComponentController::class, 'getWeeklyUserTimeStats']],
+	['GET', '/api/user_times/yearly_daily_stats', [ServiceComponentController::class, 'getYearlyDailyUserTimeStats']],
+	['GET', '/api/user_times/daily_stats', [ServiceComponentController::class, 'getDailyUserTimeStats']],
 
 	['GET', '/api/services/{s_id:\d+}/applied_products', [ServiceComponentController::class, 'getAppliedProducts']], //with search
 	['POST', '/api/services/{s_id:\d+}/applied_products', [ServiceComponentController::class, 'postAppliedProducts']], //with search

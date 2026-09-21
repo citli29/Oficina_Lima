@@ -775,6 +775,157 @@ class ServiceComponent
 		return $stmt->fetchAll();
 	}
 
+	public function getMonthlyUserTimeStats(string $year): array
+	{
+		$stmt = $this->db->prepare("
+		SELECT
+			CAST(strftime('%m', combined.ut_date) AS INTEGER) AS month,
+			combined.user_id AS user_id,
+			u.name AS user_name,
+			SUM(combined.minutes) AS total_minutes
+
+		FROM (
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time
+			WHERE minutes IS NOT NULL
+
+			UNION ALL
+
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time_punches
+			WHERE minutes IS NOT NULL
+		) combined
+
+		LEFT JOIN users u
+		ON u.id = combined.user_id
+
+		WHERE strftime('%Y', combined.ut_date) = ?
+
+		GROUP BY month, combined.user_id
+		ORDER BY month, combined.user_id
+		");
+
+		$stmt->execute([$year]);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getWeeklyUserTimeStats(string $year, string $month): array
+	{
+		$stmt = $this->db->prepare("
+		SELECT
+			((CAST(strftime('%d', combined.ut_date) AS INTEGER) - 1) / 7) + 1 AS week,
+			combined.user_id AS user_id,
+			u.name AS user_name,
+			SUM(combined.minutes) AS total_minutes
+
+		FROM (
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time
+			WHERE minutes IS NOT NULL
+
+			UNION ALL
+
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time_punches
+			WHERE minutes IS NOT NULL
+		) combined
+
+		LEFT JOIN users u
+		ON u.id = combined.user_id
+
+		WHERE strftime('%Y', combined.ut_date) = ?
+		AND strftime('%m', combined.ut_date) = ?
+
+		GROUP BY week, combined.user_id
+		ORDER BY week, combined.user_id
+		");
+
+		$stmt->execute([$year, $month]);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getYearlyDailyUserTimeStats(string $year): array
+	{
+		$stmt = $this->db->prepare("
+		SELECT
+			combined.ut_date AS ut_date,
+			combined.user_id AS user_id,
+			u.name AS user_name,
+			SUM(combined.minutes) AS total_minutes
+
+		FROM (
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time
+			WHERE minutes IS NOT NULL
+
+			UNION ALL
+
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time_punches
+			WHERE minutes IS NOT NULL
+		) combined
+
+		LEFT JOIN users u
+		ON u.id = combined.user_id
+
+		WHERE strftime('%Y', combined.ut_date) = ?
+
+		GROUP BY combined.ut_date, combined.user_id
+		ORDER BY combined.ut_date, combined.user_id
+		");
+
+		$stmt->execute([$year]);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getDailyUserTimeStats(string $year, string $month, ?int $week = null): array
+	{
+		$weekFilter = $week !== null ? "AND ((CAST(strftime('%d', combined.ut_date) AS INTEGER) - 1) / 7) + 1 = CAST(? AS INTEGER)" : "";
+
+		$stmt = $this->db->prepare("
+		SELECT
+			CAST(strftime('%d', combined.ut_date) AS INTEGER) AS day,
+			((CAST(strftime('%d', combined.ut_date) AS INTEGER) - 1) / 7) + 1 AS week,
+			combined.user_id AS user_id,
+			u.name AS user_name,
+			SUM(combined.minutes) AS total_minutes
+
+		FROM (
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time
+			WHERE minutes IS NOT NULL
+
+			UNION ALL
+
+			SELECT user_id, minutes, ut_date
+			FROM services_user_time_punches
+			WHERE minutes IS NOT NULL
+		) combined
+
+		LEFT JOIN users u
+		ON u.id = combined.user_id
+
+		WHERE strftime('%Y', combined.ut_date) = ?
+		AND strftime('%m', combined.ut_date) = ?
+		{$weekFilter}
+
+		GROUP BY day, combined.user_id
+		ORDER BY day, combined.user_id
+		");
+
+		$params = [$year, $month];
+		if ($week !== null) {
+			$params[] = $week;
+		}
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
 	public function getSUTPById(int $id): bool|array
 	{
 		$stmt = $this->db->query( "
