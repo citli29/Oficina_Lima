@@ -286,4 +286,100 @@ class ServiceComponentService
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
+
+	public function listLabActionValuesByService(int $id, array $filters): array
+	{
+		return $this->serviceComponentModel->getLabActionValuesByServiceWithFilter($id, $filters);
+	}
+
+	public function listLabPropertyValuesByService(int $id, array $filters): array
+	{
+		return $this->serviceComponentModel->getLabPropertyValuesByServiceWithFilter($id, $filters);
+	}
+
+	public function createLav(int $s_id, array $data): array
+	{
+		try
+		{
+			return $this->serviceComponentModel->createLav($s_id, $data);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function showLav(int $s_id, int $slav_id): array
+	{
+		if(!$lav = $this->serviceComponentModel->getLavBySid_SlavId($s_id, $slav_id))
+			throw new RuntimeException("Show Lab Action Value [ID Not Found]: {$s_id} : {$slav_id}.",404);
+		return $lav;
+	}
+
+	public function updateLav(int $s_id, int $slav_id, array $data): array
+	{
+		try
+		{
+			$lav = $this->serviceComponentModel->updateLavBySid_SlavId($s_id, $slav_id, $data);
+			if(!$lav)
+			throw new InvalidArgumentException("Update Lab Action Value [Invalid ID]: {$s_id} - {$slav_id}.",400);
+			return $lav;
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function deleteLav(int $s_id, int $slav_id): array
+	{
+		try
+		{
+			if(!$lav = $this->serviceComponentModel->deleteLavBySid_SlavId($s_id, $slav_id))
+				throw new InvalidArgumentException("Delete Lab Action Value [Invalid ID]: {$s_id} - {$slav_id}.", 404);
+			return $lav;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
+		}
+	}
+
+	public function createLpv(int $s_id, array $data): array
+	{
+		try
+		{
+			return $this->serviceComponentModel->createLpv($s_id, $data);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function showLpv(int $s_id, int $id): array
+	{
+		if(!$lpv = $this->serviceComponentModel->getLpvBySidId($s_id, $id))
+			throw new RuntimeException("Show Lab Property Value [ID Not Found]: {$s_id} : {$id}.",404);
+		return $lpv;
+	}
+
+	public function updateLpv(int $s_id, int $id, array $data): array
+	{
+		try
+		{
+			$lpv = $this->serviceComponentModel->updateLpvBySidId($s_id, $id, $data);
+			if(!$lpv)
+			throw new InvalidArgumentException("Update Lab Property Value [Invalid ID]: {$s_id} - {$id}.",400);
+			return $lpv;
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function deleteLpv(int $s_id, int $id): array
+	{
+		try
+		{
+			if(!$lpv = $this->serviceComponentModel->deleteLpvBySidId($s_id, $id))
+				throw new InvalidArgumentException("Delete Lab Property Value [Invalid ID]: {$s_id} - {$id}.", 404);
+			return $lpv;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
+		}
+	}
 }

@@ -719,4 +719,204 @@ class ServiceComponentController
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
+
+	public function getLabActionValues(int $s_id): void
+	{
+		try{
+			$filters = [
+				'action_name' => isset($_GET['action_name']) ? normalize($_GET['action_name']) : null,
+				't_action_id' => isset($_GET['t_action_id']) ? $_GET['t_action_id'] : null,
+				'l_item_id' => isset($_GET['l_item_id']) ? $_GET['l_item_id'] : null,
+				'value' => isset($_GET['value']) ? $_GET['value'] : null,
+			];
+			$slav_list = $this->service->listLabActionValuesByService($s_id,$filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slav_list'=>$slav_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postLabActionValues(int $s_id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$slav = $this->service->createLav($s_id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slav'=>$slav
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getLabPropertyValues(int $s_id): void
+	{
+		try{
+			$filters = [
+				'property_name' => isset($_GET['property_name']) ? normalize($_GET['property_name']) : null,
+				'property_id' => isset($_GET['property_id']) ? $_GET['property_id'] : null,
+				'l_item_id' => isset($_GET['l_item_id']) ? $_GET['l_item_id'] : null,
+				'value' => isset($_GET['value']) ? $_GET['value'] : null,
+			];
+			$slpv_list = $this->service->listLabPropertyValuesByService($s_id,$filters);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slpv_list'=>$slpv_list
+			]);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postLabPropertyValues(int $s_id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$slpv = $this->service->createLpv($s_id,$data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slpv'=>$slpv
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getLabActionValue(int $s_id, int $slav_id): void
+	{
+		try {
+			$slav = $this->service->showLav($s_id, $slav_id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slav'=>$slav
+			]);
+		} catch (RuntimeException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putLabActionValue(int $s_id, int $slav_id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$slav = $this->service->updateLav($s_id, $slav_id, $data);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slav'=>$slav
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function deleteLabActionValue(int $s_id, int $slav_id): void
+	{
+		try {
+			$slav = $this->service->deleteLav($s_id, $slav_id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slav' => $slav
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getLabPropertyValue(int $s_id, int $id): void
+	{
+		try {
+			$slpv = $this->service->showLpv($s_id, $id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slpv'=>$slpv
+			]);
+		} catch (RuntimeException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putLabPropertyValue(int $s_id, int $id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$slpv = $this->service->updateLpv($s_id, $id, $data);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slpv'=>$slpv
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function deleteLabPropertyValue(int $s_id, int $id): void
+	{
+		try {
+			$slpv = $this->service->deleteLpv($s_id, $id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'slpv' => $slpv
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
 }

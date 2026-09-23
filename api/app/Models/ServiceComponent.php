@@ -1286,6 +1286,350 @@ class ServiceComponent
 
 		return $spr;
 	}
+
+	public function getLabActionValuesByServiceWithFilter(int $serviceId, array $filters): array
+	{
+		$sql = "
+		SELECT
+			ROW_NUMBER() OVER (
+				PARTITION BY li.service_id
+				ORDER BY li.service_id ASC, lav.id ASC
+			) AS slav_id,
+			li.service_id AS service_id,
+			lav.id AS id,
+			lav.l_item_id AS l_item_id,
+			lav.t_action_id AS t_action_id,
+			lav.value AS value,
+			lav.t_action_value_id AS t_action_value_id,
+			a.name AS action_name,
+			a.i_class AS action_i_class,
+			li.t_item_id AS t_item_id,
+			i.name AS item_name
+		FROM lab_action_values lav
+		LEFT JOIN lab_items li ON li.id = lav.l_item_id
+		LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
+		LEFT JOIN tabled_items i ON i.id = li.t_item_id
+		WHERE li.service_id = ?
+		";
+
+		$params = [];
+
+		$rules = [
+			'action_name' => [
+				'column' => 'a.name',
+				'operator' => 'LIKE'
+			],
+			't_action_id' => [
+				'column' => 'a.id',
+				'operator' => '='
+			],
+			'value' => [
+				'column' => 'lav.value',
+				'operator' => 'LIKE'
+			],
+			'l_item_id' => [
+				'column' => 'lav.l_item_id',
+				'operator' => '='
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$stmt = $this->db->prepare($sql);
+		array_unshift($params, $serviceId);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getLabPropertyValuesByServiceWithFilter(int $serviceId, array $filters): array
+	{
+		$sql = "
+		SELECT
+			lpv.id AS id,
+			li.service_id AS service_id,
+			lpv.l_item_id AS l_item_id,
+			lpv.property_id AS property_id,
+			lpv.value AS value,
+			p.name AS property_name,
+			p.i_class AS property_i_class,
+			li.t_item_id AS t_item_id,
+			i.name AS item_name
+		FROM lab_property_values lpv
+		LEFT JOIN lab_items li ON li.id = lpv.l_item_id
+		LEFT JOIN tabled_properties p ON p.id = lpv.property_id
+		LEFT JOIN tabled_items i ON i.id = li.t_item_id
+		WHERE li.service_id = ?
+		";
+
+		$params = [];
+
+		$rules = [
+			'property_name' => [
+				'column' => 'p.name',
+				'operator' => 'LIKE'
+			],
+			'property_id' => [
+				'column' => 'p.id',
+				'operator' => '='
+			],
+			'value' => [
+				'column' => 'lpv.value',
+				'operator' => 'LIKE'
+			],
+			'l_item_id' => [
+				'column' => 'lpv.l_item_id',
+				'operator' => '='
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$sql .= "ORDER BY p.name ASC, lpv.id ASC";
+
+		$stmt = $this->db->prepare($sql);
+		array_unshift($params, $serviceId);
+
+		$stmt->execute($params);
+
+		return $stmt->fetchAll();
+	}
+
+	public function getLavBySid_SlavId(int $s_id, int $slav_id): bool|array
+	{
+		$stmt = $this->db->prepare("
+			SELECT * FROM (
+				SELECT
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY li.service_id
+							ORDER BY li.service_id ASC, lav.id ASC
+						) AS INTEGER
+					) AS slav_id,
+					li.service_id AS service_id,
+					lav.id AS id,
+					lav.l_item_id AS l_item_id,
+					lav.t_action_id AS t_action_id,
+					lav.value AS value,
+					lav.t_action_value_id AS t_action_value_id,
+					a.name AS action_name,
+					a.i_class AS action_i_class,
+					li.t_item_id AS t_item_id,
+					i.name AS item_name
+				FROM lab_action_values lav
+				LEFT JOIN lab_items li ON li.id = lav.l_item_id
+				LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
+				LEFT JOIN tabled_items i ON i.id = li.t_item_id
+				WHERE li.service_id = ?
+			    ) ranked
+			WHERE slav_id = ?
+			");
+
+		$stmt->execute([$s_id, $slav_id]);
+
+		return $stmt->fetch();
+	}
+
+	public function getLavById(int $id): bool|array
+	{
+		$stmt = $this->db->prepare("
+			SELECT * FROM (
+				SELECT
+					CAST(
+						ROW_NUMBER() OVER (
+							PARTITION BY li.service_id
+							ORDER BY li.service_id ASC, lav.id ASC
+						) AS INTEGER
+					) AS slav_id,
+					li.service_id AS service_id,
+					lav.id AS id,
+					lav.l_item_id AS l_item_id,
+					lav.t_action_id AS t_action_id,
+					lav.value AS value,
+					lav.t_action_value_id AS t_action_value_id,
+					a.name AS action_name,
+					a.i_class AS action_i_class,
+					li.t_item_id AS t_item_id,
+					i.name AS item_name
+				FROM lab_action_values lav
+				LEFT JOIN lab_items li ON li.id = lav.l_item_id
+				LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
+				LEFT JOIN tabled_items i ON i.id = li.t_item_id
+				WHERE li.service_id = (
+					SELECT li2.service_id
+					FROM lab_action_values lav2
+					LEFT JOIN lab_items li2 ON li2.id = lav2.l_item_id
+					WHERE lav2.id = ?
+				)
+			) WHERE id = ?
+			");
+
+		$stmt->execute([$id, $id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateLavBySid_SlavId(int $s_id, int $slav_id, array $data): bool|array
+	{
+		$lav = $this->getLavBySid_SlavId($s_id, $slav_id);
+
+		if($lav && isset($lav['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE lab_action_values
+				SET t_action_id = ?, value = ?, t_action_value_id = ?
+				WHERE id = ?
+				");
+
+			$stmt->execute([
+				!empty($data['t_action_id']) ? $data['t_action_id']: null,
+				!empty($data['value']) ? $data['value']: null,
+				!empty($data['t_action_value_id']) ? $data['t_action_value_id']: null,
+				$lav['id']
+			]);
+
+			$lav = $this->getLavById($lav['id']);
+		}
+
+		return $lav;
+	}
+
+	public function deleteLavBySid_SlavId(int $s_id, int $slav_id): bool|array
+	{
+		$lav = $this->getLavBySid_SlavId($s_id, $slav_id);
+
+		if($lav && isset($lav['id']))
+		{
+			$stmt = $this->db->prepare("DELETE FROM lab_action_values WHERE id = ?");
+			$stmt->execute([$lav['id']]);
+		}
+
+		return $lav;
+	}
+
+	public function createLav(int $s_id, array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO lab_action_values
+			(l_item_id, t_action_id, value)
+			VALUES (?, ?, NULL)
+			");
+
+		$stmt->execute([
+			!empty($data['l_item_id']) ? $data['l_item_id']: null,
+			!empty($data['t_action_id']) ? $data['t_action_id']: null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getLavById($newId);
+	}
+
+	public function getLpvBySidId(int $s_id, int $id): bool|array
+	{
+		$stmt = $this->db->prepare("
+			SELECT
+				lpv.id AS id,
+				li.service_id AS service_id,
+				lpv.l_item_id AS l_item_id,
+				lpv.property_id AS property_id,
+				lpv.value AS value,
+				p.name AS property_name,
+				p.i_class AS property_i_class,
+				li.t_item_id AS t_item_id,
+				i.name AS item_name
+			FROM lab_property_values lpv
+			LEFT JOIN lab_items li ON li.id = lpv.l_item_id
+			LEFT JOIN tabled_properties p ON p.id = lpv.property_id
+			LEFT JOIN tabled_items i ON i.id = li.t_item_id
+			WHERE li.service_id = ? AND lpv.id = ?
+			");
+
+		$stmt->execute([$s_id, $id]);
+
+		return $stmt->fetch();
+	}
+
+	public function updateLpvBySidId(int $s_id, int $id, array $data): bool|array
+	{
+		$lpv = $this->getLpvBySidId($s_id, $id);
+
+		if($lpv && isset($lpv['id']))
+		{
+			$stmt = $this->db->prepare("
+				UPDATE lab_property_values
+				SET value = ?
+				WHERE id = ?
+				");
+
+			$stmt->execute([
+				!empty($data['value']) ? $data['value']: null,
+				$lpv['id']
+			]);
+
+			$lpv = $this->getLpvById($lpv['id']);
+		}
+
+		return $lpv;
+	}
+
+	public function deleteLpvBySidId(int $s_id, int $id): bool|array
+	{
+		$lpv = $this->getLpvBySidId($s_id, $id);
+
+		if($lpv && isset($lpv['id']))
+		{
+			$stmt = $this->db->prepare("DELETE FROM lab_property_values WHERE id = ?");
+			$stmt->execute([$lpv['id']]);
+		}
+
+		return $lpv;
+	}
+
+	public function getLpvById(int $id): bool|array
+	{
+		$stmt = $this->db->prepare("
+			SELECT
+				lpv.id AS id,
+				li.service_id AS service_id,
+				lpv.l_item_id AS l_item_id,
+				lpv.property_id AS property_id,
+				lpv.value AS value,
+				p.name AS property_name,
+				p.i_class AS property_i_class,
+				li.t_item_id AS t_item_id,
+				i.name AS item_name
+			FROM lab_property_values lpv
+			LEFT JOIN lab_items li ON li.id = lpv.l_item_id
+			LEFT JOIN tabled_properties p ON p.id = lpv.property_id
+			LEFT JOIN tabled_items i ON i.id = li.t_item_id
+			WHERE lpv.id = ?
+			");
+
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	public function createLpv(int $s_id, array $data): array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO lab_property_values
+			(l_item_id, property_id, value)
+			VALUES (?, ?, ?)
+			");
+
+		$stmt->execute([
+			!empty($data['l_item_id']) ? $data['l_item_id']: null,
+			!empty($data['property_id']) ? $data['property_id']: null,
+			!empty($data['value']) ? $data['value']: null,
+		]);
+
+		$newId = (int)$this->db->lastInsertId();
+
+		return $this->getLpvById($newId);
+	}
 }
 
 ?>

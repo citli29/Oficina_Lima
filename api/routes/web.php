@@ -3,6 +3,9 @@
 use App\Controllers\HomeController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
+use App\Controllers\ItemComponentController;
+use App\Controllers\ItemController;
+use App\Controllers\LabItemController;
 use App\Controllers\NotificationController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
@@ -53,6 +56,32 @@ return [
 	['GET', '/api/products/{id:\d+}', [ProductController::class, 'getProduct']],
 	['PUT', '/api/products/{id:\d+}', [ProductController::class, 'putProduct']],
 	['DELETE', '/api/products/{id:\d+}', [ProductController::class, 'deleteProduct']],
+
+	/*	Item Controller	*/
+	['GET', '/api/items', [ItemController::class, 'getItems']], //with search
+	['POST', '/api/items', [ItemController::class, 'postItems']],
+	['GET', '/api/items/{id:\d+}', [ItemController::class, 'getItem']],
+	['PUT', '/api/items/{id:\d+}', [ItemController::class, 'putItem']],
+	['DELETE', '/api/items/{id:\d+}', [ItemController::class, 'deleteItem']],
+
+	/*	Item Component Controller	*/
+	['GET', '/api/properties', [ItemComponentController::class, 'getProperties']], //with search
+	['POST', '/api/properties', [ItemComponentController::class, 'postProperties']],
+	['GET', '/api/properties/{id:\d+}', [ItemComponentController::class, 'getProperty']],
+	['PUT', '/api/properties/{id:\d+}', [ItemComponentController::class, 'putProperty']],
+	['DELETE', '/api/properties/{id:\d+}', [ItemComponentController::class, 'deleteProperty']],
+
+	['GET', '/api/actions', [ItemComponentController::class, 'getActions']], //with search
+	['POST', '/api/actions', [ItemComponentController::class, 'postActions']],
+	['GET', '/api/actions/{id:\d+}', [ItemComponentController::class, 'getAction']],
+	['PUT', '/api/actions/{id:\d+}', [ItemComponentController::class, 'putAction']],
+	['DELETE', '/api/actions/{id:\d+}', [ItemComponentController::class, 'deleteAction']],
+
+	['GET', '/api/action_tabled_values', [ItemComponentController::class, 'getActionTabledValues']], //with search
+	['POST', '/api/action_tabled_values', [ItemComponentController::class, 'postActionTabledValues']],
+	['GET', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'getActionTabledValue']],
+	['PUT', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'putActionTabledValue']],
+	['DELETE', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'deleteActionTabledValue']],
 
 	/*	Client Controller	*/
 	['GET', '/api/clients', [ClientController::class, 'getClients']], //with search
@@ -116,6 +145,23 @@ return [
 	['GET', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'getSPR']],
 	['PUT', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'putSPR']],
 	['DELETE', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'deleteSPR']],
+
+	['GET', '/api/services/{s_id:\d+}/lab_items', [LabItemController::class, 'getLabItems']], //with search
+	['POST', '/api/services/{s_id:\d+}/lab_items', [LabItemController::class, 'postLabItems']],
+	['GET', '/api/services/{s_id:\d+}/lab_items/{id:\d+}', [LabItemController::class, 'getLabItem']],
+	['DELETE', '/api/services/{s_id:\d+}/lab_items/{id:\d+}', [LabItemController::class, 'deleteLabItem']],
+
+	['GET', '/api/services/{s_id:\d+}/lab_action_values', [ServiceComponentController::class, 'getLabActionValues']], //with search
+	['POST', '/api/services/{s_id:\d+}/lab_action_values', [ServiceComponentController::class, 'postLabActionValues']],
+	['GET', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'getLabActionValue']],
+	['PUT', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'putLabActionValue']],
+	['DELETE', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'deleteLabActionValue']],
+
+	['GET', '/api/services/{s_id:\d+}/lab_property_values', [ServiceComponentController::class, 'getLabPropertyValues']], //with search
+	['POST', '/api/services/{s_id:\d+}/lab_property_values', [ServiceComponentController::class, 'postLabPropertyValues']],
+	['GET', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'getLabPropertyValue']],
+	['PUT', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'putLabPropertyValue']],
+	['DELETE', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'deleteLabPropertyValue']],
 
 	/*	Notification Controller	*/
 	['GET', '/api/notification_types', [NotificationController::class, 'getNotificationTypes']],
