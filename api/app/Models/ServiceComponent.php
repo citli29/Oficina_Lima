@@ -734,6 +734,71 @@ class ServiceComponent
 		return $stmt->fetchAll();
 	}
 
+	public function getSUTPWithFilter(array $filters, ?array $pagination = null): array
+	{
+		$sql = "
+			SELECT * FROM
+				(SELECT
+					ROW_NUMBER() OVER (
+						PARTITION BY service_id
+						ORDER BY service_id ASC, sutp.id ASC
+					) AS sutp_id,
+					sutp.service_id AS service_id,
+					sutp.id AS id,
+					sutp.hours_s,
+					sutp.minutes_s,
+					sutp.hours_f,
+					sutp.minutes_f,
+					sutp.minutes AS minutes,
+					sutp.ut_date AS date,
+					sutp.user_id AS user_id,
+					u.name AS user_name
+				FROM services_user_time_punches sutp
+				LEFT JOIN users u
+				ON u.id = sutp.user_id
+				WHERE 1 = 1)
+			WHERE 1 = 1
+		";
+
+		$params = [];
+
+		$rules = [
+			'service_id' => [
+				'column' => 'service_id',
+				'operator' => '='
+			],
+			'user_name' => [
+				'column' => 'u.search_name',
+				'operator' => 'LIKE'
+			],
+			'user_id' => [
+				'column' => 'user_id',
+				'operator' => '='
+			],
+			'date' => [
+				'column' => 'date',
+				'operator' => 'LIKE'
+			],
+		];
+
+		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$total = null;
+
+		if ($pagination !== null) {
+			$total = Database::getTotalCount($this->db, $sql, $params);
+			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
+		}
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($params);
+
+		return [
+			'rows' => $stmt->fetchAll(),
+			'total' => $total,
+		];
+	}
+
 	public function getOpenSUTPs(): array
 	{
 		$stmt = $this->db->query("

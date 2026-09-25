@@ -278,6 +278,43 @@ class ServiceComponentController
 
 	}
 
+	public function getServiceUserTimePunches()
+	{
+		try{
+			$filters = [
+				'service_id' => isset($_GET['service_id']) ? $_GET['service_id'] : null,
+				'user_name' => isset($_GET['user_name']) ? normalize($_GET['user_name']) : null,
+				'user_id' => isset($_GET['user_id']) ? $_GET['user_id'] : null,
+				'date' => isset($_GET['date']) ? $_GET['date'] : null,
+			];
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listSUTPs($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'sutp_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode($response);
+		}catch(RuntimeException $e){
+			http_response_code((int)$e->getCode());
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+
+	}
+
 	public function getServiceAppliedProducts()
 	{
 		try{

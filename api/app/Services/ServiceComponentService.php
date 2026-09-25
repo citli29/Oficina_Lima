@@ -152,6 +152,11 @@ class ServiceComponentService
 		return $this->serviceComponentModel->getOpenSUTPs();
 	}
 
+	public function listSUTPs(array $filters, ?array $pagination = null): array
+	{
+		return $this->serviceComponentModel->getSUTPWithFilter($filters, $pagination);
+	}
+
 	public function listMonthlyUserTimeStats(string $year): array
 	{
 		return $this->serviceComponentModel->getMonthlyUserTimeStats($year);
