@@ -166,6 +166,11 @@ class Service
 			$params[] = $q;
 		}
 
+		if (!empty($filters['product_id'])) {
+			$sql .= " AND EXISTS (SELECT 1 FROM services_applied_products sap WHERE sap.service_id = s.id AND sap.product_id = ?)";
+			$params[] = $filters['product_id'];
+		}
+
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
 		$sortableColumns = [
