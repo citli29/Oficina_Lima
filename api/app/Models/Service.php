@@ -73,7 +73,9 @@ class Service
 			ma.id as car_make_id, 
 			ma.name as car_make_name, 
 			mo.id as car_model_id,
-			mo.name as car_model_name
+			mo.name as car_model_name,
+
+			sa.cluster_nr as cluster_nr
 
 		FROM services s
 
@@ -91,6 +93,9 @@ class Service
 
 		LEFT JOIN makes ma
 		ON ma.id=COALESCE(mo.make_id,c.make_id)
+
+		LEFT JOIN service_associations sa
+		ON sa.service_id=s.id
 
 		WHERE 1=1
 		";

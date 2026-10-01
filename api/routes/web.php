@@ -9,6 +9,7 @@ use App\Controllers\LabItemController;
 use App\Controllers\NotificationController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
+use App\Controllers\ServiceAssociationController;
 use App\Controllers\ServiceComponentController;
 use App\Controllers\ServiceController;
 use App\Controllers\UserController;
@@ -163,6 +164,14 @@ return [
 	['GET', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'getLabPropertyValue']],
 	['PUT', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'putLabPropertyValue']],
 	['DELETE', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'deleteLabPropertyValue']],
+
+	/*	Service Association Controller	*/
+	['GET', '/api/services_associations', [ServiceAssociationController::class, 'getServiceAssociations']], //with search
+	['PUT', '/api/services_associations/merge', [ServiceAssociationController::class, 'putServiceAssociationMerge']],
+	['GET', '/api/services/{s_id:\d+}/associations', [ServiceAssociationController::class, 'getServiceAssociationsByService']],
+	['POST', '/api/services/{s_id:\d+}/associations', [ServiceAssociationController::class, 'postServiceAssociation']],
+	['PUT', '/api/services/{s_id:\d+}/associations', [ServiceAssociationController::class, 'putServiceAssociation']],
+	['DELETE', '/api/services/{s_id:\d+}/associations', [ServiceAssociationController::class, 'deleteServiceAssociation']],
 
 	/*	Notification Controller	*/
 	['GET', '/api/notification_types', [NotificationController::class, 'getNotificationTypes']],
