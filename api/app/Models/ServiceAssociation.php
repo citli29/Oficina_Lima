@@ -19,10 +19,12 @@ class ServiceAssociation
 			s.checkin_date AS checkin,
 			s.checkout_date AS checkout,
 			s.is_finished AS is_finished,
+			s.kms AS kms,
 			s.service_type_id AS service_type_id,
 			st.name AS service_type_name,
 
 			cl.name AS client_name,
+			cl.phone AS client_phone,
 
 			c.plate AS car_plate,
 			ma.name AS car_make_name,
@@ -102,6 +104,7 @@ class ServiceAssociation
 		$stmt = $this->db->prepare("
 			SELECT
 				sa2.service_id AS service_id,
+				sa2.cluster_nr AS cluster_nr,
 				" . $this->serviceJoinSelect() . "
 			FROM service_associations sa
 			JOIN service_associations sa2
