@@ -84,15 +84,21 @@ class Database
 		array $sortableColumns,
 		?string $sortKey,
 		string $direction,
-		string $defaultOrderBy
+		string $defaultOrderBy,
+		?string $tieBreaker = null
 	): string {
 		$direction = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
 
+		// Rows that tie on the sort column need a fixed order too — without
+		// one SQLite may return them differently per query, so with LIMIT/
+		// OFFSET a row can show up on two pages or on none.
+		$tie = $tieBreaker !== null ? ", {$tieBreaker} {$direction}" : '';
+
 		if ($sortKey !== null && isset($sortableColumns[$sortKey])) {
-			return $sql . " ORDER BY {$sortableColumns[$sortKey]} {$direction}";
+			return $sql . " ORDER BY {$sortableColumns[$sortKey]} {$direction}{$tie}";
 		}
 
-		return $sql . " ORDER BY {$defaultOrderBy}";
+		return $sql . " ORDER BY {$defaultOrderBy}" . ($tieBreaker !== null ? ", {$tieBreaker}" : '');
 	}
 
 }

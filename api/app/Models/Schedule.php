@@ -158,7 +158,8 @@ class Schedule
 			$sortableColumns,
 			$sort['column'] ?? null,
 			$sort['direction'] ?? 'ASC',
-			's.date ASC'
+			's.date ASC',
+			's.id'
 		);
 
 		$total = null;

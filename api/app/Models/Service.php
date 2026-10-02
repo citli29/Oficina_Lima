@@ -52,7 +52,24 @@ class Service
 
 	public function getServicesWithFilter(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
-		$sql = "
+		// Status as a rank (0 por terminar, 1 terminado, 2 entregue). A
+		// service in an association takes the association's status — its
+		// least advanced member, same as the list's collapsed row shows — so
+		// e.g. "Por terminar" brings the whole association while any of its
+		// services is still open, instead of only that one service.
+		$statusRank = "CASE WHEN %s.checkout_date IS NOT NULL THEN 2 WHEN %s.is_finished = 1 THEN 1 ELSE 0 END";
+		$groupStatusRank = "COALESCE(
+			(SELECT MIN(" . sprintf($statusRank, 's2', 's2') . ")
+				FROM service_associations sa2
+				JOIN services s2 ON s2.id = sa2.service_id
+				WHERE sa2.cluster_nr = sa.cluster_nr),
+			" . sprintf($statusRank, 's', 's') . "
+		)";
+
+		// cluster_size / cluster_status_rank describe the whole association,
+		// so the list can show the right count and status on its collapsed
+		// row even when only some of the members are on the current page.
+		$select = "
 		SELECT s.id,
 			s.kms,
 			s.checkin_date as checkin,
@@ -75,8 +92,12 @@ class Service
 			mo.id as car_model_id,
 			mo.name as car_model_name,
 
-			sa.cluster_nr as cluster_nr
+			sa.cluster_nr as cluster_nr,
+			(SELECT COUNT(*) FROM service_associations sa3 WHERE sa3.cluster_nr = sa.cluster_nr) as cluster_size,
+			{$groupStatusRank} as cluster_status_rank
+		";
 
+		$from = "
 		FROM services s
 
 		LEFT JOIN service_types st
@@ -97,8 +118,10 @@ class Service
 		LEFT JOIN service_associations sa
 		ON sa.service_id=s.id
 
-		WHERE 1=1
 		";
+
+		// Filters are collected here and turned into the final query below.
+		$where = " WHERE 1=1";
 
 		$params = [];
 
@@ -150,42 +173,62 @@ class Service
 		];
 
 		if (!empty($filters['status'])) {
-			switch ($filters['status']) {
-				case 'unfinished':
-					$sql .= " AND s.checkout_date IS NULL AND (s.is_finished IS NULL OR s.is_finished != 1)";
-					break;
-				case 'finished':
-					$sql .= " AND s.checkout_date IS NULL AND s.is_finished = 1";
-					break;
-				case 'delivered':
-					$sql .= " AND s.checkout_date IS NOT NULL";
-					break;
+			$statusRanks = ['unfinished' => 0, 'finished' => 1, 'delivered' => 2];
+
+			if (isset($statusRanks[$filters['status']])) {
+				$where .= " AND {$groupStatusRank} = " . $statusRanks[$filters['status']];
 			}
 		}
 
 		if (!empty($filters['q'])) {
 			$q = '%' . $filters['q'] . '%';
-			$sql .= " AND (UPPER(cl.search_name) LIKE UPPER(?) OR UPPER(c.search_plate) LIKE UPPER(?) OR cl.phone LIKE ?)";
+			$where .= " AND (UPPER(cl.search_name) LIKE UPPER(?) OR UPPER(c.search_plate) LIKE UPPER(?) OR cl.phone LIKE ?)";
 			$params[] = $q;
 			$params[] = $q;
 			$params[] = $q;
 		}
 
 		if (!empty($filters['product_id'])) {
-			$sql .= " AND EXISTS (SELECT 1 FROM services_applied_products sap WHERE sap.service_id = s.id AND sap.product_id = ?)";
+			$where .= " AND EXISTS (SELECT 1 FROM services_applied_products sap WHERE sap.service_id = s.id AND sap.product_id = ?)";
 			$params[] = $filters['product_id'];
 		}
 
-		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+		$where = Database::applyFilters($where, $filters, $rules, $params);
 
+		if (!empty($filters['group_associations'])) {
+			// The services list asks for whole associations: when a filter
+			// matches any service of an association, every service of that
+			// association comes back too, so it never shows half of one.
+			$sql = "WITH matched AS (SELECT s.id {$from} {$where})
+				{$select} {$from}
+				WHERE s.id IN (SELECT id FROM matched)
+					OR sa.cluster_nr IN (
+						SELECT sa_m.cluster_nr
+						FROM service_associations sa_m
+						JOIN matched m ON m.id = sa_m.service_id
+					)";
+		} else {
+			$sql = $select . $from . $where;
+		}
+
+		// Text columns sort on their search_* twins (lowercased, accents
+		// stripped) so "asdf" and "ZZ" don't end up split apart by case —
+		// falling back to the plain value for rows inserted without one.
 		$sortableColumns = [
 			'id' => 's.id',
+			// Services without an association always go last, whichever direction.
+			'cluster_nr' => 'sa.cluster_nr IS NULL, sa.cluster_nr',
 			'checkin' => 'checkin',
 			'checkout' => 'checkout',
-			'client_name' => 'client_name',
-			'car_plate' => 'car_plate',
+			'client_name' => 'COALESCE(cl.search_name, LOWER(cl.name))',
+			'client_phone' => 'cl.phone',
+			'car_plate' => 'COALESCE(c.search_plate, LOWER(c.plate))',
+			'car_make_name' => 'COALESCE(ma.search_name, LOWER(ma.name))',
+			'car_model_name' => 'COALESCE(mo.search_name, LOWER(mo.name))',
 			'kms' => 's.kms',
-			'service_type_name' => 'service_type_name',
+			'service_type_name' => 'st.name COLLATE NOCASE',
+			// Same association-aware rank as the status filter above.
+			'status' => $groupStatusRank,
 			'schedule_id' => 's.schedule_id',
 		];
 
@@ -194,7 +237,8 @@ class Service
 			$sortableColumns,
 			$sort['column'] ?? null,
 			$sort['direction'] ?? 'ASC',
-			'checkin, checkout, car_plate ASC'
+			'checkin, checkout, car_plate ASC',
+			's.id'
 		);
 
 		$total = null;

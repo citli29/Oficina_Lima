@@ -3,6 +3,7 @@
 use App\Controllers\HomeController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
+use App\Controllers\EventController;
 use App\Controllers\ItemComponentController;
 use App\Controllers\ItemController;
 use App\Controllers\LabItemController;
@@ -179,5 +180,12 @@ return [
 	['GET', '/api/notifications/{id:\d+}', [NotificationController::class, 'getNotification']],
 	['PUT', '/api/notifications/{id:\d+}/check', [NotificationController::class, 'putNotificationCheck']],
 	['PUT', '/api/notifications/{id:\d+}/uncheck', [NotificationController::class, 'putNotificationUnCheck']],
+
+	/*	Event Controller	*/
+	['GET', '/api/events', [EventController::class, 'getEvents']], //with search
+	['POST', '/api/events', [EventController::class, 'postEvents']],
+	['GET', '/api/events/{id:\d+}', [EventController::class, 'getEvent']],
+	['PUT', '/api/events/{id:\d+}', [EventController::class, 'putEvent']],
+	['DELETE', '/api/events/{id:\d+}', [EventController::class, 'deleteEvent']],
 
 ];

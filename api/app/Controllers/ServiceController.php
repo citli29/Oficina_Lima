@@ -38,6 +38,8 @@ class ServiceController
 				'end_date' => isset($_GET['end_date']) ? $_GET['end_date'] : null,
 				'status' => isset($_GET['status']) ? $_GET['status'] : null,
 				'q' => isset($_GET['q']) ? normalize($_GET['q']) : null,
+				// Opt-in (the services list): return whole associations.
+				'group_associations' => !empty($_GET['group_associations']),
 			];
 			$pagination = parsePagination($_GET);
 			$sort = parseSort($_GET);
