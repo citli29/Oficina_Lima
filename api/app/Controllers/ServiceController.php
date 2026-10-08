@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Service;
 use App\Services\ServiceService;
+use App\Services\ServiceConflictException;
 use InvalidArgumentException;
 use RuntimeException;
 use PDO;
@@ -30,7 +31,7 @@ class ServiceController
 				'checkout' => isset($_GET['checkout']) ? $_GET['checkout'] : null,
 				'car_id' => isset($_GET['car_id']) ? $_GET['car_id'] : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
-				'car_plate' => isset($_GET['car_plate']) ? normalize($_GET['car_plate']) : null,
+				'car_plate' => isset($_GET['car_plate']) ? normalizePlate($_GET['car_plate']) : null,
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']) : null,
 				'service_type_id' => isset($_GET['service_type_id']) ? $_GET['service_type_id'] : null,
@@ -64,7 +65,7 @@ class ServiceController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -98,7 +99,7 @@ class ServiceController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -115,7 +116,7 @@ class ServiceController
 				'service'=>$service
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -136,7 +137,7 @@ class ServiceController
 				'service'=>$service
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -154,7 +155,37 @@ class ServiceController
 				'service' => $service
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function patchService(int $id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			if (!is_array($data))
+				throw new InvalidArgumentException("JSON Body Invalid.", 400);
+
+			$service = $this->service->patchService($id, $data);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'service' => $service
+			]);
+		} catch (ServiceConflictException $e) {
+			http_response_code(409);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'error' => $e->getMessage(),
+				'conflict_fields' => $e->fields,
+				'service' => $e->service,
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -176,7 +207,7 @@ class ServiceController
 				'service'=>$service
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

@@ -59,6 +59,44 @@ class ServiceService
 		}
 	}
 
+	/**
+	 * Per-field update — see Service::patchService. $data is
+	 * { changes: {field: new}, original: {field: value the client saw} }.
+	 * Throws 409 (with the conflicting fields and the current service in
+	 * ServiceConflictException) if someone else changed one of those fields.
+	 */
+	public function patchService(int $id, array $data): array
+	{
+		$changes = $data['changes'] ?? null;
+		$original = $data['original'] ?? [];
+
+		if (!is_array($changes) || !is_array($original))
+			throw new InvalidArgumentException("JSON Body Invalid.", 400);
+
+		$allowed = Service::patchableFields();
+		foreach (array_keys($changes) as $field) {
+			if (!in_array($field, $allowed, true))
+				throw new InvalidArgumentException("Campo desconhecido: {$field}.", 400);
+			if (!array_key_exists($field, $original))
+				throw new InvalidArgumentException("Falta o valor original do campo {$field}.", 400);
+		}
+
+		try
+		{
+			$result = $this->serviceModel->patchService($id, $changes, $original);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+
+		if ($result === false)
+			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.", 404);
+
+		if (isset($result['conflict']))
+			throw new ServiceConflictException($result['conflict'], $result['service']);
+
+		return $result;
+	}
+
 	public function deleteService(int $id): array
 	{
 		try

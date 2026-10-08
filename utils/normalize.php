@@ -23,4 +23,11 @@ function normalize(string $str): string
     return trim($str);
 }
 
+// A plate for searching/comparing: like normalize(), and without spaces
+// either — "13 13 SR", "13-13-SR" and "1313sr" are all "1313sr".
+function normalizePlate(string $str): string
+{
+    return str_replace(' ', '', normalize($str));
+}
+
 ?>

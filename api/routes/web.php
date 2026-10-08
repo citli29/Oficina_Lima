@@ -10,6 +10,7 @@ use App\Controllers\LabItemController;
 use App\Controllers\NotificationController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
+use App\Controllers\TimeRecordController;
 use App\Controllers\ServiceAssociationController;
 use App\Controllers\ServiceComponentController;
 use App\Controllers\ServiceController;
@@ -107,6 +108,7 @@ return [
 	['POST', '/api/services', [ServiceController::class, 'postServices']],
 	['GET', '/api/services/{id:\d+}', [ServiceController::class, 'getService']],
 	['PUT', '/api/services/{id:\d+}', [ServiceController::class, 'putService']],
+	['PATCH', '/api/services/{id:\d+}', [ServiceController::class, 'patchService']], // only the changed fields
 	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
 
 	['GET', '/api/service_types', [ServiceController::class, 'getServiceTypes']], //with search
@@ -126,6 +128,16 @@ return [
 	['POST', '/api/services/{s_id:\d+}/user_time_punches/{id:\d+}/stop', [ServiceComponentController::class, 'postSUTPstop']],
 	['DELETE', '/api/services/{s_id:\d+}/user_time_punches/{id:\d+}', [ServiceComponentController::class, 'deleteSUTP']],
 	['GET', '/api/user_time_punches/open', [ServiceComponentController::class, 'getOpenSUTPs']],
+
+	// Registos de Tempo page: every service's time entries / punches, by real id.
+	['GET', '/api/user_times', [TimeRecordController::class, 'getTimes']],
+	['POST', '/api/user_times', [TimeRecordController::class, 'postTime']],
+	['PUT', '/api/user_times/{id:\d+}', [TimeRecordController::class, 'putTime']],
+	['DELETE', '/api/user_times/{id:\d+}', [TimeRecordController::class, 'deleteTime']],
+	['GET', '/api/user_time_punches', [TimeRecordController::class, 'getPunches']],
+	['POST', '/api/user_time_punches', [TimeRecordController::class, 'postPunch']],
+	['PUT', '/api/user_time_punches/{id:\d+}', [TimeRecordController::class, 'putPunch']],
+	['DELETE', '/api/user_time_punches/{id:\d+}', [TimeRecordController::class, 'deletePunch']],
 	['GET', '/api/user_times/monthly_stats', [ServiceComponentController::class, 'getMonthlyUserTimeStats']],
 	['GET', '/api/user_times/weekly_stats', [ServiceComponentController::class, 'getWeeklyUserTimeStats']],
 	['GET', '/api/user_times/yearly_daily_stats', [ServiceComponentController::class, 'getYearlyDailyUserTimeStats']],

@@ -243,7 +243,7 @@ class Schedule
 
 		$stmt->execute([
 			!empty($data['date']) ?$data['date']: null,
-			!empty($data['description']) ?$data['description']: null,
+			trim((string)($data['description'] ?? '')) !== '' ? trim($data['description']) : null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['model_id']) ?$data['model_id']: null,
 			!empty($data['client_id']) ?$data['client_id']: null,
@@ -261,7 +261,7 @@ class Schedule
 
 		$stmt->execute([
 			!empty($data['date']) ?$data['date']: null,
-			!empty($data['description']) ?$data['description']: null,
+			trim((string)($data['description'] ?? '')) !== '' ? trim($data['description']) : null,
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['model_id']) ?$data['model_id']: null,
 			!empty($data['client_id']) ?$data['client_id']: null,

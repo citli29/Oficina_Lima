@@ -49,7 +49,7 @@ class CarController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -85,7 +85,7 @@ class CarController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -94,7 +94,7 @@ class CarController
 	{
 		try {
 			$filters = [
-				'plate' => isset($_GET['plate']) ? normalize($_GET['plate']) : null,
+				'plate' => isset($_GET['plate']) ? normalizePlate($_GET['plate']) : null,
 				'year' => isset($_GET['year']) ? (int) $_GET['year'] : null,
 				'month' => isset($_GET['month']) ? (int) $_GET['month'] : null,
 				'model_name' => isset($_GET['model_name']) ? normalize($_GET['model_name']) : null,
@@ -124,7 +124,7 @@ class CarController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -141,7 +141,7 @@ class CarController
 				'make'=>$make
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -158,7 +158,7 @@ class CarController
 				'model'=>$model
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -175,7 +175,7 @@ class CarController
 				'car'=>$car
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -197,7 +197,7 @@ class CarController
 				'make'=>$make
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -218,7 +218,7 @@ class CarController
 				'model'=>$model
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -239,7 +239,7 @@ class CarController
 				'car'=>$car
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -257,7 +257,7 @@ class CarController
 				'make' => $make
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -275,7 +275,7 @@ class CarController
 				'model' => $model
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -293,7 +293,7 @@ class CarController
 				'car' => $car
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -314,7 +314,7 @@ class CarController
 				'make'=>$make
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -335,7 +335,7 @@ class CarController
 				'model'=>$model
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -357,7 +357,7 @@ class CarController
 				'car'=>	$car
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

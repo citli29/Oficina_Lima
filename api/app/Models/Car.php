@@ -216,7 +216,7 @@ class Car
 			!empty($data['cc'])?$data['cc']:null,
 			!empty($data['engine_code'])?$data['engine_code']:null,
 			!empty($data['color_code'])?$data['color_code']:null,
-			!empty($data['plate'])?normalize($data['plate']):null,
+			!empty($data['plate'])?normalizePlate($data['plate']):null,
 			$id
 		]);
 
@@ -278,7 +278,7 @@ class Car
 			!empty($data['cc']) ?$data['cc']: null,
 			!empty($data['engine_code']) ?$data['engine_code']: null,
 			!empty($data['color_code']) ?$data['color_code']: null,
-			!empty($data['plate']) ?normalize($data['plate']): null,
+			!empty($data['plate']) ?normalizePlate($data['plate']): null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

@@ -51,7 +51,7 @@ class UserController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -68,7 +68,7 @@ class UserController
 				'user'=>$user
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -89,7 +89,7 @@ class UserController
 				'user'=>$user
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -107,7 +107,7 @@ class UserController
 				'user' => $user
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -128,7 +128,7 @@ class UserController
 				'user'=>$user
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code($e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

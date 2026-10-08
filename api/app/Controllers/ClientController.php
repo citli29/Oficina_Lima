@@ -50,7 +50,7 @@ class ClientController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -67,7 +67,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -88,7 +88,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -106,7 +106,7 @@ class ClientController
 				'client' => $client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -128,7 +128,7 @@ class ClientController
 				'client'=>$client
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

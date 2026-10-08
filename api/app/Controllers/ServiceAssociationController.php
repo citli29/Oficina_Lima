@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Service;
 use App\Models\ServiceAssociation;
 use App\Services\ServiceAssociationService;
 use InvalidArgumentException;
@@ -17,7 +18,7 @@ class ServiceAssociationController
 	public function __construct(PDO $db)
 	{
 		$model = new ServiceAssociation($db);
-		$this->service = new ServiceAssociationService($model);
+		$this->service = new ServiceAssociationService($model, new Service($db));
 	}
 
 	public function getServiceAssociations(): void
@@ -49,7 +50,7 @@ class ServiceAssociationController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -66,7 +67,7 @@ class ServiceAssociationController
 				'cluster_mate_list' => $cluster_mate_list,
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -75,10 +76,26 @@ class ServiceAssociationController
 	{
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
+
+			// Two forms, each done in one transaction:
+			//  - { new_service: {...} }: create that service and link it here.
+			//  - { service_id, source_service_id? }: link an existing service;
+			//    source_service_id (either of the two) is the side whose
+			//    header values the association keeps.
+			if (is_array($data) && isset($data['new_service']) && is_array($data['new_service'])) {
+				$result = $this->service->createAndLink($s_id, $data['new_service']);
+
+				http_response_code(201);
+				header('Content-Type: application/json');
+				echo json_encode(['success' => true] + $result);
+				return;
+			}
+
 			if (is_null($data) || empty($data['service_id']))
 				throw new InvalidArgumentException("JSON Body Invalid.", 400);
 
-			$cluster_mate_list = $this->service->link($s_id, (int) $data['service_id']);
+			$sourceServiceId = !empty($data['source_service_id']) ? (int) $data['source_service_id'] : null;
+			$cluster_mate_list = $this->service->link($s_id, (int) $data['service_id'], $sourceServiceId);
 
 			http_response_code(201);
 			header('Content-Type: application/json');
@@ -87,7 +104,7 @@ class ServiceAssociationController
 				'cluster_mate_list' => $cluster_mate_list,
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -108,7 +125,7 @@ class ServiceAssociationController
 				'cluster_mate_list' => $cluster_mate_list,
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -125,7 +142,7 @@ class ServiceAssociationController
 				'service_association' => $association,
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -146,7 +163,7 @@ class ServiceAssociationController
 				'cluster' => $cluster,
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

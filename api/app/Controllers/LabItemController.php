@@ -34,7 +34,7 @@ class LabItemController
 				'lab_item_list'=>$lab_item_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -51,7 +51,7 @@ class LabItemController
 				'lab_item'=>$lab_item
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -72,7 +72,7 @@ class LabItemController
 				'lab_item'=>$lab_item
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -89,7 +89,7 @@ class LabItemController
 				'lab_item' => $lab_item
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

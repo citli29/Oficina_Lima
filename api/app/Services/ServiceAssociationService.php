@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace App\Services;
 
+use App\Database\Database;
+use App\Models\Service;
 use App\Models\ServiceAssociation;
 use InvalidArgumentException;
 use PDOException;
@@ -10,10 +12,12 @@ use PDOException;
 class ServiceAssociationService
 {
 	private ServiceAssociation $model;
+	private Service $serviceModel;
 
-	public function __construct(ServiceAssociation $model)
+	public function __construct(ServiceAssociation $model, Service $serviceModel)
 	{
 		$this->model = $model;
+		$this->serviceModel = $serviceModel;
 	}
 
 	public function list(array $filters, ?array $pagination): array
@@ -26,40 +30,91 @@ class ServiceAssociationService
 		return $this->model->getClusterMates($serviceId);
 	}
 
-	public function link(int $serviceId, int $otherServiceId): array
+	/**
+	 * Links two services into one association, in a single transaction —
+	 * either both end up linked (and synced) or nothing changes.
+	 *
+	 * $sourceServiceId (one of the two, optional) is the side whose header
+	 * values the association keeps. Joining makes the insert trigger copy
+	 * the values of the association's lowest-id service, which isn't
+	 * necessarily the side the user picked, so the source's own values are
+	 * read before linking and written back afterwards (the header-sync
+	 * trigger then copies them to every service in the association).
+	 */
+	public function link(int $serviceId, int $otherServiceId, ?int $sourceServiceId = null): array
 	{
 		if ($serviceId === $otherServiceId)
 			throw new InvalidArgumentException("Não é possível associar um serviço a si próprio.", 400);
 
+		if ($sourceServiceId !== null && $sourceServiceId !== $serviceId && $sourceServiceId !== $otherServiceId)
+			throw new InvalidArgumentException("O serviço de origem tem de ser um dos serviços a associar.", 400);
+
 		try
 		{
-			if (!$this->model->serviceExists($serviceId))
-				throw new InvalidArgumentException("O serviço indicado não existe.", 404);
-
-			if (!$this->model->serviceExists($otherServiceId))
-				throw new InvalidArgumentException("O serviço indicado não existe.", 404);
-
-			$clusterA = $this->model->getClusterNr($serviceId);
-			$clusterB = $this->model->getClusterNr($otherServiceId);
-
-			if ($clusterA !== null && $clusterB !== null && $clusterA !== $clusterB)
-				throw new InvalidArgumentException("Os serviços já pertencem a clusters diferentes. Utilize a fusão de clusters para os juntar.", 400);
-
-			if ($clusterA !== null) {
-				if ($clusterB === null)
-					$this->model->insertAssociation($otherServiceId, $clusterA);
-			} elseif ($clusterB !== null) {
-				$this->model->insertAssociation($serviceId, $clusterB);
-			} else {
-				$newCluster = $this->model->getNextClusterNr();
-				$this->model->insertAssociation($serviceId, $newCluster);
-				$this->model->insertAssociation($otherServiceId, $newCluster);
-			}
-
-			return $this->model->getClusterMates($serviceId);
+			return Database::transaction($this->model->getDb(), function () use ($serviceId, $otherServiceId, $sourceServiceId) {
+				$this->linkInTransaction($serviceId, $otherServiceId, $sourceServiceId);
+				return $this->model->getClusterMates($serviceId);
+			});
 		} catch (PDOException $e) {
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
+	}
+
+	/**
+	 * Creates a new service and links it to $serviceId, in a single
+	 * transaction — so a failed link never leaves a loose new service
+	 * behind (and retrying can't create a duplicate).
+	 */
+	public function createAndLink(int $serviceId, array $newServiceData): array
+	{
+		try
+		{
+			return Database::transaction($this->model->getDb(), function () use ($serviceId, $newServiceData) {
+				$newService = $this->serviceModel->createService($newServiceData);
+				$this->linkInTransaction($serviceId, (int) $newService['id'], null);
+				$this->model->markSameCarNoticeAsAssociation((int) $newService['id']);
+
+				return [
+					'service' => $this->serviceModel->getServiceById((int) $newService['id']),
+					'cluster_mate_list' => $this->model->getClusterMates($serviceId),
+				];
+			});
+		} catch (PDOException $e) {
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	// The link itself — callers must already be inside a transaction.
+	private function linkInTransaction(int $serviceId, int $otherServiceId, ?int $sourceServiceId): void
+	{
+		if (!$this->model->serviceExists($serviceId))
+			throw new InvalidArgumentException("O serviço indicado não existe.", 404);
+
+		if (!$this->model->serviceExists($otherServiceId))
+			throw new InvalidArgumentException("O serviço indicado não existe.", 404);
+
+		$clusterA = $this->model->getClusterNr($serviceId);
+		$clusterB = $this->model->getClusterNr($otherServiceId);
+
+		if ($clusterA !== null && $clusterB !== null && $clusterA !== $clusterB)
+			throw new InvalidArgumentException("Os serviços já pertencem a clusters diferentes. Utilize a fusão de clusters para os juntar.", 400);
+
+		// Read before linking: the insert trigger may overwrite them.
+		$sourceFields = $sourceServiceId !== null ? $this->model->getSyncedFields($sourceServiceId) : null;
+
+		if ($clusterA !== null) {
+			if ($clusterB === null)
+				$this->model->insertAssociation($otherServiceId, $clusterA);
+		} elseif ($clusterB !== null) {
+			$this->model->insertAssociation($serviceId, $clusterB);
+		} else {
+			$newCluster = $this->model->getNextClusterNr();
+			$this->model->insertAssociation($serviceId, $newCluster);
+			$this->model->insertAssociation($otherServiceId, $newCluster);
+		}
+
+		if ($sourceFields !== null)
+			$this->model->applySyncedFields($sourceServiceId, $sourceFields);
 	}
 
 	public function move(int $serviceId, int $otherServiceId): array
@@ -96,16 +151,19 @@ class ServiceAssociationService
 	{
 		try
 		{
-			$existing = $this->model->deleteAssociation($serviceId);
+			return Database::transaction($this->model->getDb(), function () use ($serviceId) {
+				$existing = $this->model->deleteAssociation($serviceId);
 
-			if (!$existing)
-				throw new InvalidArgumentException("O serviço não pertence a nenhum cluster.", 404);
+				if (!$existing)
+					throw new InvalidArgumentException("O serviço não pertence a nenhum cluster.", 404);
 
-			$solo = $this->model->getSoleClusterMember((int) $existing['cluster_nr']);
-			if ($solo !== null)
-				$this->model->deleteAssociation($solo);
+				// An association of one isn't an association — dissolve it.
+				$solo = $this->model->getSoleClusterMember((int) $existing['cluster_nr']);
+				if ($solo !== null)
+					$this->model->deleteAssociation($solo);
 
-			return $existing;
+				return $existing;
+			});
 		} catch (PDOException $e) {
 			throw new InvalidArgumentException(dbErrorMessage($e), 409);
 		}

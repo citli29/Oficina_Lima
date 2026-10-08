@@ -22,6 +22,28 @@ class Database
 		return self::$instance;
 	}
 
+	/**
+	 * Runs $fn inside one transaction: everything it writes is committed
+	 * together, or — if it throws — rolled back together and the exception
+	 * rethrown. BEGIN IMMEDIATE takes the write lock up front, so two
+	 * requests doing read-then-write (e.g. "next cluster number, then
+	 * insert") can't both read the same value before either writes.
+	 * Not reentrant: don't call it from inside another transaction.
+	 */
+	public static function transaction(PDO $db, callable $fn): mixed
+	{
+		$db->exec('BEGIN IMMEDIATE');
+
+		try {
+			$result = $fn();
+			$db->exec('COMMIT');
+			return $result;
+		} catch (\Throwable $e) {
+			$db->exec('ROLLBACK');
+			throw $e;
+		}
+	}
+
 	public static function applyFilters(string $sql, array $filters, array $rules, array &$params = []): string
 	{
 		foreach ($filters as $key => $value) {

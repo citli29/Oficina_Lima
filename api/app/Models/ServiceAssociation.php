@@ -120,6 +120,103 @@ class ServiceAssociation
 		return $stmt->fetchAll();
 	}
 
+	public function getDb(): PDO
+	{
+		return $this->db;
+	}
+
+	// A service created from the association's "+" fires the usual "same
+	// car already has an open sheet" notification on insert
+	// (service_same_car_open_notification), before the link exists. Once
+	// linked, its text says the new sheet belongs to the association:
+	// - every other open sheet for the car is in this association → the
+	//   message says so instead of reading like a mistake;
+	// - the car also has an open sheet outside it (a real second job) → the
+	//   warning names that sheet, not one of the association's own.
+	public function markSameCarNoticeAsAssociation(int $serviceId): void
+	{
+		$cluster = $this->db->prepare("SELECT cluster_nr FROM service_associations WHERE service_id = ?");
+		$cluster->execute([$serviceId]);
+		$clusterNr = $cluster->fetchColumn();
+		if ($clusterNr === false) return;
+
+		// The first open sheet for this car outside the association, if any.
+		$outside = $this->db->prepare("
+			SELECT MIN(s.id) FROM services s
+			WHERE s.car_id = (SELECT car_id FROM services WHERE id = ?)
+				AND s.id != ?
+				AND s.is_finished = 0
+				AND s.id NOT IN (SELECT service_id FROM service_associations WHERE cluster_nr = ?)
+		");
+		$outside->execute([$serviceId, $serviceId, $clusterNr]);
+		$outsideId = $outside->fetchColumn();
+
+		// Rebuilt up to " para o mesmo carro…", which (with the car text) is kept.
+		$prefix = $outsideId
+			? "'A folha de serviço ' || :id || ' foi criada na associação #' || :nr || ', mas já existe uma folha de serviço aberta fora da associação (#' || :other || ')'"
+			: "'A folha de serviço ' || :id || ' foi criada na associação #' || :nr || ', onde já existe uma folha de serviço aberta (#' || :other || ')'";
+
+		$stmt = $this->db->prepare("
+			UPDATE notifications
+			SET message = {$prefix} || substr(message, instr(message, ' para o mesmo carro'))
+			WHERE title = 'Folha de serviço aberta para o mesmo carro'
+				AND json_extract(data, '$.url') = 'services/' || :id
+				AND instr(message, ' para o mesmo carro') > 0
+		");
+
+		if (!$outsideId) {
+			// The first other open sheet in the association.
+			$inside = $this->db->prepare("
+				SELECT MIN(s.id) FROM services s
+				JOIN service_associations sa ON sa.service_id = s.id
+				WHERE sa.cluster_nr = ? AND s.id != ? AND s.is_finished = 0
+					AND s.car_id = (SELECT car_id FROM services WHERE id = ?)
+			");
+			$inside->execute([$clusterNr, $serviceId, $serviceId]);
+			$otherId = $inside->fetchColumn();
+		} else {
+			$otherId = $outsideId;
+		}
+
+		if (!$otherId) return;
+		$stmt->execute([':id' => $serviceId, ':nr' => $clusterNr, ':other' => $otherId]);
+	}
+
+	// The header fields an association keeps in sync across its services
+	// (same set the header-sync trigger copies, minus car/client, which
+	// must already match for a service to join).
+	private const SYNCED_COLUMNS = [
+		'r_name',
+		'r_phone',
+		'checkin_date',
+		'checkout_predict',
+		'kms',
+		'checkout_date',
+		'schedule_id',
+		'malfunction_description',
+	];
+
+	public function getSyncedFields(int $serviceId): ?array
+	{
+		$columns = implode(', ', self::SYNCED_COLUMNS);
+		$stmt = $this->db->prepare("SELECT {$columns} FROM services WHERE id = ?");
+		$stmt->execute([$serviceId]);
+		$row = $stmt->fetch();
+		return $row === false ? null : $row;
+	}
+
+	// Writes the given header values back onto one service; the header-sync
+	// trigger then copies them to every other service in its association.
+	public function applySyncedFields(int $serviceId, array $fields): void
+	{
+		$set = implode(', ', array_map(fn($c) => "{$c} = ?", self::SYNCED_COLUMNS));
+		$values = array_map(fn($c) => $fields[$c] ?? null, self::SYNCED_COLUMNS);
+		$values[] = $serviceId;
+
+		$stmt = $this->db->prepare("UPDATE services SET {$set} WHERE id = ?");
+		$stmt->execute($values);
+	}
+
 	public function serviceExists(int $serviceId): bool
 	{
 		$stmt = $this->db->prepare("SELECT 1 FROM services WHERE id = ?");

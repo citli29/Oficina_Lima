@@ -37,7 +37,7 @@ class ServiceComponentController
 				'sut_list'=>$sut_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -58,7 +58,7 @@ class ServiceComponentController
 				'sut'=>$sut
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -83,7 +83,7 @@ class ServiceComponentController
 				'sut'=>$sut
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -105,7 +105,7 @@ class ServiceComponentController
 				'sut'=>$sut
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -123,7 +123,7 @@ class ServiceComponentController
 				'sut' => $sut
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -150,7 +150,7 @@ class ServiceComponentController
 				'sap_list'=>$sap_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -171,7 +171,7 @@ class ServiceComponentController
 				'sap'=>$sap
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -196,7 +196,7 @@ class ServiceComponentController
 				'sap'=>$sap
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -218,7 +218,7 @@ class ServiceComponentController
 				'sap'=>$sap
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -235,7 +235,7 @@ class ServiceComponentController
 				'sap' => $sap
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -272,7 +272,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -309,7 +309,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -353,7 +353,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -402,7 +402,7 @@ class ServiceComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -422,7 +422,7 @@ class ServiceComponentController
 				'sutp_list'=>$sutp_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -439,7 +439,7 @@ class ServiceComponentController
 				'sutp_list'=>$sutp_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -461,7 +461,7 @@ class ServiceComponentController
 				'stats_list' => $stats_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -488,7 +488,7 @@ class ServiceComponentController
 				'stats_list' => $stats_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -520,7 +520,7 @@ class ServiceComponentController
 				'stats_list' => $stats_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -542,7 +542,7 @@ class ServiceComponentController
 				'stats_list' => $stats_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -563,7 +563,7 @@ class ServiceComponentController
 				'sutp'=>$sutp
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -580,7 +580,7 @@ class ServiceComponentController
 				'sutp'=>$sutp
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -597,7 +597,7 @@ class ServiceComponentController
 				'sutp'=>$sutp
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -614,7 +614,7 @@ class ServiceComponentController
 				'sutp'=>$sutp
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -636,7 +636,7 @@ class ServiceComponentController
 				'sutp'=>$sutp
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -655,7 +655,7 @@ class ServiceComponentController
 				'sutp' => $sutp
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -674,7 +674,7 @@ class ServiceComponentController
 				'spr_list'=>$spr_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -695,7 +695,7 @@ class ServiceComponentController
 				'spr'=>$spr
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -712,7 +712,7 @@ class ServiceComponentController
 				'spr'=>$spr
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -733,7 +733,7 @@ class ServiceComponentController
 				'spr'=>$spr
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -752,7 +752,7 @@ class ServiceComponentController
 				'spr' => $spr
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -775,7 +775,7 @@ class ServiceComponentController
 				'slav_list'=>$slav_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -796,7 +796,7 @@ class ServiceComponentController
 				'slav'=>$slav
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -819,7 +819,7 @@ class ServiceComponentController
 				'slpv_list'=>$slpv_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -840,7 +840,7 @@ class ServiceComponentController
 				'slpv'=>$slpv
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -857,7 +857,7 @@ class ServiceComponentController
 				'slav'=>$slav
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -879,7 +879,7 @@ class ServiceComponentController
 				'slav'=>$slav
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -896,7 +896,7 @@ class ServiceComponentController
 				'slav' => $slav
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -913,7 +913,7 @@ class ServiceComponentController
 				'slpv'=>$slpv
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -935,7 +935,7 @@ class ServiceComponentController
 				'slpv'=>$slpv
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -952,7 +952,7 @@ class ServiceComponentController
 				'slpv' => $slpv
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

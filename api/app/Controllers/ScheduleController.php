@@ -33,7 +33,7 @@ class ScheduleController
 				'schedule_list'=>$schedule_list
 			]);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 
@@ -43,7 +43,7 @@ class ScheduleController
 		try{
 			$filters = [
 				'date' => isset($_GET['date']) ? $_GET['date'] : null,
-				'car_plate' => isset($_GET['car_plate']) ? normalize($_GET['car_plate']) : null,
+				'car_plate' => isset($_GET['car_plate']) ? normalizePlate($_GET['car_plate']) : null,
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
 				'car_make' => isset($_GET['car_make']) ? normalize($_GET['car_make']): null,
 				'client_id' => isset($_GET['client_id']) ? $_GET['client_id'] : null,
@@ -76,7 +76,7 @@ class ScheduleController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -93,7 +93,7 @@ class ScheduleController
 				'schedule'=>$schedule
 			]);
 		} catch (RuntimeException$e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -114,7 +114,7 @@ class ScheduleController
 				'schedule'=>$schedule
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -132,7 +132,7 @@ class ScheduleController
 				'schedule' => $schedule
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -154,7 +154,7 @@ class ScheduleController
 				'schedule'=>$schedule
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -174,7 +174,7 @@ class ScheduleController
 				'service'=>$service
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

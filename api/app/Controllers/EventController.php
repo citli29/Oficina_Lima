@@ -53,7 +53,7 @@ class EventController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException $e) {
-			http_response_code((int) $e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -70,7 +70,7 @@ class EventController
 				'event' => $event
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int) $e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -91,7 +91,7 @@ class EventController
 				'event' => $event
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int) $e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -112,7 +112,7 @@ class EventController
 				'event' => $event
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int) $e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -129,7 +129,7 @@ class EventController
 				'event' => $event
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int) $e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}

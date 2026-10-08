@@ -182,9 +182,12 @@ class Service
 
 		if (!empty($filters['q'])) {
 			$q = '%' . $filters['q'] . '%';
+			// Plates are stored without spaces/dashes ("1313sr"), so the
+			// plate side ignores the spaces typed ("13 13 sr").
+			$qPlate = '%' . str_replace(' ', '', $filters['q']) . '%';
 			$where .= " AND (UPPER(cl.search_name) LIKE UPPER(?) OR UPPER(c.search_plate) LIKE UPPER(?) OR cl.phone LIKE ?)";
 			$params[] = $q;
-			$params[] = $q;
+			$params[] = $qPlate;
 			$params[] = $q;
 		}
 
@@ -355,7 +358,7 @@ class Service
 
 		$stmt->execute([
 			!empty($data['client_id']) ?$data['client_id']: null,
-			!empty($data['kms']) ?$data['kms']: null,
+			self::kmsValue($data['kms'] ?? null),
 			!empty($data['checkin']) ?$data['checkin']: null,
 			!empty($data['checkout']) ?$data['checkout']: null,
 			!empty($data['malfunction']) ?$data['malfunction']: null,
@@ -388,6 +391,112 @@ class Service
 		return $this->getServiceById($id);
 	}
 
+	// API field name => column, for the per-field update (patchService).
+	// Same set (and same empty-value handling, see normalizePatchValue)
+	// as updateService.
+	private const PATCHABLE_FIELDS = [
+		'client_id' => 'client_id',
+		'kms' => 'kms',
+		'checkin' => 'checkin_date',
+		'checkout' => 'checkout_date',
+		'malfunction' => 'malfunction_description',
+		'service' => 'service_description',
+		'car_id' => 'car_id',
+		'schedule_id' => 'schedule_id',
+		'note' => 'note',
+		'is_finished' => 'is_finished',
+		'office_check' => 'office_check',
+		'service_type_id' => 'service_type_id',
+		'r_name' => 'r_name',
+		'r_phone' => 'r_phone',
+		'checkout_predict' => 'checkout_predict',
+		'signed_service' => 'signed_service',
+	];
+
+	public static function patchableFields(): array
+	{
+		return array_keys(self::PATCHABLE_FIELDS);
+	}
+
+	// Empty values become NULL (flags: 0/1, type: 1) — exactly what
+	// updateService stores, so an "original" value sent by the client
+	// compares equal to what's actually in the row.
+	// Kms as stored: empty (and 0) is NULL, as before; a negative number
+	// is refused instead of being saved.
+	private static function kmsValue(mixed $value): mixed
+	{
+		if (is_numeric($value) && $value < 0)
+			throw new \InvalidArgumentException('Os kms não podem ser negativos.', 400);
+		return !empty($value) ? $value : null;
+	}
+
+	private static function normalizePatchValue(string $field, mixed $value): mixed
+	{
+		if ($field === 'kms')
+			return self::kmsValue($value);
+		if ($field === 'is_finished' || $field === 'office_check')
+			return !empty($value) ? 1 : 0;
+		if ($field === 'service_type_id')
+			return !empty($value) ? $value : 1;
+		return !empty($value) ? $value : null;
+	}
+
+	/**
+	 * Per-field update: sets only the fields in $changes, and only if each
+	 * of them still holds the value the client last saw ($original) — all
+	 * in one statement, so nothing can change in between. Fields nobody
+	 * touched are never written, so a save can't overwrite someone else's
+	 * change to a field this client didn't edit.
+	 *
+	 * Returns the updated service, false if the service doesn't exist, or
+	 * ['conflict' => [field, ...], 'service' => current row] when one of
+	 * the changed fields was changed by someone else in the meantime.
+	 */
+	public function patchService(int $id, array $changes, array $original): array|false
+	{
+		$set = [];
+		$where = [];
+		$setValues = [];
+		$whereValues = [];
+
+		foreach ($changes as $field => $value) {
+			$column = self::PATCHABLE_FIELDS[$field];
+			$set[] = "{$column} = ?";
+			$setValues[] = self::normalizePatchValue($field, $value);
+			$where[] = "{$column} IS ?";
+			$whereValues[] = self::normalizePatchValue($field, $original[$field] ?? null);
+		}
+
+		if (!$set) {
+			return $this->getServiceById($id);
+		}
+
+		$sql = "UPDATE services SET " . implode(', ', $set) . " WHERE id = ? AND " . implode(' AND ', $where);
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute([...$setValues, $id, ...$whereValues]);
+
+		$current = $this->getServiceById($id);
+		if (!$current) {
+			return false;
+		}
+
+		if ($stmt->rowCount() === 0) {
+			// Name the fields that no longer hold what the client saw.
+			$conflicts = [];
+			foreach ($changes as $field => $value) {
+				$now = self::normalizePatchValue($field, $current[$field] ?? null);
+				$was = self::normalizePatchValue($field, $original[$field] ?? null);
+				if ((string) $now !== (string) $was) {
+					$conflicts[] = $field;
+				}
+			}
+
+			return ['conflict' => $conflicts, 'service' => $current];
+		}
+
+		return $current;
+	}
+
 	public function createService(array $data): array
 	{
 		$stmt = $this->db->prepare("
@@ -398,7 +507,7 @@ class Service
 
 		$stmt->execute([
 			!empty($data['client_id']) ?$data['client_id']: null,
-			!empty($data['kms']) ?$data['kms']: null,
+			self::kmsValue($data['kms'] ?? null),
 			!empty($data['checkin']) ?$data['checkin']: null,
 			!empty($data['checkout']) ?$data['checkout']: null,
 			!empty($data['malfunction']) ?$data['malfunction']: null,
@@ -444,7 +553,7 @@ class Service
 
 		$stmt->execute([
 			$client_id ?? null,
-			!empty($data['kms']) ?$data['kms']: null,
+			self::kmsValue($data['kms'] ?? null),
 			!empty($data['checkin']) ?$data['checkin']: null,
 			!empty($data['checkout']) ?$data['checkout']: null,
 			!empty($schedule['description']) ?$schedule['description']: null,

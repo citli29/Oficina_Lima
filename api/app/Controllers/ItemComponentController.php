@@ -51,7 +51,7 @@ class ItemComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -87,7 +87,7 @@ class ItemComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -123,7 +123,7 @@ class ItemComponentController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -140,7 +140,7 @@ class ItemComponentController
 				'property'=>$property
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -157,7 +157,7 @@ class ItemComponentController
 				'action'=>$action
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -174,7 +174,7 @@ class ItemComponentController
 				'action_tabled_value'=>$action_tabled_value
 			]);
 		} catch (RuntimeException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -196,7 +196,7 @@ class ItemComponentController
 				'property'=>$property
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -218,7 +218,7 @@ class ItemComponentController
 				'action'=>$action
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -240,7 +240,7 @@ class ItemComponentController
 				'action_tabled_value'=>$action_tabled_value
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -262,7 +262,7 @@ class ItemComponentController
 				'property'=>$property
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -284,7 +284,7 @@ class ItemComponentController
 				'action'=>$action
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -306,7 +306,7 @@ class ItemComponentController
 				'action_tabled_value'=>$action_tabled_value
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -323,7 +323,7 @@ class ItemComponentController
 				'property' => $property
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -340,7 +340,7 @@ class ItemComponentController
 				'action' => $action
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
@@ -357,7 +357,7 @@ class ItemComponentController
 				'action_tabled_value' => $action_tabled_value
 			]);
 		} catch (InvalidArgumentException $e) {
-			http_response_code((int)$e->getCode());
+			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}
 	}
