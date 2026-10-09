@@ -55,7 +55,7 @@ class Schedule
 		ss.id AS service_id,
 		ss.is_finished AS service_is_finished,
 		ss.checkout_date AS service_checkout,
-		ss.service_type_id AS service_type_id,
+		ss_first.service_type_id AS service_type_id,
 		st.name AS service_type_name
 
 		FROM schedules s
@@ -76,11 +76,30 @@ class Schedule
 		c.make_id
 		)
 
-		LEFT JOIN services ss
-		ON s.id = ss.schedule_id
+		-- One row per marcação even when several services point to it (an
+		-- association syncs schedule_id to all its services): joining
+		-- services directly returned the marcação once per service —
+		-- duplicated in the list and a duplicate key on the calendar.
+		-- It only counts as finished / delivered once every one of its
+		-- services is (same rule as an association in the services list);
+		-- the type shown is its first service's.
+		LEFT JOIN (
+			SELECT
+				schedule_id,
+				MIN(id) AS id,
+				MIN(is_finished) AS is_finished,
+				CASE WHEN COUNT(checkout_date) = COUNT(*) THEN MAX(checkout_date) END AS checkout_date
+			FROM services
+			WHERE schedule_id IS NOT NULL
+			GROUP BY schedule_id
+		) ss
+		ON ss.schedule_id = s.id
+
+		LEFT JOIN services ss_first
+		ON ss_first.id = ss.id
 
 		LEFT JOIN service_types st
-		ON st.id = ss.service_type_id
+		ON st.id = ss_first.service_type_id
 
 		LEFT JOIN clients cl
 		ON cl.id = s.client_id
@@ -114,10 +133,6 @@ class Schedule
 				'column' => 'cl.id',
 				'operator' => '='
 			],
-			'service_type_id' => [
-				'column' => 'ss.service_type_id',
-				'operator' => '='
-			],
 			'start_date' => [
 				'column' => 's.date',
 				'operator' => '>='
@@ -143,6 +158,13 @@ class Schedule
 					$sql .= " AND ss.checkout_date IS NOT NULL";
 					break;
 			}
+		}
+
+		// Type: a marcação matches if any of its services has that type
+		// (e.g. Mecânica + Laboratório shows under both).
+		if (!empty($filters['service_type_id'])) {
+			$sql .= " AND EXISTS (SELECT 1 FROM services x WHERE x.schedule_id = s.id AND x.service_type_id = ?)";
+			$params[] = $filters['service_type_id'];
 		}
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
