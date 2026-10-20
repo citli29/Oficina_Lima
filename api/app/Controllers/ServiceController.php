@@ -25,6 +25,8 @@ class ServiceController
 	{
 		try{
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'client_name' => isset($_GET['client_name']) ? normalize($_GET['client_name']) : null,
 				'checkin' => isset($_GET['checkin']) ? $_GET['checkin'] : null,
 				'schedule_id' => isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null,

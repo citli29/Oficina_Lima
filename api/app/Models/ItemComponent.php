@@ -106,51 +106,6 @@ class ItemComponent
 		];
 	}
 
-	public function getActionTabledValuesWithFilter(array $filters, ?array $pagination = null): array
-	{
-		$sql = "
-		SELECT atv.*, a.name AS action_name
-		FROM tabled_action_values atv
-		LEFT JOIN tabled_actions a ON atv.t_action_id = a.id
-		WHERE 1=1
-		";
-
-		$params = [];
-
-		$rules = [
-			'value' => [
-				'column' => 'atv.value',
-				'operator' => 'LIKE'
-			],
-			'action_name' => [
-				'column' => 'a.name',
-				'operator' => 'LIKE'
-			],
-			't_action_id' => [
-				'column' => 'atv.t_action_id',
-				'operator' => '='
-			],
-		];
-
-		$sql = Database::applyFilters($sql, $filters, $rules, $params);
-
-		$sql .= "ORDER BY a.name, atv.value ASC";
-
-		$total = null;
-
-		if ($pagination !== null) {
-			$total = Database::getTotalCount($this->db, $sql, $params);
-			$sql = Database::applyPagination($sql, $params, $pagination['page'], $pagination['per_page']);
-		}
-
-		$stmt = $this->db->prepare($sql);
-		$stmt->execute($params);
-
-		return [
-			'rows' => $stmt->fetchAll(),
-			'total' => $total,
-		];
-	}
 
 	public function getPropertyById(int $id): bool|array
 	{
@@ -180,19 +135,6 @@ class ItemComponent
 		return $stmt->fetch();
 	}
 
-	public function getActionTabledValueById(int $id): bool|array
-	{
-		$stmt = $this->db->prepare("
-			SELECT atv.*, a.name AS action_name
-			FROM tabled_action_values atv
-			LEFT JOIN tabled_actions a ON atv.t_action_id = a.id
-			WHERE atv.id = ?
-			");
-
-		$stmt->execute([$id]);
-
-		return $stmt->fetch();
-	}
 
 	public function createProperty(array $data): array
 	{
@@ -233,24 +175,6 @@ class ItemComponent
 		return $this->getActionById($newId);
 	}
 
-	public function createActionTabledValue(array $data): array
-	{
-		$stmt = $this->db->prepare("
-			INSERT INTO tabled_action_values
-			(t_action_id, value, i_class)
-			VALUES (?, ?, ?)
-			");
-
-		$stmt->execute([
-			!empty($data['t_action_id']) ? $data['t_action_id']: null,
-			!empty($data['value']) ? $data['value']: null,
-			!empty($data['i_class']) ? $data['i_class']: null,
-		]);
-
-		$newId = (int)$this->db->lastInsertId();
-
-		return $this->getActionTabledValueById($newId);
-	}
 
 	public function updateProperty(int $id, array $data): bool|array
 	{
@@ -289,23 +213,6 @@ class ItemComponent
 		return $this->getActionById($id);
 	}
 
-	public function updateActionTabledValue(int $id, array $data): bool|array
-	{
-		$stmt = $this->db->prepare("
-			UPDATE tabled_action_values
-			SET t_action_id = ?, value = ?, i_class = ?
-			WHERE id = ?
-			");
-
-		$stmt->execute([
-			!empty($data['t_action_id']) ? $data['t_action_id']: null,
-			!empty($data['value']) ? $data['value']: null,
-			!empty($data['i_class']) ? $data['i_class']: null,
-			$id
-		]);
-
-		return $this->getActionTabledValueById($id);
-	}
 
 	public function deleteProperty(int $id): bool|array
 	{
@@ -333,16 +240,4 @@ class ItemComponent
 		return $action;
 	}
 
-	public function deleteActionTabledValue(int $id): bool|array
-	{
-		$action_tabled_value = $this->getActionTabledValueById($id);
-
-		if($action_tabled_value)
-		{
-			$stmt = $this->db->prepare("DELETE FROM tabled_action_values WHERE id = ?");
-			$stmt->execute([$id]);
-		}
-
-		return $action_tabled_value;
-	}
 }

@@ -28,7 +28,12 @@ class ServiceAssociation
 
 			c.plate AS car_plate,
 			ma.name AS car_make_name,
-			mo.name AS car_model_name
+			mo.name AS car_model_name,
+
+			-- Same as the services list: Laboratório item type for the plate column.
+			(SELECT COUNT(DISTINCT li.t_item_id) FROM lab_items li WHERE li.service_id = s.id) AS lab_item_type_count,
+			(SELECT COUNT(*) FROM lab_items li WHERE li.service_id = s.id) AS lab_item_count,
+			(SELECT MIN(ti.name) FROM lab_items li JOIN tabled_items ti ON ti.id = li.t_item_id WHERE li.service_id = s.id) AS lab_item_name
 		";
 	}
 

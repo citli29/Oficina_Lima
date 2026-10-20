@@ -1364,8 +1364,8 @@ class ServiceComponent
 			lav.id AS id,
 			lav.l_item_id AS l_item_id,
 			lav.t_action_id AS t_action_id,
-			lav.value AS value,
-			lav.t_action_value_id AS t_action_value_id,
+			lav.note AS note,
+			lav.is_done AS is_done,
 			a.name AS action_name,
 			a.i_class AS action_i_class,
 			li.t_item_id AS t_item_id,
@@ -1388,8 +1388,8 @@ class ServiceComponent
 				'column' => 'a.id',
 				'operator' => '='
 			],
-			'value' => [
-				'column' => 'lav.value',
+			'note' => [
+				'column' => 'lav.note',
 				'operator' => 'LIKE'
 			],
 			'l_item_id' => [
@@ -1476,8 +1476,8 @@ class ServiceComponent
 					lav.id AS id,
 					lav.l_item_id AS l_item_id,
 					lav.t_action_id AS t_action_id,
-					lav.value AS value,
-					lav.t_action_value_id AS t_action_value_id,
+					lav.note AS note,
+					lav.is_done AS is_done,
 					a.name AS action_name,
 					a.i_class AS action_i_class,
 					li.t_item_id AS t_item_id,
@@ -1511,8 +1511,8 @@ class ServiceComponent
 					lav.id AS id,
 					lav.l_item_id AS l_item_id,
 					lav.t_action_id AS t_action_id,
-					lav.value AS value,
-					lav.t_action_value_id AS t_action_value_id,
+					lav.note AS note,
+					lav.is_done AS is_done,
 					a.name AS action_name,
 					a.i_class AS action_i_class,
 					li.t_item_id AS t_item_id,
@@ -1541,18 +1541,39 @@ class ServiceComponent
 
 		if($lav && isset($lav['id']))
 		{
-			$stmt = $this->db->prepare("
-				UPDATE lab_action_values
-				SET t_action_id = ?, value = ?, t_action_value_id = ?
-				WHERE id = ?
-				");
+			// Only the fields that were sent change — ticking "done" must not
+			// wipe a note, and saving a note must not untick the action.
+			$sets = [];
+			$params = [];
 
-			$stmt->execute([
-				!empty($data['t_action_id']) ? $data['t_action_id']: null,
-				!empty($data['value']) ? $data['value']: null,
-				!empty($data['t_action_value_id']) ? $data['t_action_value_id']: null,
-				$lav['id']
-			]);
+			if(array_key_exists('t_action_id', $data))
+			{
+				$sets[] = 't_action_id = ?';
+				$params[] = !empty($data['t_action_id']) ? $data['t_action_id'] : null;
+			}
+			if(array_key_exists('note', $data))
+			{
+				$note = is_string($data['note']) ? trim($data['note']) : $data['note'];
+				$sets[] = 'note = ?';
+				$params[] = ($note === '' || $note === null) ? null : $note;
+			}
+			if(array_key_exists('is_done', $data))
+			{
+				// Anything other than a clear true/false goes through as-is so
+				// the is_done trigger rejects it with its message.
+				$isDone = $data['is_done'];
+				if($isDone === true || $isDone === 1 || $isDone === '1') $isDone = 1;
+				elseif($isDone === false || $isDone === 0 || $isDone === '0') $isDone = 0;
+				$sets[] = 'is_done = ?';
+				$params[] = $isDone;
+			}
+
+			if($sets)
+			{
+				$params[] = $lav['id'];
+				$stmt = $this->db->prepare("UPDATE lab_action_values SET " . implode(', ', $sets) . " WHERE id = ?");
+				$stmt->execute($params);
+			}
 
 			$lav = $this->getLavById($lav['id']);
 		}
@@ -1577,8 +1598,8 @@ class ServiceComponent
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO lab_action_values
-			(l_item_id, t_action_id, value)
-			VALUES (?, ?, NULL)
+			(l_item_id, t_action_id, note, is_done)
+			VALUES (?, ?, NULL, 0)
 			");
 
 		$stmt->execute([

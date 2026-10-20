@@ -92,6 +92,12 @@ class Service
 			mo.id as car_model_id,
 			mo.name as car_model_name,
 
+			-- Laboratório: the list shows the item type in the plate column
+			-- (or Variado when there's more than one type).
+			(SELECT COUNT(DISTINCT li.t_item_id) FROM lab_items li WHERE li.service_id = s.id) as lab_item_type_count,
+			(SELECT COUNT(*) FROM lab_items li WHERE li.service_id = s.id) as lab_item_count,
+			(SELECT MIN(ti.name) FROM lab_items li JOIN tabled_items ti ON ti.id = li.t_item_id WHERE li.service_id = s.id) as lab_item_name,
+
 			sa.cluster_nr as cluster_nr,
 			(SELECT COUNT(*) FROM service_associations sa3 WHERE sa3.cluster_nr = sa.cluster_nr) as cluster_size,
 			{$groupStatusRank} as cluster_status_rank
@@ -126,6 +132,10 @@ class Service
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 's.id',
+				'operator' => 'LIKE'
+			],
 			'client_name' => [
 				'column' => 'cl.search_name',
 				'operator' => 'LIKE'

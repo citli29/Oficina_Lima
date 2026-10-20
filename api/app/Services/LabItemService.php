@@ -22,6 +22,11 @@ class LabItemService
 		return $this->labItemModel->getLabItemsByServiceWithFilter($s_id, $filters);
 	}
 
+	public function listAll(array $filters, array $propertyFilters, ?array $pagination): array
+	{
+		return $this->labItemModel->getLabItemsWithFilter($filters, $propertyFilters, $pagination);
+	}
+
 	public function show(int $s_id, int $id): array
 	{
 		if(!$labItem = $this->labItemModel->getLabItemBySidId($s_id, $id))

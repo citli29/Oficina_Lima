@@ -46,6 +46,8 @@ class ProductController
 	{
 		try{
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'reference' => isset($_GET['reference']) ? $_GET['reference'] : null,
 				'p_t_name' => isset($_GET['p_t_name']) ? normalize($_GET['p_t_name']) : null,
@@ -85,6 +87,8 @@ class ProductController
 	{
 		try{
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
 

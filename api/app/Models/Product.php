@@ -45,6 +45,10 @@ class Product
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'p.id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'p.search_name',
 				'operator' => 'LIKE'
@@ -92,6 +96,10 @@ class Product
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'search_name',
 				'operator' => 'LIKE'

@@ -28,6 +28,10 @@ class Car
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'c.id',
+				'operator' => 'LIKE'
+			],
 			'plate' => [
 				'column' => 'c.search_plate',
 				'operator' => 'LIKE'
@@ -86,6 +90,10 @@ class Car
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'm.id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'm.search_name',
 				'operator' => 'LIKE'
@@ -130,6 +138,10 @@ class Car
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'search_name',
 				'operator' => 'LIKE'

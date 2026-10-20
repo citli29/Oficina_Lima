@@ -39,6 +39,53 @@ class LabItemController
 		}
 	}
 
+	// GET /api/lab_items — the search in Gestão de Laboratório.
+	// ?t_item_id=1&value=bosch&prop[3]=0445 (prop: property_id => text).
+	public function getAllLabItems(): void
+	{
+		try{
+			$filters = [
+				't_item_id' => isset($_GET['t_item_id']) ? $_GET['t_item_id'] : null,
+				'value' => isset($_GET['value']) ? trim((string) $_GET['value']) : null,
+			];
+
+			$propertyFilters = [];
+			if (isset($_GET['prop']) && is_array($_GET['prop'])) {
+				foreach ($_GET['prop'] as $propertyId => $value) {
+					$value = trim((string) $value);
+					if (ctype_digit((string) $propertyId) && $value !== '') {
+						$propertyFilters[(int) $propertyId] = $value;
+					}
+				}
+			}
+
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listAll($filters, $propertyFilters, $pagination);
+
+			$response = [
+				'success' => true,
+				'lab_item_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode($response);
+		}catch(RuntimeException $e){
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 	public function getLabItem(int $s_id, int $id): void
 	{
 		try {

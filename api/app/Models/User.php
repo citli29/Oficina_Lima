@@ -25,6 +25,10 @@ class User
 		";
 		$params = [];
 		$rules = [
+			'id' => [
+				'column' => 'u.id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'u.search_name',
 				'operator' => 'LIKE'

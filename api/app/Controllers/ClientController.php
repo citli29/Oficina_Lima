@@ -24,6 +24,8 @@ class ClientController
 	{
 		try{
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'phone' => isset($_GET['phone']) ? normalize($_GET['phone']) : null,
 				'email' => isset($_GET['email']) ? normalize($_GET['email']) : null,

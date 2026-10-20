@@ -24,6 +24,10 @@ class Client
 		";
 		$params = [];
 		$rules = [
+			'id' => [
+				'column' => 'c.id',
+				'operator' => 'LIKE'
+			],
 			'name' => [
 				'column' => 'c.search_name',
 				'operator' => 'LIKE'

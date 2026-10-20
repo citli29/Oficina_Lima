@@ -25,6 +25,8 @@ class EventController
 	{
 		try {
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'title' => isset($_GET['title']) ? $_GET['title'] : null,
 				'user_id' => isset($_GET['user_id']) ? $_GET['user_id'] : null,
 				'start_date' => isset($_GET['start_date']) ? $_GET['start_date'] : null,

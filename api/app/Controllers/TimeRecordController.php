@@ -25,6 +25,7 @@ class TimeRecordController
 	private function filters(): array
 	{
 		return [
+			'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 			'user_id' => $_GET['user_id'] ?? null,
 			'service_id' => $_GET['service_id'] ?? null,
 			'date_from' => $_GET['date_from'] ?? null,

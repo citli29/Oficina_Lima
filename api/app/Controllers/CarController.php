@@ -24,6 +24,8 @@ class CarController
 	{
 		try {
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 			];
 
@@ -58,6 +60,8 @@ class CarController
 	{
 		try {
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'make_name' => isset($_GET['make_name']) ? normalize($_GET['make_name']) : null,
 				'make_id' => isset($_GET['make_id']) ? normalize($_GET['make_id']) : null,
@@ -94,6 +98,8 @@ class CarController
 	{
 		try {
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'plate' => isset($_GET['plate']) ? normalizePlate($_GET['plate']) : null,
 				'year' => isset($_GET['year']) ? (int) $_GET['year'] : null,
 				'month' => isset($_GET['month']) ? (int) $_GET['month'] : null,

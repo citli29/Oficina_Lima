@@ -26,6 +26,10 @@ class Event
 		$params = [];
 
 		$rules = [
+			'id' => [
+				'column' => 'e.id',
+				'operator' => 'LIKE'
+			],
 			'title' => [
 				'column' => 'e.title',
 				'operator' => 'LIKE'

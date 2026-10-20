@@ -24,6 +24,8 @@ class UserController
 	{
 		try {
 			$filters = [
+				// "#123" in a search field (sent by the FE as id=123): id LIKE %123%.
+				'id' => isset($_GET['id']) ? preg_replace('/\D/', '', $_GET['id']) : null,
 				'name' => isset($_GET['name']) ? normalize($_GET['name']) : null,
 				'email' => isset($_GET['email']) ? $_GET['email'] : null,
 				'user_type' => isset($_GET['user_type']) ? $_GET['user_type'] : null,

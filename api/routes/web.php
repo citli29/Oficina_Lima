@@ -80,11 +80,6 @@ return [
 	['PUT', '/api/actions/{id:\d+}', [ItemComponentController::class, 'putAction']],
 	['DELETE', '/api/actions/{id:\d+}', [ItemComponentController::class, 'deleteAction']],
 
-	['GET', '/api/action_tabled_values', [ItemComponentController::class, 'getActionTabledValues']], //with search
-	['POST', '/api/action_tabled_values', [ItemComponentController::class, 'postActionTabledValues']],
-	['GET', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'getActionTabledValue']],
-	['PUT', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'putActionTabledValue']],
-	['DELETE', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'deleteActionTabledValue']],
 
 	/*	Client Controller	*/
 	['GET', '/api/clients', [ClientController::class, 'getClients']], //with search
@@ -161,6 +156,7 @@ return [
 	['PUT', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'putSPR']],
 	['DELETE', '/api/services/{s_id:\d+}/products_requested/{id:\d+}', [ServiceComponentController::class, 'deleteSPR']],
 
+	['GET', '/api/lab_items', [LabItemController::class, 'getAllLabItems']], //with search
 	['GET', '/api/services/{s_id:\d+}/lab_items', [LabItemController::class, 'getLabItems']], //with search
 	['POST', '/api/services/{s_id:\d+}/lab_items', [LabItemController::class, 'postLabItems']],
 	['GET', '/api/services/{s_id:\d+}/lab_items/{id:\d+}', [LabItemController::class, 'getLabItem']],

@@ -40,6 +40,7 @@ class TimeRecord
 	";
 
 	private const FILTER_RULES = [
+		'id' => ['column' => 't.id', 'operator' => 'LIKE'],
 		'user_id' => ['column' => 't.user_id', 'operator' => '='],
 		'service_id' => ['column' => 't.service_id', 'operator' => '='],
 		'date_from' => ['column' => 't.ut_date', 'operator' => '>='],
