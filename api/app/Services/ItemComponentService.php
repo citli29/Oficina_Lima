@@ -27,6 +27,11 @@ class ItemComponentService
 		return $this->itemComponentModel->getActionsWithFilter($filters, $pagination);
 	}
 
+	public function listActionTabledValues(array $filters, ?array $pagination = null): array
+	{
+		return $this->itemComponentModel->getActionTabledValuesWithFilter($filters, $pagination);
+	}
+
 
 	public function showProperty(int $id): array
 	{
@@ -40,6 +45,13 @@ class ItemComponentService
 		if(!$action = $this->itemComponentModel->getActionById($id))
 			throw new RuntimeException("Show Action [ID Not Found]: {$id}.",404);
 		return $action;
+	}
+
+	public function showActionTabledValue(int $id): array
+	{
+		if(!$action_tabled_value = $this->itemComponentModel->getActionTabledValueById($id))
+			throw new RuntimeException("Show Action Tabled Value [ID Not Found]: {$id}.",404);
+		return $action_tabled_value;
 	}
 
 
@@ -58,6 +70,16 @@ class ItemComponentService
 		try
 		{
 			return $this->itemComponentModel->createAction($data);
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function createActionTabledValue(array $data): array
+	{
+		try
+		{
+			return $this->itemComponentModel->createActionTabledValue($data);
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
@@ -90,6 +112,19 @@ class ItemComponentService
 		}
 	}
 
+	public function updateActionTabledValue(int $id, array $data): array
+	{
+		try
+		{
+			$action_tabled_value = $this->itemComponentModel->updateActionTabledValue($id, $data);
+			if(!$action_tabled_value)
+			throw new InvalidArgumentException("Update Action Tabled Value [Invalid ID]: {$id}.",404);
+			return $action_tabled_value;
+		} catch (PDOException $e){
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
 
 	public function deleteProperty(int $id): array
 	{
@@ -117,4 +152,16 @@ class ItemComponentService
 		}
 	}
 
+	public function deleteActionTabledValue(int $id): array
+	{
+		try
+		{
+			if(!$action_tabled_value = $this->itemComponentModel->deleteActionTabledValue($id))
+				throw new InvalidArgumentException("Delete Action Tabled Value [Invalid ID]: {$id}.",404);
+			return $action_tabled_value;
+		}catch(PDOException $e)
+		{
+			throw new InvalidArgumentException(dbErrorMessage($e), 409);
+		}
+	}
 }

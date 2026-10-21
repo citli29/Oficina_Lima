@@ -80,6 +80,12 @@ return [
 	['PUT', '/api/actions/{id:\d+}', [ItemComponentController::class, 'putAction']],
 	['DELETE', '/api/actions/{id:\d+}', [ItemComponentController::class, 'deleteAction']],
 
+	['GET', '/api/action_tabled_values', [ItemComponentController::class, 'getActionTabledValues']], //with search
+	['POST', '/api/action_tabled_values', [ItemComponentController::class, 'postActionTabledValues']],
+	['GET', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'getActionTabledValue']],
+	['PUT', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'putActionTabledValue']],
+	['DELETE', '/api/action_tabled_values/{id:\d+}', [ItemComponentController::class, 'deleteActionTabledValue']],
+
 
 	/*	Client Controller	*/
 	['GET', '/api/clients', [ClientController::class, 'getClients']], //with search

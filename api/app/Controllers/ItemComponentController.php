@@ -92,6 +92,42 @@ class ItemComponentController
 		}
 	}
 
+	public function getActionTabledValues():void
+	{
+		try {
+			$filters = [
+				'value' => isset($_GET['value']) ? $_GET['value'] : null,
+				'action_name' => isset($_GET['action_name']) ? normalize($_GET['action_name']) : null,
+				't_action_id' => isset($_GET['t_action_id']) ? $_GET['t_action_id'] : null,
+			];
+
+			$pagination = parsePagination($_GET);
+
+			$result = $this->service->listActionTabledValues($filters, $pagination);
+
+			$response = [
+				'success' => true,
+				'action_tabled_value_list' => $result['rows'],
+			];
+
+			if ($pagination !== null) {
+				$response['pagination'] = [
+					'page' => $pagination['page'],
+					'per_page' => $pagination['per_page'],
+					'total' => $result['total'],
+					'total_pages' => (int) ceil($result['total'] / $pagination['per_page']),
+				];
+			}
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode($response);
+		} catch (RuntimeException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 
 	public function getProperty(int $id):void
 	{
@@ -120,6 +156,23 @@ class ItemComponentController
 			echo json_encode([
 				'success' => true,
 				'action'=>$action
+			]);
+		} catch (RuntimeException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getActionTabledValue(int $id):void
+	{
+		try {
+			$action_tabled_value = $this->service->showActionTabledValue($id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'action_tabled_value'=>$action_tabled_value
 			]);
 		} catch (RuntimeException $e) {
 			http_response_code(httpStatusFromException($e));
@@ -172,6 +225,28 @@ class ItemComponentController
 		}
 	}
 
+	public function postActionTabledValues():void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$action_tabled_value = $this->service->createActionTabledValue($data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'action_tabled_value'=>$action_tabled_value
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 
 	public function putProperty(int $id):void
 	{
@@ -217,6 +292,28 @@ class ItemComponentController
 		}
 	}
 
+	public function putActionTabledValue(int $id):void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+
+			if(is_null($data))
+			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
+
+			$action_tabled_value = $this->service->updateActionTabledValue($id, $data);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'action_tabled_value'=>$action_tabled_value
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 
 	public function deleteProperty(int $id):void
 	{
@@ -252,4 +349,20 @@ class ItemComponentController
 		}
 	}
 
+	public function deleteActionTabledValue(int $id):void
+	{
+		try {
+			$action_tabled_value = $this->service->deleteActionTabledValue($id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode([
+				'success' => true,
+				'action_tabled_value' => $action_tabled_value
+			]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
 }
