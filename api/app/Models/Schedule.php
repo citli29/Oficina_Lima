@@ -55,7 +55,9 @@ class Schedule
 		ss.id AS service_id,
 		ss.is_finished AS service_is_finished,
 		ss.checkout_date AS service_checkout,
-		ss_first.service_type_id AS service_type_id,
+		-- The first service's type, or the marcação's own (planned) type
+		-- while it has no service yet.
+		COALESCE(ss_first.service_type_id, s.service_type_id) AS service_type_id,
 		st.name AS service_type_name
 
 		FROM schedules s
@@ -99,7 +101,7 @@ class Schedule
 		ON ss_first.id = ss.id
 
 		LEFT JOIN service_types st
-		ON st.id = ss_first.service_type_id
+		ON st.id = COALESCE(ss_first.service_type_id, s.service_type_id)
 
 		LEFT JOIN clients cl
 		ON cl.id = s.client_id
@@ -161,9 +163,12 @@ class Schedule
 		}
 
 		// Type: a marcação matches if any of its services has that type
-		// (e.g. Mecânica + Laboratório shows under both).
+		// (e.g. Mecânica + Laboratório shows under both), or, while it has
+		// no service yet, if it's its own type.
 		if (!empty($filters['service_type_id'])) {
-			$sql .= " AND EXISTS (SELECT 1 FROM services x WHERE x.schedule_id = s.id AND x.service_type_id = ?)";
+			$sql .= " AND (EXISTS (SELECT 1 FROM services x WHERE x.schedule_id = s.id AND x.service_type_id = ?)
+				OR (s.service_type_id = ? AND NOT EXISTS (SELECT 1 FROM services x WHERE x.schedule_id = s.id)))";
+			$params[] = $filters['service_type_id'];
 			$params[] = $filters['service_type_id'];
 		}
 
@@ -218,7 +223,11 @@ class Schedule
 
 			cl.name AS client_name,
 			cl.phone AS client_phone,
-			cl.id AS client_id
+			cl.id AS client_id,
+
+			-- The marcação's own (planned) type, optional.
+			s.service_type_id AS service_type_id,
+			st.name AS service_type_name
 
 			FROM schedules s
 
@@ -241,6 +250,9 @@ class Schedule
 			LEFT JOIN clients cl
 			ON cl.id = s.client_id
 
+			LEFT JOIN service_types st
+			ON st.id = s.service_type_id
+
 			WHERE s.id=?
 			");
 
@@ -250,8 +262,14 @@ class Schedule
 	}
 
 
+	// A blank description is stored as '' (the column is NOT NULL): it's only
+	// allowed for a Laboratório marcação whose items all have actions, which
+	// ScheduleService checks in the same transaction.
 	public function updateSchedule(int $id, array $data): bool|array
 	{
+		// The type only changes when it's sent (empty clears it).
+		$hasType = array_key_exists('service_type_id', $data);
+
 		$stmt = $this->db->prepare("
 		UPDATE schedules
 		SET 
@@ -259,16 +277,19 @@ class Schedule
 			description = ?,
 			car_id = ?,
 			model_id = ?,
-			client_id = ?
+			client_id = ?,
+			service_type_id = CASE WHEN ? THEN ? ELSE service_type_id END
 		WHERE id = ?
 			");
 
 		$stmt->execute([
 			!empty($data['date']) ?$data['date']: null,
-			trim((string)($data['description'] ?? '')) !== '' ? trim($data['description']) : null,
+			trim((string)($data['description'] ?? '')),
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['model_id']) ?$data['model_id']: null,
 			!empty($data['client_id']) ?$data['client_id']: null,
+			$hasType ? 1 : 0,
+			!empty($data['service_type_id']) ? $data['service_type_id'] : null,
 			$id
 		]);
 
@@ -278,15 +299,16 @@ class Schedule
 	public function createSchedule(array $data): array
 	{
 		$stmt = $this->db->prepare("
-			INSERT INTO schedules(date, description, car_id, model_id, client_id) VALUES(?,?,?,?,?)
+			INSERT INTO schedules(date, description, car_id, model_id, client_id, service_type_id) VALUES(?,?,?,?,?,?)
 			");
 
 		$stmt->execute([
 			!empty($data['date']) ?$data['date']: null,
-			trim((string)($data['description'] ?? '')) !== '' ? trim($data['description']) : null,
+			trim((string)($data['description'] ?? '')),
 			!empty($data['car_id']) ?$data['car_id']: null,
 			!empty($data['model_id']) ?$data['model_id']: null,
 			!empty($data['client_id']) ?$data['client_id']: null,
+			!empty($data['service_type_id']) ? $data['service_type_id'] : null,
 		]);
 
 		$newId = (int)$this->db->lastInsertId();

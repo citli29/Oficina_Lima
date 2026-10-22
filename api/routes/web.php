@@ -10,6 +10,7 @@ use App\Controllers\LabItemController;
 use App\Controllers\NotificationController;
 use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
+use App\Controllers\ScheduleLabController;
 use App\Controllers\TimeRecordController;
 use App\Controllers\ServiceAssociationController;
 use App\Controllers\ServiceComponentController;
@@ -103,6 +104,14 @@ return [
 	['DELETE', '/api/schedules/{id:\d+}', [ScheduleController::class, 'deleteSchedule']],
 	['POST', '/api/schedules/{id:\d+}/create_service', [ScheduleController::class, 'postCreateServiceFromSchedule']],
 
+	// Lab items/actions planned on a marcação (copied into the service's lab draft on "Criar Serviço").
+	['GET', '/api/schedules/{s_id:\d+}/lab_items', [ScheduleLabController::class, 'getLabItems']],
+	['POST', '/api/schedules/{s_id:\d+}/lab_items', [ScheduleLabController::class, 'postLabItems']],
+	['DELETE', '/api/schedules/{s_id:\d+}/lab_items/{id:\d+}', [ScheduleLabController::class, 'deleteLabItem']],
+	['GET', '/api/schedules/{s_id:\d+}/lab_action_values', [ScheduleLabController::class, 'getLabActionValues']],
+	['POST', '/api/schedules/{s_id:\d+}/lab_action_values', [ScheduleLabController::class, 'postLabActionValues']],
+	['DELETE', '/api/schedules/{s_id:\d+}/lab_action_values/{id:\d+}', [ScheduleLabController::class, 'deleteLabActionValue']],
+
 
 	/*	Service Controller	*/
 	['GET', '/api/services', [ServiceController::class, 'getServices']], //with search
@@ -170,9 +179,9 @@ return [
 
 	['GET', '/api/services/{s_id:\d+}/lab_action_values', [ServiceComponentController::class, 'getLabActionValues']], //with search
 	['POST', '/api/services/{s_id:\d+}/lab_action_values', [ServiceComponentController::class, 'postLabActionValues']],
-	['GET', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'getLabActionValue']],
-	['PUT', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'putLabActionValue']],
-	['DELETE', '/api/services/{s_id:\d+}/lab_action_values/{slav_id:\d+}', [ServiceComponentController::class, 'deleteLabActionValue']],
+	['GET', '/api/services/{s_id:\d+}/lab_action_values/{id:\d+}', [ServiceComponentController::class, 'getLabActionValue']],
+	['PUT', '/api/services/{s_id:\d+}/lab_action_values/{id:\d+}', [ServiceComponentController::class, 'putLabActionValue']],
+	['DELETE', '/api/services/{s_id:\d+}/lab_action_values/{id:\d+}', [ServiceComponentController::class, 'deleteLabActionValue']],
 
 	['GET', '/api/services/{s_id:\d+}/lab_property_values', [ServiceComponentController::class, 'getLabPropertyValues']], //with search
 	['POST', '/api/services/{s_id:\d+}/lab_property_values', [ServiceComponentController::class, 'postLabPropertyValues']],

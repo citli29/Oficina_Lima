@@ -285,6 +285,8 @@ class Service
 				s.office_check as office_check,
 				s.service_type_id as service_type_id,
 				st.name as service_type_name,
+				-- Laboratório: whether there's a lab summary to show.
+				(SELECT COUNT(*) FROM lab_items li WHERE li.service_id = s.id) as lab_item_count,
 
 				s.client_id as client_id,
 				cl.name as client_name,

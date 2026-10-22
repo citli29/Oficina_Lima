@@ -1356,12 +1356,8 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT
-			ROW_NUMBER() OVER (
-				PARTITION BY li.service_id
-				ORDER BY li.service_id ASC, lav.id ASC
-			) AS slav_id,
-			li.service_id AS service_id,
 			lav.id AS id,
+			li.service_id AS service_id,
 			lav.l_item_id AS l_item_id,
 			lav.t_action_id AS t_action_id,
 			lav.note AS note,
@@ -1399,6 +1395,8 @@ class ServiceComponent
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
+
+		$sql .= "ORDER BY lav.id ASC";
 
 		$stmt = $this->db->prepare($sql);
 		array_unshift($params, $serviceId);
@@ -1461,37 +1459,28 @@ class ServiceComponent
 		return $stmt->fetchAll();
 	}
 
-	public function getLavBySid_SlavId(int $s_id, int $slav_id): bool|array
+	public function getLavBySidId(int $s_id, int $id): bool|array
 	{
 		$stmt = $this->db->prepare("
-			SELECT * FROM (
-				SELECT
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY li.service_id
-							ORDER BY li.service_id ASC, lav.id ASC
-						) AS INTEGER
-					) AS slav_id,
-					li.service_id AS service_id,
-					lav.id AS id,
-					lav.l_item_id AS l_item_id,
-					lav.t_action_id AS t_action_id,
-					lav.note AS note,
-					lav.is_done AS is_done,
-					a.name AS action_name,
-					a.i_class AS action_i_class,
-					li.t_item_id AS t_item_id,
-					i.name AS item_name
-				FROM lab_action_values lav
-				LEFT JOIN lab_items li ON li.id = lav.l_item_id
-				LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
-				LEFT JOIN tabled_items i ON i.id = li.t_item_id
-				WHERE li.service_id = ?
-			    ) ranked
-			WHERE slav_id = ?
+			SELECT
+				lav.id AS id,
+				li.service_id AS service_id,
+				lav.l_item_id AS l_item_id,
+				lav.t_action_id AS t_action_id,
+				lav.note AS note,
+				lav.is_done AS is_done,
+				a.name AS action_name,
+				a.i_class AS action_i_class,
+				li.t_item_id AS t_item_id,
+				i.name AS item_name
+			FROM lab_action_values lav
+			LEFT JOIN lab_items li ON li.id = lav.l_item_id
+			LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
+			LEFT JOIN tabled_items i ON i.id = li.t_item_id
+			WHERE li.service_id = ? AND lav.id = ?
 			");
 
-		$stmt->execute([$s_id, $slav_id]);
+		$stmt->execute([$s_id, $id]);
 
 		return $stmt->fetch();
 	}
@@ -1499,45 +1488,32 @@ class ServiceComponent
 	public function getLavById(int $id): bool|array
 	{
 		$stmt = $this->db->prepare("
-			SELECT * FROM (
-				SELECT
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY li.service_id
-							ORDER BY li.service_id ASC, lav.id ASC
-						) AS INTEGER
-					) AS slav_id,
-					li.service_id AS service_id,
-					lav.id AS id,
-					lav.l_item_id AS l_item_id,
-					lav.t_action_id AS t_action_id,
-					lav.note AS note,
-					lav.is_done AS is_done,
-					a.name AS action_name,
-					a.i_class AS action_i_class,
-					li.t_item_id AS t_item_id,
-					i.name AS item_name
-				FROM lab_action_values lav
-				LEFT JOIN lab_items li ON li.id = lav.l_item_id
-				LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
-				LEFT JOIN tabled_items i ON i.id = li.t_item_id
-				WHERE li.service_id = (
-					SELECT li2.service_id
-					FROM lab_action_values lav2
-					LEFT JOIN lab_items li2 ON li2.id = lav2.l_item_id
-					WHERE lav2.id = ?
-				)
-			) WHERE id = ?
+			SELECT
+				lav.id AS id,
+				li.service_id AS service_id,
+				lav.l_item_id AS l_item_id,
+				lav.t_action_id AS t_action_id,
+				lav.note AS note,
+				lav.is_done AS is_done,
+				a.name AS action_name,
+				a.i_class AS action_i_class,
+				li.t_item_id AS t_item_id,
+				i.name AS item_name
+			FROM lab_action_values lav
+			LEFT JOIN lab_items li ON li.id = lav.l_item_id
+			LEFT JOIN tabled_actions a ON a.id = lav.t_action_id
+			LEFT JOIN tabled_items i ON i.id = li.t_item_id
+			WHERE lav.id = ?
 			");
 
-		$stmt->execute([$id, $id]);
+		$stmt->execute([$id]);
 
 		return $stmt->fetch();
 	}
 
-	public function updateLavBySid_SlavId(int $s_id, int $slav_id, array $data): bool|array
+	public function updateLavBySidId(int $s_id, int $id, array $data): bool|array
 	{
-		$lav = $this->getLavBySid_SlavId($s_id, $slav_id);
+		$lav = $this->getLavBySidId($s_id, $id);
 
 		if($lav && isset($lav['id']))
 		{
@@ -1575,15 +1551,15 @@ class ServiceComponent
 				$stmt->execute($params);
 			}
 
-			$lav = $this->getLavById($lav['id']);
+			$lav = $this->getLavBySidId($s_id, $lav['id']);
 		}
 
 		return $lav;
 	}
 
-	public function deleteLavBySid_SlavId(int $s_id, int $slav_id): bool|array
+	public function deleteLavBySidId(int $s_id, int $id): bool|array
 	{
-		$lav = $this->getLavBySid_SlavId($s_id, $slav_id);
+		$lav = $this->getLavBySidId($s_id, $id);
 
 		if($lav && isset($lav['id']))
 		{

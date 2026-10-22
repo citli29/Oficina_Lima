@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Schedule;
+use App\Models\ScheduleLab;
 use App\Models\Service;
 use App\Services\ScheduleService;
 use InvalidArgumentException;
@@ -18,7 +19,7 @@ class ScheduleController
 	{
 		$model = new Schedule($db);
 		$s_model = new Service($db);
-		$this->service = new ScheduleService($model,$s_model);
+		$this->service = new ScheduleService($model,$s_model,new ScheduleLab($db));
 	}
 
 	public function getSchedulesFree(): void

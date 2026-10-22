@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace App\Services;
 
+use App\Database\Database;
 use App\Models\Schedule;
+use App\Models\ScheduleLab;
 use App\Models\Service;
 use InvalidArgumentException;
 use PDOException;
@@ -13,11 +15,15 @@ class ScheduleService
 {
 	private Schedule $scheduleModel;
 	private Service $serviceModel;
+	private ScheduleLab $scheduleLabModel;
 
-	public function __construct(Schedule $scheduleModel, Service $serviceModel)
+	const MISSING_DESCRIPTION = 'A descrição da marcação é obrigatória, a não ser que seja de Laboratório com itens e todos tenham ações.';
+
+	public function __construct(Schedule $scheduleModel, Service $serviceModel, ScheduleLab $scheduleLabModel)
 	{
 		$this->scheduleModel = $scheduleModel;
 		$this->serviceModel = $serviceModel;
+		$this->scheduleLabModel = $scheduleLabModel;
 	}
 
 	public function listSchedulesFree(): array
@@ -36,27 +42,51 @@ class ScheduleService
 		return $schedule;
 	}
 
+	// `lab_items` (optional): [{t_item_id, action_ids: [...]}, ...] — the
+	// planned lab items, created with the marcação so they count for the
+	// description rule (see ScheduleLab::isMissingDescription).
 	public function createSchedule(array $data): array
 	{
 		try
 		{
-			return $this->scheduleModel->createSchedule($data);
+			return Database::transaction($this->scheduleLabModel->getDb(), function () use ($data) {
+				$schedule = $this->scheduleModel->createSchedule($data);
+
+				foreach (($data['lab_items'] ?? []) as $labItem) {
+					$this->scheduleLabModel->createLabItemWithActions($schedule['id'], $labItem);
+				}
+
+				if ($this->scheduleLabModel->isMissingDescription($schedule['id']))
+					throw new InvalidArgumentException(self::MISSING_DESCRIPTION, 400);
+
+				return $schedule;
+			});
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
+	// One transaction: a Laboratório service (type 2, as in the service
+	// triggers) is created together with the marcação's planned lab
+	// items/actions — never half-copied, so a retry can't leave a broken
+	// first service behind.
 	public function createServiceFromSchedule(int $id, array $data): array
 	{
 		try
 		{
-			$schedule = $this->scheduleModel->getScheduleById($id);
-			if(!$schedule)
-			throw new InvalidArgumentException("Create Service From Schedule [Invalid ID]: {$id}.",400);
-			$service = $this->serviceModel->createServiceFromSchedule($id,$data,$schedule);
-			if(!$service) 
-			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
-			return $service;
+			return Database::transaction($this->scheduleLabModel->getDb(), function () use ($id, $data) {
+				$schedule = $this->scheduleModel->getScheduleById($id);
+				if(!$schedule)
+				throw new InvalidArgumentException("Create Service From Schedule [Invalid ID]: {$id}.",400);
+				$service = $this->serviceModel->createServiceFromSchedule($id,$data,$schedule);
+				if(!$service) 
+				throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
+
+				if ((int)$service['service_type_id'] === 2)
+					$this->scheduleLabModel->copyToService($id, (int)$service['id']);
+
+				return $service;
+			});
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
@@ -67,10 +97,16 @@ class ScheduleService
 	{
 		try
 		{
-			$schedule = $this->scheduleModel->updateSchedule($id,$data);
-			if(!$schedule) 
-			throw new InvalidArgumentException("Update Schedule [Invalid ID]: {$id}.",400);
-			return $schedule;
+			return Database::transaction($this->scheduleLabModel->getDb(), function () use ($id, $data) {
+				$schedule = $this->scheduleModel->updateSchedule($id,$data);
+				if(!$schedule) 
+				throw new InvalidArgumentException("Update Schedule [Invalid ID]: {$id}.",400);
+
+				if ($this->scheduleLabModel->isMissingDescription($id))
+					throw new InvalidArgumentException(self::MISSING_DESCRIPTION, 400);
+
+				return $schedule;
+			});
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}

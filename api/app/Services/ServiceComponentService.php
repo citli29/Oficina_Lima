@@ -312,32 +312,32 @@ class ServiceComponentService
 		}
 	}
 
-	public function showLav(int $s_id, int $slav_id): array
+	public function showLav(int $s_id, int $id): array
 	{
-		if(!$lav = $this->serviceComponentModel->getLavBySid_SlavId($s_id, $slav_id))
-			throw new RuntimeException("Show Lab Action Value [ID Not Found]: {$s_id} : {$slav_id}.",404);
+		if(!$lav = $this->serviceComponentModel->getLavBySidId($s_id, $id))
+			throw new RuntimeException("Show Lab Action Value [ID Not Found]: {$s_id} : {$id}.",404);
 		return $lav;
 	}
 
-	public function updateLav(int $s_id, int $slav_id, array $data): array
+	public function updateLav(int $s_id, int $id, array $data): array
 	{
 		try
 		{
-			$lav = $this->serviceComponentModel->updateLavBySid_SlavId($s_id, $slav_id, $data);
+			$lav = $this->serviceComponentModel->updateLavBySidId($s_id, $id, $data);
 			if(!$lav)
-			throw new InvalidArgumentException("Update Lab Action Value [Invalid ID]: {$s_id} - {$slav_id}.",400);
+			throw new InvalidArgumentException("Update Lab Action Value [Invalid ID]: {$s_id} - {$id}.",400);
 			return $lav;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
 		}
 	}
 
-	public function deleteLav(int $s_id, int $slav_id): array
+	public function deleteLav(int $s_id, int $id): array
 	{
 		try
 		{
-			if(!$lav = $this->serviceComponentModel->deleteLavBySid_SlavId($s_id, $slav_id))
-				throw new InvalidArgumentException("Delete Lab Action Value [Invalid ID]: {$s_id} - {$slav_id}.", 404);
+			if(!$lav = $this->serviceComponentModel->deleteLavBySidId($s_id, $id))
+				throw new InvalidArgumentException("Delete Lab Action Value [Invalid ID]: {$s_id} - {$id}.", 404);
 			return $lav;
 		}catch(PDOException $e)
 		{

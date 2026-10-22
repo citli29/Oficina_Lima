@@ -845,10 +845,10 @@ class ServiceComponentController
 		}
 	}
 
-	public function getLabActionValue(int $s_id, int $slav_id): void
+	public function getLabActionValue(int $s_id, int $id): void
 	{
 		try {
-			$slav = $this->service->showLav($s_id, $slav_id);
+			$slav = $this->service->showLav($s_id, $id);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
@@ -862,7 +862,7 @@ class ServiceComponentController
 		}
 	}
 
-	public function putLabActionValue(int $s_id, int $slav_id): void
+	public function putLabActionValue(int $s_id, int $id): void
 	{
 		try {
 			$data = json_decode(file_get_contents('php://input'), true);
@@ -870,7 +870,7 @@ class ServiceComponentController
 			if(is_null($data))
 			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
 
-			$slav = $this->service->updateLav($s_id, $slav_id, $data);
+			$slav = $this->service->updateLav($s_id, $id, $data);
 
 			http_response_code(200);
 			header('Content-Type: application/json');
@@ -884,10 +884,10 @@ class ServiceComponentController
 		}
 	}
 
-	public function deleteLabActionValue(int $s_id, int $slav_id): void
+	public function deleteLabActionValue(int $s_id, int $id): void
 	{
 		try {
-			$slav = $this->service->deleteLav($s_id, $slav_id);
+			$slav = $this->service->deleteLav($s_id, $id);
 
 			http_response_code(200);
 			header('Content-Type: application/json');

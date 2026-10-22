@@ -75,7 +75,7 @@ Calendar entries that aren't tied to services or marcações, such as holidays, 
 ## Fixes
 - **Stable order across pages:** lists sorted by a column now also sort by id when values are equal (`Database::applySort` tie-breaker). Before, a row could show up on two pages, or on none, when several rows shared the same value. This applies to the services and marcações lists.
 
-## Since `15ed662` (not committed yet)
+## Since `15ed662` (released as v0.3 in `7fbb5f9`)
 
 ### New: Registos de Tempo API
 Time entries and punches of every service, addressed by their **real id**. Elsewhere they're addressed by their position inside a service, which shifts when a row is deleted.
@@ -134,3 +134,104 @@ Everything that was "dev database only" is now in `utils/sql_s/`.
    - **New rule:** a **viatura** used by services, or a **modelo** used by cars, can't be deleted. Before, the delete went through and they silently lost it.
 
 All three are one transaction each and safe to run twice. They were tested in order on a copy with the production schema.
+
+# Patch notes (backend): 9 Oct → 22 Oct 2026
+
+From `1879d01` to `e4925a5`, plus the changes not committed yet at the end.
+
+## Marcações (`b373408`)
+- **One row per marcação:** a marcação whose services are in an association used to show once per service (duplicated in the list, a duplicate key on the calendar). Now it shows once.
+- **Status:** a marcação only counts as finished / delivered once **every** one of its services is (the same rule as an association in the services list). The type shown is its first service's.
+- **Type filter:** `service_type_id` matches a marcação if **any** of its services has that type, so Mecânica + Laboratório shows under both.
+- **Holidays:** `utils/holidays_2026_2027.sql` adds the national holidays and the Marco de Canaveses municipal holiday from Nov 2026 to Dec 2027 as **Eventos**. A holiday that already exists (same title and date) is skipped, so it's safe to run twice.
+
+## Release 2026-10-20 (`37763eb`, `utils/sql_s/release_2026_10_20_migration.sql`)
+
+### Eletricidade
+- **New service type Eletricidade, id 4.** The frontend counts on that id for its colour and its own calendar section, so prod must use id 4 too (the migration stops if id 4 is taken by another type).
+- **Kms:** Eletricidade, like Laboratório, can be finished without kms.
+
+### Lab actions: note + done
+- **Each lab action on a service has a free `note` and an `is_done` check.** They replace the old fixed "action values" list (`tabled_action_values`). Any value already picked on a service was kept as its note.
+- **Saving only what was sent:** `PUT /api/services/{s_id}/lab_action_values/{id}` changes only the fields in the body, so ticking done doesn't wipe the note and saving a note doesn't untick the action.
+- `is_done` must be true or false ("O estado de concluído da ação deve ser verdadeiro ou falso.").
+
+### Gestão de Laboratório search: `GET /api/lab_items`
+Every lab item across all services, newest services first, with its service, client, plate and all its property values.
+
+| Parameter | What it does |
+|---|---|
+| `t_item_id` | Only this item type |
+| `value` | Any property value contains this text |
+| `prop[<property_id>]` | That property's value contains this text (several can be combined) |
+| `p`, `u` | Page and rows per page |
+
+### Lab items in the lists
+The services list and the association list return `lab_item_type_count`, `lab_item_count` and `lab_item_name`, so a Laboratório service can show its item type ("Injetor", "3x Injetor" or "Variado") in place of the plate.
+
+### Search by number
+Typing "#123" in a search field (sent as `id=123`) finds by id (`LIKE %123%`) in: marcas, modelos, viaturas, clientes, eventos, produtos, tipos de produto, serviços, registos de tempo and utilizadores.
+
+## Release 2026-10-21 (`e4925a5`, `utils/sql_s/release_2026_10_21_migration.sql`)
+
+### Note presets are back
+- **New table `tabled_action_values` (`id`, `t_action_id`, `value`):** ready-made notes per lab action, managed in Gestão de Laboratório → Valores.
+- **Picking a preset only copies its text into the action's note.** Nothing links back, so editing or deleting a preset never changes a service.
+- **Checks:** the action must exist ("A ação indicada não existe.") and the text can't be empty or only spaces ("O valor é obrigatório.").
+- **Deleting an action deletes its presets.** An action used on a service still can't be deleted.
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `/api/action_tabled_values` | List presets. Filters: `t_action_id`, `value`, `action_name`. With pagination |
+| POST | `/api/action_tabled_values` | Create a preset (`t_action_id`, `value`) |
+| GET | `/api/action_tabled_values/{id}` | One preset |
+| PUT | `/api/action_tabled_values/{id}` | Edit a preset |
+| DELETE | `/api/action_tabled_values/{id}` | Delete a preset |
+
+### Finishing a Laboratório service
+- **Serviço Realizado isn't required** for a Laboratório service that has at least one lab action. Lab items alone don't count: a Laboratório service with items but no actions still needs it.
+- **Every lab action must be ticked as done** to finish a Laboratório service ("Existem ações do laboratório por concluir. Marque-as como feitas para terminar o serviço."). An action that couldn't be done is ticked, with a note saying why.
+- **Changing the type** of a finished service also checks both rules, so they can't be skipped that way.
+- Only Laboratório follows these rules. Every other type still needs Serviço Realizado.
+
+## Not committed yet (22 Oct)
+
+### Lab actions addressed by their real id
+- `GET/PUT/DELETE /api/services/{s_id}/lab_action_values/{id}` now take the action's **real id**, and only find it if it belongs to that service. Before, `{slav_id}` was the action's position inside the service, so a tab that wasn't refreshed could tick or delete the wrong action after another one was deleted.
+- `slav_id` is gone from the responses. The list is sorted by id, the same order as before. The response key `slav` is unchanged.
+- Lab items and lab property values already used real ids. Requested products, applied products, time entries and punches are still addressed by position.
+
+### `GET /api/services/{id}` returns `lab_item_count`
+Used by the frontend to show the lab summary button on Laboratório services.
+
+### Marcações: type + planned lab items (`utils/sql_s/release_2026_10_22_migration.sql`)
+- **Optional type:** `schedules.service_type_id` (empty = "Sem tipo"). `GET /api/schedules/{id}` returns the marcação's own type. The list returns its first service's type, or the marcação's own while it has no service, and the `service_type_id` filter matches either. An update without `service_type_id` leaves it unchanged; an empty one clears it.
+- **Planned lab items and actions** (new tables `schedule_lab_items`, `schedule_lab_action_values`): only items and actions, with no notes, done check, properties or locks. `POST /api/schedules/{id}/create_service` copies them into the new service when its type is Laboratório, in the same transaction (so it's never half-copied), and the marcação keeps its own copy. Deleting the marcação, one of its items, or the item type / action in Gestão de Laboratório deletes them too (`ON DELETE CASCADE`).
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `/api/schedules/{id}/lab_items` | The marcação's planned items |
+| POST | `/api/schedules/{id}/lab_items` | Add an item (`t_item_id`, optional `action_ids`: created together) |
+| DELETE | `/api/schedules/{id}/lab_items/{item_id}` | Remove an item and its actions |
+| GET | `/api/schedules/{id}/lab_action_values` | The marcação's planned actions |
+| POST | `/api/schedules/{id}/lab_action_values` | Add an action (`l_item_id` must be one of this marcação's items) |
+| DELETE | `/api/schedules/{id}/lab_action_values/{action_id}` | Remove an action |
+
+- **`POST /api/schedules` takes `lab_items`:** `[{t_item_id, action_ids: [...]}, ...]`, created in the same transaction as the marcação.
+- **Description optional for Laboratório:** a Laboratório marcação with at least one item, every item having at least one action, can be saved without a description (stored as `''`). Otherwise: "A descrição da marcação é obrigatória, a não ser que seja de Laboratório com itens e todos tenham ações.". While a marcação has no description, removing the last action of an item, adding an item without actions, or changing its type is refused ("A marcação não tem descrição, por isso precisa de itens de laboratório e todos com ações."). Checked in the backend (`ScheduleLab::isMissingDescription`), inside the write's transaction.
+
+## Deploying to production
+Prod has everything up to the 10-08 releases. Back up the prod DB first, then run in this order with `sqlite3 -bail <db> < <file>`:
+
+1. **`utils/sql_s/release_2026_10_20_migration.sql`:** Eletricidade, lab notes + done.
+2. **`utils/sql_s/release_2026_10_21_migration.sql`:** note presets, Laboratório finish rule.
+3. **`utils/sql_s/release_2026_10_22_migration.sql`:** marcação type, planned lab items on marcações.
+4. **Optional:** `utils/holidays_2026_2027.sql`.
+
+**The backend and the frontend must go up together with the database.** The API reads `note` / `is_done`, the presets table, the marcação type and the marcação lab tables, and the frontend sends real ids for lab actions.
+
+Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. All three were tested in order on a copy of the production schema, and the result matched the dev database.
+
+---
+
+*This README was written with the help of AI (Claude).*
