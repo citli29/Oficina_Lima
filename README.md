@@ -220,17 +220,47 @@ Used by the frontend to show the lab summary button on Laboratório services.
 - **`POST /api/schedules` takes `lab_items`:** `[{t_item_id, action_ids: [...]}, ...]`, created in the same transaction as the marcação.
 - **Description optional for Laboratório:** a Laboratório marcação with at least one item, every item having at least one action, can be saved without a description (stored as `''`). Otherwise: "A descrição da marcação é obrigatória, a não ser que seja de Laboratório com itens e todos tenham ações.". While a marcação has no description, removing the last action of an item, adding an item without actions, or changing its type is refused ("A marcação não tem descrição, por isso precisa de itens de laboratório e todos com ações."). Checked in the backend (`ScheduleLab::isMissingDescription`), inside the write's transaction.
 
+### Orçamentos (`utils/sql_s/release_2026_11_03_migration.sql`)
+- **New tables** `budgets` (title, note, `done` = Orçamentado, `created_at` UTC, service) and `budget_products` (product + quantity ≥ 1).
+- **DB rules:** while Orçamentado only the note can change, no products can be added / changed / removed, and it can't be deleted. Deleting an orçamento deletes its products. `created_at` is set on insert and can't be changed. Services and products used by an orçamento can't be deleted.
+
+| Method | Route | What it does |
+|---|---|---|
+| GET | `/api/budgets` | Every service's orçamentos, newest first, each with its products and the service's car/client. Filters: `done`, `service_finished` (`true`/`false`), `from` (UTC `YYYY-MM-DD HH:MM:SS`), `q` (title, plate with or without dashes, make, model, client, service nº), `id`. Paging `p`/`u`, sort `sort`/`dir` |
+| GET / POST | `/api/services/{s_id}/budgets` | A service's orçamentos (with products) / create one (`title`) |
+| GET / PATCH / DELETE | `/api/services/{s_id}/budgets/{id}` | One orçamento. PATCH is partial: `title` (≤ 96), `note`, `done`. DELETE with `?notify=1` also notifies the Escritório |
+| POST | `/api/services/{s_id}/budgets/{id}/notify` | `{"event": "created" \| "edited"}`: notification to the Escritório |
+| GET / POST | `/api/services/{s_id}/budgets/{b_id}/products` | List / add (`product_id`, `quantity`) |
+| PATCH / DELETE | `/api/services/{s_id}/budgets/{b_id}/products/{id}` | Change `quantity` / remove |
+
+- **Notifications:** wording, type and link are all in `api/app/Services/BudgetNotification.php`. They use the existing `notifications` table.
+
+### Other changes in this release
+- **Products without a reference:** the same name is now allowed when the product type is different (still unique within a type). In `release_2026_11_03_migration.sql`.
+- **Services list status:** new state **Validado** (`office_check`). `GET /api/services?status=` takes `validated`, and `finished` now means finished but not validated. Rank used for sorting and associations: 0 por terminar, 1 terminado, 2 validado, 3 entregue. `office_check` is now returned by the list and by `/api/services/{id}/associations`. No DB change.
+
+### Gestão de Tipos de Serviço (`utils/sql_s/release_2026_11_03b_migration.sql`)
+- New page **Gestão → Tipos de Serviço** (`/service_types`): list with how many services / marcações use each type, add, rename, delete.
+- **Locked types:** `service_types.is_locked`. The four current types (Mecânica, Laboratório, Deslocações, Eletricidade) are locked because the code and triggers have rules for them (lab section, kms rule, calendar sections, colors, lookups by name). The DB refuses to rename or delete a locked type. New types are always unlocked and behave like a normal service.
+- To lock a future type that gets its own rules: `UPDATE service_types SET is_locked = 1 WHERE id = ...;` (unlocking is refused).
+- A type used by services or marcações can't be deleted.
+- API: `POST /api/service_types`, `GET|PUT|DELETE /api/service_types/{id}`. `GET /api/service_types` now also returns `is_locked`, `service_count`, `schedule_count`.
+
 ## Deploying to production
 Prod has everything up to the 10-08 releases. Back up the prod DB first, then run in this order with `sqlite3 -bail <db> < <file>`:
 
 1. **`utils/sql_s/release_2026_10_20_migration.sql`:** Eletricidade, lab notes + done.
 2. **`utils/sql_s/release_2026_10_21_migration.sql`:** note presets, Laboratório finish rule.
 3. **`utils/sql_s/release_2026_10_22_migration.sql`:** marcação type, planned lab items on marcações.
-4. **Optional:** `utils/holidays_2026_2027.sql`.
+4. **`utils/sql_s/release_2026_11_03_migration.sql`:** orçamentos, product name rule.
+5. **`utils/sql_s/release_2026_11_03b_migration.sql`:** locked service types (Gestão de Tipos de Serviço).
+6. **Optional:** `utils/holidays_2026_2027.sql`.
 
-**The backend and the frontend must go up together with the database.** The API reads `note` / `is_done`, the presets table, the marcação type and the marcação lab tables, and the frontend sends real ids for lab actions.
+If some of these are already on prod, skip them and run the rest in order.
 
-Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. All three were tested in order on a copy of the production schema, and the result matched the dev database.
+**The backend and the frontend must go up together with the database.** The API reads `note` / `is_done`, the presets table, the marcação type, the marcação lab tables, the orçamentos tables and `service_types.is_locked`, and the frontend sends real ids for lab actions.
+
+Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. Releases 1–4 were tested in order on a copy of the production schema, and the result matched the dev database. `11_03b` was tested on a copy of the dev database from just before the change (result identical to dev).
 
 ---
 

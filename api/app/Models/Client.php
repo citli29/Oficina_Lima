@@ -17,8 +17,15 @@ class Client
 
 	public function getClientsWithFilter(array $filters, ?array $pagination = null): array
 	{
+		// Service / car counts and the latest service for the Clientes
+		// cards (services.client_id is indexed).
 		$sql = "
-		SELECT c.*
+		SELECT c.*,
+			(SELECT COUNT(*) FROM services s WHERE s.client_id = c.id) AS service_count,
+			(SELECT COUNT(DISTINCT s.car_id) FROM services s WHERE s.client_id = c.id) AS car_count,
+			(SELECT MAX(s.checkin_date) FROM services s WHERE s.client_id = c.id) AS last_checkin_date,
+			(SELECT ca.plate FROM services s JOIN cars ca ON ca.id = s.car_id
+				WHERE s.client_id = c.id ORDER BY s.checkin_date DESC, s.id DESC LIMIT 1) AS last_car_plate
 		FROM clients c
 		WHERE 1=1
 		";

@@ -19,6 +19,7 @@ class ServiceAssociation
 			s.checkin_date AS checkin,
 			s.checkout_date AS checkout,
 			s.is_finished AS is_finished,
+			s.office_check AS office_check,
 			s.kms AS kms,
 			s.service_type_id AS service_type_id,
 			st.name AS service_type_name,

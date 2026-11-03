@@ -17,8 +17,14 @@ class Car
 
 	public function getCarsWithFilter(array $filters, ?array $pagination = null): array
 	{
+		// service_count + the latest service (date and client) for the
+		// Viaturas cards; the subqueries only run for the page's rows.
 		$sql = "
-		SELECT c.*, m.name AS model_name, mk.name AS make_name
+		SELECT c.*, m.name AS model_name, mk.name AS make_name,
+			(SELECT COUNT(*) FROM services s WHERE s.car_id = c.id) AS service_count,
+			(SELECT MAX(s.checkin_date) FROM services s WHERE s.car_id = c.id) AS last_checkin_date,
+			(SELECT cl.name FROM services s JOIN clients cl ON cl.id = s.client_id
+				WHERE s.car_id = c.id ORDER BY s.checkin_date DESC, s.id DESC LIMIT 1) AS last_client_name
 		FROM cars c
 		LEFT JOIN makes mk ON c.make_id = mk.id
 		LEFT JOIN models m ON c.model_id = m.id

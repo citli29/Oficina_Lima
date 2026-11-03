@@ -123,6 +123,10 @@ return [
 	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
 
 	['GET', '/api/service_types', [ServiceController::class, 'getServiceTypes']], //with search
+	['POST', '/api/service_types', [ServiceController::class, 'postServiceTypes']],
+	['GET', '/api/service_types/{id:\d+}', [ServiceController::class, 'getServiceType']],
+	['PUT', '/api/service_types/{id:\d+}', [ServiceController::class, 'putServiceType']], // locked types refused by the DB
+	['DELETE', '/api/service_types/{id:\d+}', [ServiceController::class, 'deleteServiceType']], // locked / in use refused by the DB
 
 	/*	Service Component Controller	*/
 	['GET', '/api/services/{s_id:\d+}/user_times', [ServiceComponentController::class, 'getSUTs']], //with search

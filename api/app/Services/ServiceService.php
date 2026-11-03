@@ -28,6 +28,44 @@ class ServiceService
 		return $this->serviceModel->getServiceTypesWithFilter($filters, $pagination);
 	}
 
+	public function showServiceType(int $id): array
+	{
+		if (!$serviceType = $this->serviceModel->getServiceTypeById($id))
+			throw new RuntimeException("Show Service Type [ID Not Found]: {$id}.", 404);
+		return $serviceType;
+	}
+
+	public function createServiceType(array $data): array
+	{
+		try {
+			return $this->serviceModel->createServiceType($data);
+		} catch (PDOException $e) {
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function updateServiceType(int $id, array $data): array
+	{
+		try {
+			if (!$serviceType = $this->serviceModel->updateServiceType($id, $data))
+				throw new InvalidArgumentException("Update Service Type [Invalid ID]: {$id}.", 404);
+			return $serviceType;
+		} catch (PDOException $e) {
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
+	public function deleteServiceType(int $id): array
+	{
+		try {
+			if (!$serviceType = $this->serviceModel->deleteServiceType($id))
+				throw new InvalidArgumentException("Delete Service Type [Invalid ID]: {$id}.", 404);
+			return $serviceType;
+		} catch (PDOException $e) {
+			throw new InvalidArgumentException(dbErrorMessage($e), 400);
+		}
+	}
+
 	public function showService(int $id):array
 	{
 		if(!$service = $this->serviceModel->getServiceById($id))

@@ -32,6 +32,7 @@ class ServiceController
 				'schedule_id' => isset($_GET['schedule_id']) ? $_GET['schedule_id'] : null,
 				'checkout' => isset($_GET['checkout']) ? $_GET['checkout'] : null,
 				'car_id' => isset($_GET['car_id']) ? $_GET['car_id'] : null,
+				'client_id' => isset($_GET['client_id']) ? $_GET['client_id'] : null,
 				'product_id' => isset($_GET['product_id']) ? $_GET['product_id'] : null,
 				'car_plate' => isset($_GET['car_plate']) ? normalizePlate($_GET['car_plate']) : null,
 				'car_model' => isset($_GET['car_model']) ? normalize($_GET['car_model']) : null,
@@ -101,6 +102,70 @@ class ServiceController
 			header('Content-Type: application/json');
 			echo json_encode($response);
 		}catch(RuntimeException $e){
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function getServiceType(int $id): void
+	{
+		try {
+			$serviceType = $this->service->showServiceType($id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode(['success' => true, 'service_type' => $serviceType]);
+		} catch (RuntimeException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function postServiceTypes(): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if (is_null($data))
+				throw new InvalidArgumentException("JSON Body Invalid.", 400);
+
+			$serviceType = $this->service->createServiceType($data);
+
+			http_response_code(201);
+			header('Content-Type: application/json');
+			echo json_encode(['success' => true, 'service_type' => $serviceType]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function putServiceType(int $id): void
+	{
+		try {
+			$data = json_decode(file_get_contents('php://input'), true);
+			if (is_null($data))
+				throw new InvalidArgumentException("JSON Body Invalid.", 400);
+
+			$serviceType = $this->service->updateServiceType($id, $data);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode(['success' => true, 'service_type' => $serviceType]);
+		} catch (InvalidArgumentException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
+	public function deleteServiceType(int $id): void
+	{
+		try {
+			$serviceType = $this->service->deleteServiceType($id);
+
+			http_response_code(200);
+			header('Content-Type: application/json');
+			echo json_encode(['success' => true, 'service_type' => $serviceType]);
+		} catch (InvalidArgumentException $e) {
 			http_response_code(httpStatusFromException($e));
 			echo json_encode(['error' => $e->getMessage()]);
 		}

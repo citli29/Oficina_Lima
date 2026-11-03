@@ -16,8 +16,14 @@ class Service
 
 	public function getServiceTypesWithFilter(array $filters, ?array $pagination = null): array
 	{
+		// is_locked = 1: a type with its own rules in code/triggers (Mecânica,
+		// Laboratório, Deslocações, Eletricidade) — the DB refuses to edit or
+		// delete it. The counts tell Gestão whether an unlocked one can go.
 		$sql = "
-		SELECT id, name FROM service_types
+		SELECT st.id, st.name, st.is_locked,
+			(SELECT COUNT(*) FROM services s WHERE s.service_type_id = st.id) AS service_count,
+			(SELECT COUNT(*) FROM schedules sc WHERE sc.service_type_id = st.id) AS schedule_count
+		FROM service_types st
 		WHERE 1=1
 		";
 
@@ -25,14 +31,14 @@ class Service
 
 		$rules = [
 			'name' => [
-				'column' => 'name',
+				'column' => 'st.name',
 				'operator' => 'LIKE'
 			],
 		];
 
 		$sql = Database::applyFilters($sql, $filters, $rules, $params);
 
-		$sql .= "ORDER BY name ASC";
+		$sql .= "ORDER BY st.name ASC";
 
 		$total = null;
 
@@ -50,6 +56,59 @@ class Service
 		];
 	}
 
+	public function getServiceTypeById(int $id): bool|array
+	{
+		$stmt = $this->db->prepare("
+			SELECT st.id, st.name, st.is_locked,
+				(SELECT COUNT(*) FROM services s WHERE s.service_type_id = st.id) AS service_count,
+				(SELECT COUNT(*) FROM schedules sc WHERE sc.service_type_id = st.id) AS schedule_count
+			FROM service_types st
+			WHERE st.id = ?
+		");
+		$stmt->execute([$id]);
+
+		return $stmt->fetch();
+	}
+
+	// New types are always unlocked; is_locked is never taken from the
+	// request (locking is a code decision, done in the DB by hand).
+	public function createServiceType(array $data): array
+	{
+		$stmt = $this->db->prepare("INSERT INTO service_types (name) VALUES (?)");
+		$stmt->execute([self::serviceTypeName($data)]);
+
+		return $this->getServiceTypeById((int) $this->db->lastInsertId());
+	}
+
+	public function updateServiceType(int $id, array $data): bool|array
+	{
+		if (!$this->getServiceTypeById($id)) return false;
+
+		$stmt = $this->db->prepare("UPDATE service_types SET name = ? WHERE id = ?");
+		$stmt->execute([self::serviceTypeName($data), $id]);
+
+		return $this->getServiceTypeById($id);
+	}
+
+	public function deleteServiceType(int $id): bool|array
+	{
+		$serviceType = $this->getServiceTypeById($id);
+
+		if ($serviceType) {
+			$stmt = $this->db->prepare("DELETE FROM service_types WHERE id = ?");
+			$stmt->execute([$id]);
+		}
+
+		return $serviceType;
+	}
+
+	// Trimmed name, or null (the NOT NULL trigger then gives the message).
+	private static function serviceTypeName(array $data): ?string
+	{
+		$name = isset($data['name']) ? trim((string) $data['name']) : '';
+		return $name === '' ? null : $name;
+	}
+
 	public function getServicesWithFilter(array $filters, ?array $pagination = null, ?array $sort = null): array
 	{
 		// Status as a rank (0 por terminar, 1 terminado, 2 entregue). A
@@ -57,7 +116,9 @@ class Service
 		// least advanced member, same as the list's collapsed row shows — so
 		// e.g. "Por terminar" brings the whole association while any of its
 		// services is still open, instead of only that one service.
-		$statusRank = "CASE WHEN %s.checkout_date IS NOT NULL THEN 2 WHEN %s.is_finished = 1 THEN 1 ELSE 0 END";
+		// 0 Por terminar < 1 Terminado < 2 Validado (office_check) < 3 Entregue,
+		// the same precedence as the service header.
+		$statusRank = "CASE WHEN %1\$s.checkout_date IS NOT NULL THEN 3 WHEN %1\$s.office_check = 1 THEN 2 WHEN %1\$s.is_finished = 1 THEN 1 ELSE 0 END";
 		$groupStatusRank = "COALESCE(
 			(SELECT MIN(" . sprintf($statusRank, 's2', 's2') . ")
 				FROM service_associations sa2
@@ -78,6 +139,7 @@ class Service
 			s.note as note,
 			s.service_description as service,
 			s.is_finished as is_finished,
+			s.office_check as office_check,
 			s.service_type_id as service_type_id,
 			st.name as service_type_name,
 
@@ -168,6 +230,10 @@ class Service
 				'column' => 's.car_id',
 				'operator' => '='
 			],
+			'client_id' => [
+				'column' => 's.client_id',
+				'operator' => '='
+			],
 			'service_type_id' => [
 				'column' => 's.service_type_id',
 				'operator' => '='
@@ -183,7 +249,7 @@ class Service
 		];
 
 		if (!empty($filters['status'])) {
-			$statusRanks = ['unfinished' => 0, 'finished' => 1, 'delivered' => 2];
+			$statusRanks = ['unfinished' => 0, 'finished' => 1, 'validated' => 2, 'delivered' => 3];
 
 			if (isset($statusRanks[$filters['status']])) {
 				$where .= " AND {$groupStatusRank} = " . $statusRanks[$filters['status']];
