@@ -7,14 +7,20 @@ $dotenv->load();
 header("Access-Control-Allow-Origin: ". $_ENV['CORS_IP']);
 header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Credentials: true");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
+use App\Controllers\AuthController;
 use App\Database\Database;
+
+// Routes reachable without logging in. Everything else needs the shop
+// login token (Authorization: Bearer ...).
+const PUBLIC_ROUTES = [
+    'POST /api/auth/login',
+];
 
 $db = Database::getConnection();
 $routes = require __DIR__ . '/../routes/web.php';
@@ -51,6 +57,10 @@ switch ($routeInfo[0]) {
         break;
 
     case FastRoute\Dispatcher::FOUND:
+        if (!in_array("$httpMethod $uri", PUBLIC_ROUTES, true) && !AuthController::requireAuth($db)) {
+            break;
+        }
+
         [$class, $method] = $routeInfo[1];
         $vars = $routeInfo[2];
 

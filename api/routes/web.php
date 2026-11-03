@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\AuthController;
 use App\Controllers\BudgetController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
@@ -21,6 +22,15 @@ use App\Controllers\UserController;
 return [
 	['GET', '/api/', [HomeController::class, 'index']],
 	['GET', '/api/about', [HomeController::class, 'about']],
+
+	/*	Auth Controller (shop login) — /api/auth/login is the only route
+		reachable without a token, see PUBLIC_ROUTES in public/index.php	*/
+	['POST', '/api/auth/login', [AuthController::class, 'login']],
+	['GET', '/api/auth/me', [AuthController::class, 'me']],
+	['POST', '/api/auth/logout', [AuthController::class, 'logout']],
+	['GET', '/api/auth/devices', [AuthController::class, 'getDevices']],
+	['PATCH', '/api/auth/devices/{id:\d+}', [AuthController::class, 'renameDevice']],
+	['DELETE', '/api/auth/devices/{id:\d+}', [AuthController::class, 'deleteDevice']],
 
 	/*	User Controller	*/
 	['GET', '/api/users', [UserController::class, 'getUsers']], //with search
