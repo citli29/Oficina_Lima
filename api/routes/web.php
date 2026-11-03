@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\BudgetController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
 use App\Controllers\EventController;
@@ -188,6 +189,20 @@ return [
 	['GET', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'getLabPropertyValue']],
 	['PUT', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'putLabPropertyValue']],
 	['DELETE', '/api/services/{s_id:\d+}/lab_property_values/{id:\d+}', [ServiceComponentController::class, 'deleteLabPropertyValue']],
+
+	/*	Budget Controller (orçamentos)	*/
+	['GET', '/api/budgets', [BudgetController::class, 'getAllBudgets']], // every service's, for the Orçamentos page
+	['GET', '/api/services/{s_id:\d+}/budgets', [BudgetController::class, 'getBudgets']], // each with its products
+	['POST', '/api/services/{s_id:\d+}/budgets', [BudgetController::class, 'postBudget']],
+	['GET', '/api/services/{s_id:\d+}/budgets/{id:\d+}', [BudgetController::class, 'getBudget']],
+	['PATCH', '/api/services/{s_id:\d+}/budgets/{id:\d+}', [BudgetController::class, 'patchBudget']],
+	['DELETE', '/api/services/{s_id:\d+}/budgets/{id:\d+}', [BudgetController::class, 'deleteBudget']],
+	['POST', '/api/services/{s_id:\d+}/budgets/{id:\d+}/notify', [BudgetController::class, 'postBudgetNotify']], // see Services/BudgetNotification.php
+
+	['GET', '/api/services/{s_id:\d+}/budgets/{b_id:\d+}/products', [BudgetController::class, 'getBudgetProducts']],
+	['POST', '/api/services/{s_id:\d+}/budgets/{b_id:\d+}/products', [BudgetController::class, 'postBudgetProduct']],
+	['PATCH', '/api/services/{s_id:\d+}/budgets/{b_id:\d+}/products/{id:\d+}', [BudgetController::class, 'patchBudgetProduct']],
+	['DELETE', '/api/services/{s_id:\d+}/budgets/{b_id:\d+}/products/{id:\d+}', [BudgetController::class, 'deleteBudgetProduct']],
 
 	/*	Service Association Controller	*/
 	['GET', '/api/services_associations', [ServiceAssociationController::class, 'getServiceAssociations']], //with search

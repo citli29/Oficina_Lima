@@ -104,4 +104,18 @@ class Notification
 			
 		return $this->getNotificationById($id);
 	}
+
+	// $typeName is a notification_types.name (e.g. 'Escritório'); $data is
+	// stored as JSON.
+	public function createNotification(string $typeName, string $title, string $message, array $data): bool|array
+	{
+		$stmt = $this->db->prepare("
+			INSERT INTO notifications (notification_type_id, title, message, data)
+			VALUES ((SELECT id FROM notification_types WHERE name = ?), ?, ?, ?)
+			");
+
+		$stmt->execute([$typeName, $title, $message, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
+
+		return $this->getNotificationById((int) $this->db->lastInsertId());
+	}
 }
