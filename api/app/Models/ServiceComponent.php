@@ -20,10 +20,6 @@ class ServiceComponent
 		$sql = "
 			SELECT * FROM 
 				(SELECT 
-					ROW_NUMBER() OVER (
-						PARTITION BY service_id
-						ORDER BY service_id ASC, sut.id ASC
-					) AS sut_id,
 					sut.service_id AS service_id,
 					sut.id AS id,
 					sut.minutes AS minutes,
@@ -86,10 +82,6 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT 
-			ROW_NUMBER() OVER (
-				PARTITION BY service_id
-							ORDER BY service_id ASC, sut.id ASC
-			) AS sut_id,
 			sut.service_id AS service_id,
 			sut.id AS id,
 			sut.minutes AS minutes,
@@ -136,12 +128,6 @@ class ServiceComponent
 			SELECT *
 			FROM (
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sut.service_id
-							ORDER BY service_id ASC, sut.id ASC
-						) AS INTEGER
-					) AS sut_id,
 					sut.service_id,
 					sut.id,
 					sut.minutes,
@@ -153,7 +139,7 @@ class ServiceComponent
 				    ON u.id = sut.user_id
 				WHERE sut.service_id = ?
 			    ) ranked
-		    WHERE sut_id = ?
+		    WHERE id = ?
 		");
 
 		$stmt->execute(array($s_id,$id));
@@ -166,12 +152,6 @@ class ServiceComponent
 		$stmt = $this->db->query( "
 			SELECT * FROM (	
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sut.service_id
-							ORDER BY service_id ASC, sut.id ASC
-						) AS INTEGER
-					) AS sut_id,
 					sut.service_id,
 					sut.id,
 					sut.minutes,
@@ -263,10 +243,6 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT 
-			ROW_NUMBER() OVER (
-				PARTITION BY service_id
-				ORDER BY service_id ASC, sap.id ASC
-			) AS sap_id,
 			sap.service_id AS service_id,
 			sap.id AS id,
 	       		sap.product_id AS product_id,
@@ -326,12 +302,6 @@ class ServiceComponent
 			SELECT *
 			FROM (
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sap.service_id
-							ORDER BY service_id ASC, sap.id ASC
-						) AS INTEGER
-					) AS sap_id,
 					sap.service_id AS service_id,
 					sap.id AS id,
 					sap.product_id AS product_id,
@@ -348,7 +318,7 @@ class ServiceComponent
 				ON pt.id = p.product_type_id
 				WHERE sap.service_id = ?
 			    ) ranked
-		    WHERE sap_id = ?
+		    WHERE id = ?
 		");
 
 		$stmt->execute(array($s_id,$id));
@@ -361,12 +331,6 @@ class ServiceComponent
 		$stmt = $this->db->query( "
 			SELECT * FROM (	
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sap.service_id
-							ORDER BY service_id ASC, sap.id ASC
-						) AS INTEGER
-					) AS sap_id,
 					sap.service_id AS service_id,
 					sap.id AS id,
 					sap.product_id AS product_id,
@@ -479,10 +443,6 @@ class ServiceComponent
 		$sql = "
 			SELECT * FROM
 				(SELECT
-					ROW_NUMBER() OVER (
-						PARTITION BY service_id
-						ORDER BY service_id ASC, sap.id ASC
-					) AS sap_id,
 					sap.service_id AS service_id,
 					sap.id AS id,
 					sap.product_id AS product_id,
@@ -585,10 +545,6 @@ class ServiceComponent
 		$sql = "
 			SELECT * FROM
 				(SELECT
-					ROW_NUMBER() OVER (
-						PARTITION BY service_id
-						ORDER BY service_id ASC, spr.id ASC
-					) AS spr_id,
 					spr.service_id AS service_id,
 					spr.id AS id,
 					spr.product_id AS product_id,
@@ -704,10 +660,6 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT 
-			ROW_NUMBER() OVER (
-				PARTITION BY service_id
-							ORDER BY service_id ASC, sutp.id ASC
-			) AS sutp_id,
 			sutp.service_id AS service_id,
 			sutp.id AS id,
 			sutp.hours_s,
@@ -744,10 +696,6 @@ class ServiceComponent
 		$sql = "
 			SELECT * FROM
 				(SELECT
-					ROW_NUMBER() OVER (
-						PARTITION BY service_id
-						ORDER BY service_id ASC, sutp.id ASC
-					) AS sutp_id,
 					sutp.service_id AS service_id,
 					sutp.id AS id,
 					sutp.hours_s,
@@ -1001,12 +949,6 @@ class ServiceComponent
 		$stmt = $this->db->query( "
 			SELECT * FROM (	
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sutp.service_id
-							ORDER BY service_id ASC, sutp.id ASC
-						) AS INTEGER
-					) AS sutp_id,
 					sutp.service_id,
 					sutp.id,
 					sutp.hours_s,
@@ -1059,12 +1001,6 @@ class ServiceComponent
 			SELECT *
 			FROM (
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY sutp.service_id
-							ORDER BY service_id ASC, sutp.id ASC
-						) AS INTEGER
-					) AS sutp_id,
 					sutp.service_id,
 					sutp.id,
 					sutp.hours_s,
@@ -1080,7 +1016,7 @@ class ServiceComponent
 				    ON u.id = sutp.user_id
 				WHERE sutp.service_id = ?
 			    ) ranked
-		    WHERE sutp_id = ?
+		    WHERE id = ?
 		");
 
 		$stmt->execute(array($s_id,$id));
@@ -1111,25 +1047,67 @@ class ServiceComponent
 		return $this->getSUTPById($id);
 	}
 
+	// Stops a punch. A punch stopped on a later day than its date is split
+	// at midnight: the original closes at 23:59 on its own date, every day
+	// in between gets a 00:00–23:59 punch, and today gets 00:00–now. That
+	// way each day's minutes land on the right day (stats are per day), and
+	// no punch ever has an end before its start. Days outside the service's
+	// checkin/checkout range are skipped (the DB refuses punches there).
+	// Returns the original punch.
 	public function stopSUTP(array $sutp): bool|array
 	{
-		$now = new DateTime('now', new DateTimeZone('Europe/Lisbon'));
+		$tz = new DateTimeZone('Europe/Lisbon');
+		$now = new DateTime('now', $tz);
+		$id = (int) $sutp['id'];
 
-		$hour = (int) $now->format('H');
-		$minute = (int) $now->format('i');
-		$id = $sutp['id'];
+		$punchDate = new DateTime(substr((string) ($sutp['date'] ?? $sutp['ut_date']), 0, 10), $tz);
+		$today = new DateTime($now->format('Y-m-d'), $tz);
 
-		$stmt = $this->db->prepare("
-			UPDATE 
-				services_user_time_punches 
-			SET 
-				hours_f= ?, 
-				minutes_f= ? 
-			WHERE 
-				id= ?;
+		$close = $this->db->prepare("
+			UPDATE services_user_time_punches
+			SET hours_f = ?, minutes_f = ?
+			WHERE id = ? AND hours_f IS NULL
 		");
 
-		$stmt->execute(array($hour,$minute,$id));
+		if ($today <= $punchDate) {
+			$close->execute([(int) $now->format('H'), (int) $now->format('i'), $id]);
+			return $this->getSUTPById($id);
+		}
+
+		Database::transaction($this->db, function () use ($sutp, $id, $now, $punchDate, $today, $close) {
+			$close->execute([23, 59, $id]);
+			if ($close->rowCount() === 0)
+				return; // someone else stopped it meanwhile
+
+			$range = $this->db->prepare("SELECT checkin_date, checkout_date FROM services WHERE id = ?");
+			$range->execute([$sutp['service_id']]);
+			$service = $range->fetch() ?: [];
+			$checkin = !empty($service['checkin_date']) ? substr($service['checkin_date'], 0, 10) : null;
+			$checkout = !empty($service['checkout_date']) ? substr($service['checkout_date'], 0, 10) : null;
+
+			$insert = $this->db->prepare("
+				INSERT INTO services_user_time_punches
+				(service_id, user_id, ut_date, hours_s, minutes_s, hours_f, minutes_f)
+				VALUES (?, ?, ?, 0, 0, ?, ?)
+			");
+
+			$day = (clone $punchDate)->modify('+1 day');
+			while ($day <= $today) {
+				$date = $day->format('Y-m-d');
+				$isToday = $day == $today;
+				$hourF = $isToday ? (int) $now->format('H') : 23;
+				$minuteF = $isToday ? (int) $now->format('i') : 59;
+
+				$inRange = ($checkin === null || $date >= $checkin)
+					&& ($checkout === null || $date <= $checkout);
+				$hasTime = $hourF > 0 || $minuteF > 0;
+
+				if ($inRange && $hasTime)
+					$insert->execute([$sutp['service_id'], $sutp['user_id'], $date, $hourF, $minuteF]);
+
+				$day->modify('+1 day');
+			}
+		});
 
 		return $this->getSUTPById($id);
 	}
@@ -1179,10 +1157,6 @@ class ServiceComponent
 	{
 		$sql = "
 		SELECT 
-			ROW_NUMBER() OVER (
-				PARTITION BY service_id
-							ORDER BY service_id ASC, spr.id ASC
-			) AS spr_id,
 			spr.service_id AS service_id,
 			spr.id AS id,
 			spr.quantity as quantity,
@@ -1221,12 +1195,6 @@ class ServiceComponent
 		$stmt = $this->db->query( "
 			SELECT * FROM (	
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY spr.service_id
-							ORDER BY service_id ASC, spr.id ASC
-						) AS INTEGER
-					) AS spr_id,
 					spr.service_id AS service_id,
 					spr.id AS id,
 					spr.quantity as quantity,
@@ -1281,12 +1249,6 @@ class ServiceComponent
 			SELECT *
 			FROM (
 				SELECT 
-					CAST(
-						ROW_NUMBER() OVER (
-							PARTITION BY spr.service_id
-							ORDER BY service_id ASC, spr.id ASC
-						) AS INTEGER
-					) AS spr_id,
 					spr.service_id AS service_id,
 					spr.id AS id,
 					spr.quantity as quantity,
@@ -1304,7 +1266,7 @@ class ServiceComponent
 				    ON pt.id = p.product_type_id
 				WHERE spr.service_id = ?
 			    ) ranked
-		    WHERE spr_id = ?
+		    WHERE id = ?
 		");
 
 		$stmt->execute(array($s_id,$id));

@@ -409,69 +409,10 @@ class Service
 		return $stmt->fetch();
 	}
 
-	public function updateService(int $id, array $data): bool|array
-	{
-		$stmt = $this->db->prepare("
-			UPDATE services
-			SET
-				client_id = ?,
-				kms = ?,
-				checkin_date = ?,
-				checkout_date = ?,
-				malfunction_description = ?,
-				service_description = ?,
-				car_id = ?,
-				schedule_id = ?,
-				note = ?,
-				is_finished = ?,
-				office_check = ?,
-				service_type_id = ?,
-				r_name = ?,
-				r_phone = ?,
-				checkout_predict = ?,
-				signed_service = ?
-
-			WHERE id = ? AND version = ?
-			");
-
-		$stmt->execute([
-			!empty($data['client_id']) ?$data['client_id']: null,
-			self::kmsValue($data['kms'] ?? null),
-			!empty($data['checkin']) ?$data['checkin']: null,
-			!empty($data['checkout']) ?$data['checkout']: null,
-			!empty($data['malfunction']) ?$data['malfunction']: null,
-			!empty($data['service']) ?$data['service']: null,
-			!empty($data['car_id']) ?$data['car_id']: null,
-			!empty($data['schedule_id']) ?$data['schedule_id']: null,
-			!empty($data['note']) ?$data['note']: null,
-			!empty($data['is_finished']) ?$data['is_finished']: 0,
-			!empty($data['office_check']) ?$data['office_check']: 0,
-			!empty($data['service_type_id']) ?$data['service_type_id']: 1,
-			!empty($data['r_name']) ?$data['r_name']: null,
-			!empty($data['r_phone']) ?$data['r_phone']: null,
-			!empty($data['checkout_predict']) ?$data['checkout_predict']: null,
-			!empty($data['signed_service']) ?$data['signed_service']: null,
-			$id,
-			$data['version'] ?? null,
-		]);
-
-		if ($stmt->rowCount() === 0) {
-			if (!$this->getServiceById($id)) {
-				return false;
-			}
-
-			throw new InvalidArgumentException(
-				"Este serviço foi alterado por outro utilizador entretanto. Recarregue a página para ver as alterações mais recentes.",
-				409
-			);
-		}
-
-		return $this->getServiceById($id);
-	}
 
 	// API field name => column, for the per-field update (patchService).
 	// Same set (and same empty-value handling, see normalizePatchValue)
-	// as updateService.
+	// as the old PUT /services/{id} had.
 	private const PATCHABLE_FIELDS = [
 		'client_id' => 'client_id',
 		'kms' => 'kms',

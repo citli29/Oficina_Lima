@@ -4,6 +4,11 @@ require __DIR__ . '/../../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__."/../..");
 $dotenv->load();
 
+// The shop's clock. PHP defaults to UTC, which made date('Y') / date('m')
+// (stats defaults) roll over an hour late in summer. SQLite timestamps
+// (CURRENT_TIMESTAMP, datetime('now')) stay UTC and are unaffected.
+date_default_timezone_set('Europe/Lisbon');
+
 header("Access-Control-Allow-Origin: ". $_ENV['CORS_IP']);
 header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");

@@ -78,7 +78,7 @@ Calendar entries that aren't tied to services or marcações, such as holidays, 
 ## Since `15ed662` (released as v0.3 in `7fbb5f9`)
 
 ### New: Registos de Tempo API
-Time entries and punches of every service, addressed by their **real id**. Elsewhere they're addressed by their position inside a service, which shifts when a row is deleted.
+Time entries and punches of every service, addressed by their **real id**.
 
 | Method | Route | What it does |
 |---|---|---|
@@ -245,6 +245,47 @@ Used by the frontend to show the lab summary button on Laboratório services.
 - To lock a future type that gets its own rules: `UPDATE service_types SET is_locked = 1 WHERE id = ...;` (unlocking is refused).
 - A type used by services or marcações can't be deleted.
 - API: `POST /api/service_types`, `GET|PUT|DELETE /api/service_types/{id}`. `GET /api/service_types` now also returns `is_locked`, `service_count`, `schedule_count`.
+
+## Not committed yet (4 Nov)
+
+### Time entries, punches, applied and requested products addressed by their real id
+- `/api/services/{s_id}/user_times/{id}`, `/user_time_punches/{id}` (incl. `/start`, `/stop`), `/applied_products/{id}` and `/products_requested/{id}` now take the row's **real id**, and only find it if it belongs to that service (otherwise 404).
+- Before, `{id}` was the row's position inside the service. A tab that wasn't refreshed could edit or delete the wrong row after another one was deleted (confirmed 2026-10-08).
+- `sut_id`, `sutp_id`, `sap_id` and `spr_id` are gone from every response. Lists keep the same order (by id).
+- **Backend and frontend must be deployed together.** No DB change.
+
+### Punches stopped on a later day are split at midnight
+- `POST /api/services/{s_id}/user_time_punches/{id}/stop`: if today is after the punch's date, the punch closes at 23:59, each day in between gets 00:00–23:59, and today gets 00:00–now. Days outside the service's checkin/checkout are skipped. No DB change.
+
+### Product references are unique regardless of case
+- `i_product_reference_unique` / `u_product_reference_unique` now compare `lower(trim(reference))`, so "TEST" and " test " count as the same reference. **DB change, applied to dev only; no release file yet.** Existing duplicates aren't touched (dev has one: products 174 "TEST" and 234 "test").
+
+### Time zone fixes
+- `public/index.php` sets PHP's time zone to Europe/Lisbon. Before, `date('Y')` / `date('m')` (stats defaults) used UTC and rolled over an hour late in summer. SQLite timestamps stay UTC.
+- FE `components/Tables/UserTimesTable.jsx`: the default date for new time entries and punches uses local time instead of `toISOString()`.
+
+### Accounts locked to a notification view
+- New column `shop_accounts.notification_type_id` (**dev only, no release file yet**). `oficina` → Oficina, `escritorio` → Escritório, `admin` → NULL (chooses).
+- `/auth/login` and `/auth/me` return `notification_type_id`. FE locks the "A ver como" picker when it's set.
+- New dev accounts: `admin` / `admin2026`, `escritorio` / `escritorio2026`. Prod needs its own (stronger) passwords.
+
+### Trash for deleted rows
+- New table `deleted_rows` + `trash_<table>` AFTER DELETE triggers on 27 tables, kept 90 days (**dev only, no release file yet**). Created by `php utils/trash_triggers.php`, which must be **re-run after any `ALTER TABLE`** on those tables.
+- Restore with `php utils/restore_deleted.php list | show <id> | restore <id> [...]`, or from the **Lixo** page.
+- Lixo page (admin only): `GET /api/trash`, `POST /api/trash/restore` (`App\Services\TrashService`, shared with the CLI). FE Gestão → Lixo (`/trash`).
+- Deletes blocked by the `d_*_in_use` triggers are still blocked; the trash only saves deletes that actually happen.
+
+### Cópias de Segurança page (admin only)
+- New `shop_accounts.is_admin` (**dev only, no release file yet**; `admin` = 1).
+- `GET/POST /api/backups`, `GET /api/backups/{name}/download`, admin only (403 otherwise). No restore over the web.
+- `utils/backup.php` now uses the same `App\Services\BackupService`; copies are single-file (no `-wal`/`-shm`), and it exits 1 on failure.
+- FE: Gestão → Cópias de Segurança (`/backups`), shown only to admin.
+
+### `PUT /api/services/{id}` removed
+- The old full update (unused since the per-field PATCH). Route, controller, service and model method deleted.
+
+### Tests removed
+- `api/test/` deleted (stale PHPUnit integration tests).
 
 ## Deploying to production
 Prod has everything up to the 10-08 releases. Back up the prod DB first, then run in this order with `sqlite3 -bail <db> < <file>`:

@@ -47,6 +47,24 @@ class AuthController
 	}
 
 	/**
+	 * For admin-only routes, on top of the login gate in public/index.php.
+	 * Sends a 403 and returns false when the account isn't an admin.
+	 */
+	public static function requireAdmin(PDO $db): bool
+	{
+		$service = new AuthService(new Auth($db));
+		$account = $service->check(self::bearerToken());
+
+		if ($account !== null && $account['is_admin'])
+			return true;
+
+		http_response_code($account === null ? 401 : 403);
+		header('Content-Type: application/json');
+		echo json_encode(['error' => 'Só um administrador pode fazer isto.']);
+		return false;
+	}
+
+	/**
 	 * The address the request came from. Only REMOTE_ADDR: X-Forwarded-For
 	 * and similar headers are written by the client, so trusting them would
 	 * let anyone dodge the lockout by sending a different fake IP each time.
@@ -88,7 +106,12 @@ class AuthController
 		header('Content-Type: application/json');
 		$account = $this->service->check(self::bearerToken());
 		http_response_code(200);
-		echo json_encode(['success' => true, 'username' => $account['username'] ?? null]);
+		echo json_encode([
+			'success' => true,
+			'username' => $account['username'] ?? null,
+			'notification_type_id' => $account['notification_type_id'] ?? null,
+			'is_admin' => $account['is_admin'] ?? false,
+		]);
 	}
 
 	public function logout(): void

@@ -2,42 +2,25 @@
 declare(strict_types=1);
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__."/..");
+// Cron: makes one copy of the database in BACKUP_PATH and checks it.
+// Same code as the "Cópias de Segurança" page (App\Services\BackupService).
+// Exits with 1 if the copy fails or the check isn't "ok", so cron / a
+// healthcheck ping can tell.
+
+use App\Services\BackupService;
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/..");
 $dotenv->load();
-
-$databasePath = $_ENV['DB_PATH'];
-$backupDirectory = $_ENV['BACKUP_PATH'];
-
-if (!is_dir($backupDirectory)) {
-    if (!mkdir($backupDirectory, 0750, true) && !is_dir($backupDirectory)) {
-        throw new RuntimeException('Could not create backup directory.');
-    }
-}
-
-if (!is_file($databasePath)) {
-    throw new RuntimeException('Database file not found.');
-}
-
 date_default_timezone_set('Europe/Lisbon');
-$timestamp = date('Y_m_d_H_i_s');
-$backupPath = $backupDirectory . "/{$timestamp}.db";
 
-$source = new SQLite3($databasePath, SQLITE3_OPEN_READONLY);
-$backup = new SQLite3($backupPath);
-
-if (!$source->backup($backup)) {
-    throw new RuntimeException('SQLite backup failed.');
+try {
+    $backup = (new BackupService())->create();
+} catch (Throwable $e) {
+    fwrite(STDERR, 'Backup failed: ' . $e->getMessage() . PHP_EOL);
+    exit(1);
 }
 
-$source->close();
-$backup->close();
+echo "Integrity check: {$backup['integrity']}" . PHP_EOL;
+echo "Backup created: {$backup['name']} ({$backup['size']} bytes)" . PHP_EOL;
 
-$verify = new SQLite3($backupPath, SQLITE3_OPEN_READONLY);
-
-$check = $verify->querySingle("PRAGMA integrity_check;");
-
-echo "Integrity check: {$check}" . PHP_EOL;
-
-$verify->close();
-
-echo "Backup created: {$backupPath}" . PHP_EOL;
+exit($backup['integrity'] === 'ok' ? 0 : 1);

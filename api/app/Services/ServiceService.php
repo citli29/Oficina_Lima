@@ -84,18 +84,6 @@ class ServiceService
 	}
 
 
-	public function updateService(int $id, array $data): array
-	{
-		try
-		{
-			$service = $this->serviceModel->updateService($id,$data);
-			if(!$service) 
-			throw new InvalidArgumentException("Update Service [Invalid ID]: {$id}.",400);
-			return $service;
-		} catch (PDOException $e){
-			throw new InvalidArgumentException(dbErrorMessage($e), 400);
-		}
-	}
 
 	/**
 	 * Per-field update — see Service::patchService. $data is

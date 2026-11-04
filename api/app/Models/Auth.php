@@ -15,7 +15,7 @@ class Auth
 
 	public function getAccountByUsername(string $username): ?array
 	{
-		$stmt = $this->db->prepare("SELECT id, username, password_hash FROM shop_accounts WHERE username = ? COLLATE NOCASE");
+		$stmt = $this->db->prepare("SELECT id, username, password_hash, notification_type_id, is_admin FROM shop_accounts WHERE username = ? COLLATE NOCASE");
 		$stmt->execute([$username]);
 		return $stmt->fetch() ?: null;
 	}
@@ -29,7 +29,7 @@ class Auth
 	public function getTokenByHash(string $tokenHash): ?array
 	{
 		$stmt = $this->db->prepare("
-			SELECT t.id, t.last_used_at, a.id AS account_id, a.username
+			SELECT t.id, t.last_used_at, a.id AS account_id, a.username, a.notification_type_id, a.is_admin
 			FROM auth_tokens t
 			JOIN shop_accounts a ON a.id = t.shop_account_id
 			WHERE t.token_hash = ?

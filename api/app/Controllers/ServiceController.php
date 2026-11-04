@@ -257,26 +257,5 @@ class ServiceController
 		}
 	}
 
-	public function putService(int $id):void
-	{
-		try {
-			$data = json_decode(file_get_contents('php://input'), true);
-			
-			if(is_null($data))
-			throw new InvalidArgumentException( "JSON Body Invalid.", 400);
-
-			$service = $this->service->updateService($id, $data);
-
-			http_response_code(200);
-			header('Content-Type: application/json');
-			echo json_encode([
-				'success' => true,
-				'service'=>$service
-			]);
-		} catch (InvalidArgumentException $e) {
-			http_response_code(httpStatusFromException($e));
-			echo json_encode(['error' => $e->getMessage()]);
-		}
-	}
 
 }

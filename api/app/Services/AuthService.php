@@ -87,7 +87,12 @@ class AuthService
 			$ip !== '' ? $ip : null
 		);
 
-		return ['token' => $token, 'username' => $account['username']];
+		return [
+			'token' => $token,
+			'username' => $account['username'],
+			'notification_type_id' => isset($account['notification_type_id']) ? (int) $account['notification_type_id'] : null,
+			'is_admin' => !empty($account['is_admin']),
+		];
 	}
 
 	private static function lockedError(int $seconds): RuntimeException
@@ -122,6 +127,12 @@ class AuthService
 		return [
 			'id' => (int) $row['account_id'],
 			'username' => $row['username'],
+			// Notification view this account is locked to (Oficina /
+			// Escritório); null = the account picks it (admin).
+			'notification_type_id' => isset($row['notification_type_id']) ? (int) $row['notification_type_id'] : null,
+			// Admin-only pages (Cópias de Segurança). Checked on the server
+			// by AuthController::requireAdmin, not only hidden in the menu.
+			'is_admin' => !empty($row['is_admin']),
 			'token_id' => (int) $row['id'],
 		];
 	}

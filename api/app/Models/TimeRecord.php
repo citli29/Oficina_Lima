@@ -8,9 +8,7 @@ use PDO;
 
 // Time entries (services_user_time) and punches (services_user_time_punches)
 // across every service, for the "Registos de Tempo" page. Rows are addressed
-// by their real id — not by their position inside a service (sut_id /
-// sutp_id elsewhere), which shifts when another row of that service is
-// deleted.
+// by their real id.
 class TimeRecord
 {
 	private PDO $db;

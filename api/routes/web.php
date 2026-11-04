@@ -2,6 +2,7 @@
 
 use App\Controllers\HomeController;
 use App\Controllers\AuthController;
+use App\Controllers\BackupController;
 use App\Controllers\BudgetController;
 use App\Controllers\CarController;
 use App\Controllers\ClientController;
@@ -14,6 +15,7 @@ use App\Controllers\ProductController;
 use App\Controllers\ScheduleController;
 use App\Controllers\ScheduleLabController;
 use App\Controllers\TimeRecordController;
+use App\Controllers\TrashController;
 use App\Controllers\ServiceAssociationController;
 use App\Controllers\ServiceComponentController;
 use App\Controllers\ServiceController;
@@ -31,6 +33,15 @@ return [
 	['GET', '/api/auth/devices', [AuthController::class, 'getDevices']],
 	['PATCH', '/api/auth/devices/{id:\d+}', [AuthController::class, 'renameDevice']],
 	['DELETE', '/api/auth/devices/{id:\d+}', [AuthController::class, 'deleteDevice']],
+
+	/*	Backup Controller — Cópias de Segurança, admin only	*/
+	['GET', '/api/backups', [BackupController::class, 'getBackups']],
+	['POST', '/api/backups', [BackupController::class, 'postBackup']],
+	['GET', '/api/backups/{name:[A-Za-z0-9_.-]+\.db}/download', [BackupController::class, 'downloadBackup']],
+
+	/*	Trash Controller — Lixo (deleted rows), admin only	*/
+	['GET', '/api/trash', [TrashController::class, 'getTrash']],
+	['POST', '/api/trash/restore', [TrashController::class, 'postRestore']],
 
 	/*	User Controller	*/
 	['GET', '/api/users', [UserController::class, 'getUsers']], //with search
@@ -128,7 +139,6 @@ return [
 	['GET', '/api/services', [ServiceController::class, 'getServices']], //with search
 	['POST', '/api/services', [ServiceController::class, 'postServices']],
 	['GET', '/api/services/{id:\d+}', [ServiceController::class, 'getService']],
-	['PUT', '/api/services/{id:\d+}', [ServiceController::class, 'putService']],
 	['PATCH', '/api/services/{id:\d+}', [ServiceController::class, 'patchService']], // only the changed fields
 	['DELETE', '/api/services/{id:\d+}', [ServiceController::class, 'deleteService']],
 
