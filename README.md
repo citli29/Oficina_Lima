@@ -284,6 +284,11 @@ Used by the frontend to show the lab summary button on Laboratório services.
 ### `PUT /api/services/{id}` removed
 - The old full update (unused since the per-field PATCH). Route, controller, service and model method deleted.
 
+### Small fixes from the full test (4 Nov)
+- Time entries, punches, applied and requested products, lab values: "row not found" on GET/PUT/DELETE/start/stop now answers **404** with a Portuguese message ("Este registo já não existe neste serviço…") instead of an English one (and 400 for updates).
+- `GET /api/notifications/{id}` not found: 404 instead of 403.
+- FE: the "delete service" / "delete orçamento" confirms said "Esta ação não pode ser desfeita"; now "Fica no Lixo durante 90 dias."
+
 ### Tests removed
 - `api/test/` deleted (stale PHPUnit integration tests).
 

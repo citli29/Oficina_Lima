@@ -30,7 +30,7 @@ class NotificationService
 	public function showNotification(int $id):array
 	{
 		if(!$notification = $this->notificationModel->getNotificationById($id))
-			throw new RuntimeException("Show Notification [ID Not Found]: {$id}", 403);
+			throw new RuntimeException("Show Notification [ID Not Found]: {$id}", 404);
 		return  $notification;
 	}
 

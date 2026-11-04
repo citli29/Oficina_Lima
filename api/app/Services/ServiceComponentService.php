@@ -30,14 +30,14 @@ class ServiceComponentService
 	{
 		$sut  = $this->serviceComponentModel->getSUTBySid_Id($s_id,$id);
 		if(!$sut)
-			throw new RuntimeException("Show User Time [ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $sut;
 	}
 
 	public function showGlobalSUT(int $id):array
 	{
 		if(!$sut = $this->serviceComponentModel->getSUTById($id))
-			throw new RuntimeException("Show User Time [ID Not Found]: {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $sut;
 	}
 
@@ -57,7 +57,7 @@ class ServiceComponentService
 		{
 			$sut = $this->serviceComponentModel->updateSUTBySid_Id($s_id,$id,$data);
 			if(!$sut) 
-			throw new InvalidArgumentException("Update Service User Time [Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sut;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -69,7 +69,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$sut = $this->serviceComponentModel->deleteSUTBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete User Time [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sut;
 		}catch(PDOException $e)
 		{
@@ -95,14 +95,14 @@ class ServiceComponentService
 	{
 		$sap  = $this->serviceComponentModel->getSAPBySid_Id($s_id,$id);
 		if(!$sap)
-			throw new RuntimeException("Show Applied Products [ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $sap;
 	}
 
 	public function showGlobalSAP(int $id):array
 	{
 		if(!$sap = $this->serviceComponentModel->getSAPById($id))
-			throw new RuntimeException("Show Global ID Applied Product [ID Not Found]: {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $sap;
 	}
 
@@ -122,7 +122,7 @@ class ServiceComponentService
 		{
 			$sap = $this->serviceComponentModel->updateSAPBySid_Id($s_id,$id,$data);
 			if(!$sap) 
-			throw new InvalidArgumentException("Update Service Applied Products [Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sap;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -134,7 +134,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$sap = $this->serviceComponentModel->deleteSAPBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete Applied Products [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sap;
 		}catch(PDOException $e)
 		{
@@ -190,7 +190,7 @@ class ServiceComponentService
 	{
 		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
 		if(!$sutp)
-			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $sutp;
 	}
 
@@ -198,7 +198,7 @@ class ServiceComponentService
 	{
 		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
 		if(!$sutp)
-			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		if($sutp['hours_s']!== null && $sutp['minutes_s'] !==null )
 			throw new RuntimeException("Show User Time Punches[Already Started]: {$s_id} : {$id}.",400);
 		$sutp = $this->serviceComponentModel->startSUTP($sutp);
@@ -209,7 +209,7 @@ class ServiceComponentService
 	{
 		$sutp  = $this->serviceComponentModel->getSUTPBySid_Id($s_id,$id);
 		if(!$sutp)
-			throw new RuntimeException("Show User Time Punches[ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		if($sutp['hours_f']!== null && $sutp['minutes_f'] !==null )
 			throw new RuntimeException("Show User Time Punches[Already Ended]: {$s_id} : {$id}.",400);
 		if($sutp['hours_s']=== null && $sutp['minutes_s'] ===null )
@@ -223,7 +223,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$sutp = $this->serviceComponentModel->deleteSUTPBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete User Time Punches[Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sutp;
 		}catch(PDOException $e)
 		{
@@ -237,7 +237,7 @@ class ServiceComponentService
 		{
 			$sutp = $this->serviceComponentModel->updateSUTPBySid_Id($s_id,$id,$data);
 			if(!$sutp) 
-			throw new InvalidArgumentException("Update Service User Time Punches[Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $sutp;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -261,7 +261,7 @@ class ServiceComponentService
 	{
 		$spr  = $this->serviceComponentModel->getSPRBySid_Id($s_id,$id);
 		if(!$spr)
-			throw new RuntimeException("Show Product Request[ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $spr;
 	}
 
@@ -271,7 +271,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$spr = $this->serviceComponentModel->deleteSPRBySid_Id($s_id,$id))
-				throw new InvalidArgumentException("Delete Product Request[Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $spr;
 		}catch(PDOException $e)
 		{
@@ -285,7 +285,7 @@ class ServiceComponentService
 		{
 			$spr = $this->serviceComponentModel->updateSPRBySid_Id($s_id,$id,$data);
 			if(!$spr) 
-			throw new InvalidArgumentException("Update Service Product Request[Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $spr;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -315,7 +315,7 @@ class ServiceComponentService
 	public function showLav(int $s_id, int $id): array
 	{
 		if(!$lav = $this->serviceComponentModel->getLavBySidId($s_id, $id))
-			throw new RuntimeException("Show Lab Action Value [ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $lav;
 	}
 
@@ -325,7 +325,7 @@ class ServiceComponentService
 		{
 			$lav = $this->serviceComponentModel->updateLavBySidId($s_id, $id, $data);
 			if(!$lav)
-			throw new InvalidArgumentException("Update Lab Action Value [Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $lav;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -337,7 +337,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$lav = $this->serviceComponentModel->deleteLavBySidId($s_id, $id))
-				throw new InvalidArgumentException("Delete Lab Action Value [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $lav;
 		}catch(PDOException $e)
 		{
@@ -358,7 +358,7 @@ class ServiceComponentService
 	public function showLpv(int $s_id, int $id): array
 	{
 		if(!$lpv = $this->serviceComponentModel->getLpvBySidId($s_id, $id))
-			throw new RuntimeException("Show Lab Property Value [ID Not Found]: {$s_id} : {$id}.",404);
+			throw new RuntimeException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 		return $lpv;
 	}
 
@@ -368,7 +368,7 @@ class ServiceComponentService
 		{
 			$lpv = $this->serviceComponentModel->updateLpvBySidId($s_id, $id, $data);
 			if(!$lpv)
-			throw new InvalidArgumentException("Update Lab Property Value [Invalid ID]: {$s_id} - {$id}.",400);
+			throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $lpv;
 		} catch (PDOException $e){
 			throw new InvalidArgumentException(dbErrorMessage($e), 400);
@@ -380,7 +380,7 @@ class ServiceComponentService
 		try
 		{
 			if(!$lpv = $this->serviceComponentModel->deleteLpvBySidId($s_id, $id))
-				throw new InvalidArgumentException("Delete Lab Property Value [Invalid ID]: {$s_id} - {$id}.", 404);
+				throw new InvalidArgumentException("Este registo já não existe neste serviço (pode ter sido apagado noutro dispositivo). Atualize a página.", 404);
 			return $lpv;
 		}catch(PDOException $e)
 		{
