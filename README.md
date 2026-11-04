@@ -258,25 +258,25 @@ Used by the frontend to show the lab summary button on Laboratório services.
 - `POST /api/services/{s_id}/user_time_punches/{id}/stop`: if today is after the punch's date, the punch closes at 23:59, each day in between gets 00:00–23:59, and today gets 00:00–now. Days outside the service's checkin/checkout are skipped. No DB change.
 
 ### Product references are unique regardless of case
-- `i_product_reference_unique` / `u_product_reference_unique` now compare `lower(trim(reference))`, so "TEST" and " test " count as the same reference. **DB change, applied to dev only; no release file yet.** Existing duplicates aren't touched (dev has one: products 174 "TEST" and 234 "test").
+- `i_product_reference_unique` / `u_product_reference_unique` now compare `lower(trim(reference))`, so "TEST" and " test " count as the same reference. **DB change, in `release_2026_11_04`.** Existing duplicates aren't touched (dev has one: products 174 "TEST" and 234 "test").
 
 ### Time zone fixes
 - `public/index.php` sets PHP's time zone to Europe/Lisbon. Before, `date('Y')` / `date('m')` (stats defaults) used UTC and rolled over an hour late in summer. SQLite timestamps stay UTC.
 - FE `components/Tables/UserTimesTable.jsx`: the default date for new time entries and punches uses local time instead of `toISOString()`.
 
 ### Accounts locked to a notification view
-- New column `shop_accounts.notification_type_id` (**dev only, no release file yet**). `oficina` → Oficina, `escritorio` → Escritório, `admin` → NULL (chooses).
+- New column `shop_accounts.notification_type_id` (in `release_2026_11_04`). `oficina` → Oficina, `escritorio` → Escritório, `admin` → NULL (chooses).
 - `/auth/login` and `/auth/me` return `notification_type_id`. FE locks the "A ver como" picker when it's set.
 - New dev accounts: `admin` / `admin2026`, `escritorio` / `escritorio2026`. Prod needs its own (stronger) passwords.
 
 ### Trash for deleted rows
-- New table `deleted_rows` + `trash_<table>` AFTER DELETE triggers on 27 tables, kept 90 days (**dev only, no release file yet**). Created by `php utils/trash_triggers.php`, which must be **re-run after any `ALTER TABLE`** on those tables.
+- New table `deleted_rows` + `trash_<table>` AFTER DELETE triggers on 27 tables, kept 90 days (no SQL file: created on prod by step 7 of the deploy). Created by `php utils/trash_triggers.php`, which must be **re-run after any `ALTER TABLE`** on those tables.
 - Restore with `php utils/restore_deleted.php list | show <id> | restore <id> [...]`, or from the **Lixo** page.
 - Lixo page (admin only): `GET /api/trash`, `POST /api/trash/restore` (`App\Services\TrashService`, shared with the CLI). FE Gestão → Lixo (`/trash`).
 - Deletes blocked by the `d_*_in_use` triggers are still blocked; the trash only saves deletes that actually happen.
 
 ### Cópias de Segurança page (admin only)
-- New `shop_accounts.is_admin` (**dev only, no release file yet**; `admin` = 1).
+- New `shop_accounts.is_admin` (in `release_2026_11_04`; `admin` = 1).
 - `GET/POST /api/backups`, `GET /api/backups/{name}/download`, admin only (403 otherwise). No restore over the web.
 - `utils/backup.php` now uses the same `App\Services\BackupService`; copies are single-file (no `-wal`/`-shm`), and it exits 1 on failure.
 - FE: Gestão → Cópias de Segurança (`/backups`), shown only to admin.
@@ -300,13 +300,16 @@ Prod has everything up to the 10-08 releases. Back up the prod DB first, then ru
 3. **`utils/sql_s/release_2026_10_22_migration.sql`:** marcação type, planned lab items on marcações.
 4. **`utils/sql_s/release_2026_11_03_migration.sql`:** orçamentos, product name rule.
 5. **`utils/sql_s/release_2026_11_03b_migration.sql`:** locked service types (Gestão de Tipos de Serviço).
-6. **Optional:** `utils/holidays_2026_2027.sql`.
+6. **`utils/sql_s/release_2026_11_04_migration.sql`:** shop login (accounts, devices, login lock, admin flag, notification lock), case-insensitive product references. Check prod for case-duplicate references first (query in the file header).
+7. **`php utils/trash_triggers.php`:** creates `deleted_rows` + the trash triggers. Must run after all the SQL above.
+8. **`php utils/set_shop_password.php`** once per account (≥12 chars), then set `is_admin` / `notification_type_id` by hand (see the 11_04 file header). Without this nobody can log in.
+9. **Optional:** `utils/holidays_2026_2027.sql`.
 
 If some of these are already on prod, skip them and run the rest in order.
 
 **The backend and the frontend must go up together with the database.** The API reads `note` / `is_done`, the presets table, the marcação type, the marcação lab tables, the orçamentos tables and `service_types.is_locked`, and the frontend sends real ids for lab actions.
 
-Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. Releases 1–4 were tested in order on a copy of the production schema, and the result matched the dev database. `11_03b` was tested on a copy of the dev database from just before the change (result identical to dev).
+Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. Releases 1–4 were tested in order on a copy of the production schema, and the result matched the dev database. `11_03b` and `11_04` were tested on copies of the dev database from just before their changes (result identical to dev).
 
 ---
 
