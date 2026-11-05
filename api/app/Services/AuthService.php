@@ -143,11 +143,11 @@ class AuthService
 			$this->model->deleteTokenByHash(self::hashToken($token));
 	}
 
-	/* ---------- Devices ---------- */
+	/* ---------- Devices (admin only: sees and manages every account's) ---------- */
 
 	public function getDevices(string $token): array
 	{
-		$account = $this->requireAccount($token);
+		$account = $this->requireAdmin($token);
 
 		return array_map(fn (array $d) => [
 			'id' => (int) $d['id'],
@@ -156,13 +156,15 @@ class AuthService
 			'ip' => $d['ip'],
 			'created_at' => $d['created_at'],
 			'last_used_at' => $d['last_used_at'],
+			'account_id' => (int) $d['shop_account_id'],
+			'username' => $d['username'],
 			'is_current' => (int) $d['id'] === $account['token_id'],
-		], $this->model->getDevices($account['id']));
+		], $this->model->getDevices());
 	}
 
 	public function renameDevice(string $token, int $deviceId, mixed $name): void
 	{
-		$account = $this->requireAccount($token);
+		$this->requireAdmin($token);
 
 		if ($name !== null && !is_string($name))
 			throw new InvalidArgumentException("Nome inválido.", 400);
@@ -175,27 +177,27 @@ class AuthService
 			throw new InvalidArgumentException("O nome pode ter no máximo " . self::DEVICE_NAME_MAX . " caracteres.", 400);
 
 		// rowCount is 0 also when the name didn't change, so check existence apart.
-		if ($this->model->renameDevice($account['id'], $deviceId, $name) === 0 && !$this->deviceExists($account['id'], $deviceId))
+		if ($this->model->renameDevice($deviceId, $name) === 0 && !$this->model->deviceExists($deviceId))
 			throw new RuntimeException("Dispositivo não encontrado.", 404);
 	}
 
 	/** Returns true when the removed device was the one making the request. */
 	public function deleteDevice(string $token, int $deviceId): bool
 	{
-		$account = $this->requireAccount($token);
+		$account = $this->requireAdmin($token);
 
-		if ($this->model->deleteDevice($account['id'], $deviceId) === 0)
+		if ($this->model->deleteDevice($deviceId) === 0)
 			throw new RuntimeException("Dispositivo não encontrado.", 404);
 
 		return $deviceId === $account['token_id'];
 	}
 
-	private function deviceExists(int $accountId, int $deviceId): bool
+	private function requireAdmin(string $token): array
 	{
-		foreach ($this->model->getDevices($accountId) as $d)
-			if ((int) $d['id'] === $deviceId)
-				return true;
-		return false;
+		$account = $this->requireAccount($token);
+		if (!$account['is_admin'])
+			throw new RuntimeException("Só um administrador pode fazer isto.", 403);
+		return $account;
 	}
 
 	private function requireAccount(string $token): array

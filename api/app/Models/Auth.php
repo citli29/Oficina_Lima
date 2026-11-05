@@ -52,31 +52,39 @@ class Auth
 
 	/* ---------- Devices (one row of auth_tokens per logged-in device) ---------- */
 
-	public function getDevices(int $accountId): array
+	/** Every logged-in device of every account (Dispositivos is admin only). */
+	public function getDevices(): array
 	{
-		$stmt = $this->db->prepare("
-			SELECT id, name, user_agent, ip, created_at, last_used_at
-			FROM auth_tokens
-			WHERE shop_account_id = ?
-			ORDER BY last_used_at DESC, id DESC
+		$stmt = $this->db->query("
+			SELECT t.id, t.name, t.user_agent, t.ip, t.created_at, t.last_used_at,
+				t.shop_account_id, a.username
+			FROM auth_tokens t
+			JOIN shop_accounts a ON a.id = t.shop_account_id
+			ORDER BY a.username, t.last_used_at DESC, t.id DESC
 		");
-		$stmt->execute([$accountId]);
 		return $stmt->fetchAll();
 	}
 
-	/** Rows changed (0 when the device doesn't exist or belongs to another account). */
-	public function renameDevice(int $accountId, int $tokenId, ?string $name): int
+	public function deviceExists(int $tokenId): bool
 	{
-		$stmt = $this->db->prepare("UPDATE auth_tokens SET name = ? WHERE id = ? AND shop_account_id = ?");
-		$stmt->execute([$name, $tokenId, $accountId]);
+		$stmt = $this->db->prepare("SELECT 1 FROM auth_tokens WHERE id = ?");
+		$stmt->execute([$tokenId]);
+		return (bool) $stmt->fetchColumn();
+	}
+
+	/** Rows changed (0 when the device doesn't exist or the name didn't change). */
+	public function renameDevice(int $tokenId, ?string $name): int
+	{
+		$stmt = $this->db->prepare("UPDATE auth_tokens SET name = ? WHERE id = ?");
+		$stmt->execute([$name, $tokenId]);
 		return $stmt->rowCount();
 	}
 
-	/** Rows deleted (0 when the device doesn't exist or belongs to another account). */
-	public function deleteDevice(int $accountId, int $tokenId): int
+	/** Rows deleted (0 when the device doesn't exist). */
+	public function deleteDevice(int $tokenId): int
 	{
-		$stmt = $this->db->prepare("DELETE FROM auth_tokens WHERE id = ? AND shop_account_id = ?");
-		$stmt->execute([$tokenId, $accountId]);
+		$stmt = $this->db->prepare("DELETE FROM auth_tokens WHERE id = ?");
+		$stmt->execute([$tokenId]);
 		return $stmt->rowCount();
 	}
 
