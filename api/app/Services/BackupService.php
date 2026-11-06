@@ -127,11 +127,11 @@ class BackupService
 
 	/**
 	 * Is the newest copy recent and readable? Used by the navbar warning.
-	 * Cron makes one a day (11:01), so older than MAX_AGE_HOURS means a run
-	 * was missed. The integrity result is cached per file (name + size +
+	 * Cron makes one a day, so older than MAX_AGE_HOURS means a run was
+	 * missed. Same limit as STALE_HOURS on the Cópias de Segurança page. The integrity result is cached per file (name + size +
 	 * mtime), so polling this doesn't re-check the same copy every time.
 	 */
-	public const MAX_AGE_HOURS = 30;
+	public const MAX_AGE_HOURS = 26;
 
 	public function status(): array
 	{
@@ -186,6 +186,55 @@ class BackupService
 		if ($hours < 48)
 			return (int) floor($hours) . ' horas';
 		return (int) floor($hours / 24) . ' dias';
+	}
+
+	/**
+	 * Cleanup, run by utils/backup.php after a good copy (never by the web page).
+	 *   - Only automatic copies are ever deleted: names exactly
+	 *     YYYY_MM_DD_HH_MM_SS.db. Named ones (_pre_restore, _pre_v2_migration,
+	 *     Database_before_..., anything else) are never touched.
+	 *   - Copies dated before PRUNE_FROM are kept forever (made before this
+	 *     rule existed, some predate the trash table).
+	 *   - The last KEEP_DAYS days are all kept.
+	 *   - Older than that, only the first automatic copy of each month stays.
+	 * Dates come from the file name, not the file's modified time (copying
+	 * or downloading a file can change that). Returns the deleted names.
+	 */
+	public const KEEP_DAYS = 30;
+	public const PRUNE_FROM = '2026_11_07';
+	private const AUTO_NAME_PATTERN = '/^(\d{4})_(\d{2})_(\d{2})_(\d{2})_(\d{2})_(\d{2})\.db$/';
+
+	public function prune(?DateTime $now = null): array
+	{
+		$auto = [];
+		foreach ($this->list() as $row) {
+			if (preg_match(self::AUTO_NAME_PATTERN, $row['name'], $m))
+				$auto[] = ['name' => $row['name'], 'month' => "{$m[1]}_{$m[2]}"];
+		}
+
+		// Names sort in date order, so the first one seen per month is its first copy.
+		usort($auto, static fn ($a, $b) => strcmp($a['name'], $b['name']));
+		$firstOfMonth = [];
+		foreach ($auto as $copy)
+			$firstOfMonth[$copy['month']] ??= $copy['name'];
+
+		// $now is only passed by tests; cron uses the real time.
+		$cutoff = (clone ($now ?? new DateTime('now', new DateTimeZone('Europe/Lisbon'))))
+			->modify('-' . self::KEEP_DAYS . ' days')
+			->format('Y_m_d_H_i_s');
+
+		$deleted = [];
+		foreach ($auto as $copy) {
+			$name = $copy['name'];
+			if (strcmp($name, self::PRUNE_FROM) < 0) continue;    // made before the rule
+			if (strcmp($name, $cutoff) >= 0) continue;             // last KEEP_DAYS days
+			if ($firstOfMonth[$copy['month']] === $name) continue; // the month's copy
+
+			if (@unlink($this->pathFor($name)))
+				$deleted[] = $name;
+		}
+
+		return $deleted;
 	}
 
 	/** Full path of a copy, or an exception if the name isn't a copy in BACKUP_PATH. */

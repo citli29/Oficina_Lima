@@ -23,4 +23,17 @@ try {
 echo "Integrity check: {$backup['integrity']}" . PHP_EOL;
 echo "Backup created: {$backup['name']} ({$backup['size']} bytes)" . PHP_EOL;
 
-exit($backup['integrity'] === 'ok' ? 0 : 1);
+if ($backup['integrity'] !== 'ok')
+    exit(1);
+
+// Only after a good copy: delete old automatic copies (last 30 days kept,
+// then one per month; named copies and ones before 2026-11-07 never).
+// A failed cleanup doesn't fail the backup.
+try {
+    $deleted = (new BackupService())->prune();
+    echo 'Old copies deleted: ' . (count($deleted) ? implode(', ', $deleted) : 'none') . PHP_EOL;
+} catch (Throwable $e) {
+    fwrite(STDERR, 'Cleanup of old copies failed: ' . $e->getMessage() . PHP_EOL);
+}
+
+exit(0);

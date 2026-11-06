@@ -62,6 +62,11 @@ class BudgetController
 					'false' => false,
 					default => null,
 				},
+				'to_order' => match ($_GET['to_order'] ?? null) {
+					'true' => true,
+					'false' => false,
+					default => null,
+				},
 				// Raw text (normalize() would drop the plate's dashes and accents
 				// the stored values still have); the model compares plates
 				// without dashes/spaces itself.

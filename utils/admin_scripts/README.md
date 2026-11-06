@@ -16,5 +16,5 @@ They read `DB_PATH` / `BACKUP_PATH` from the repo's `.env`. On prod, run them wi
 | `backfill_search_names.php` | Recomputes `search_name` / `search_plate` for every row, which is what search uses. Only needed if search stops finding old rows. Already done on dev and prod. Safe to re-run. | `php utils/admin_scripts/backfill_search_names.php /path/to/Database.db` |
 
 Not here on purpose:
-- `utils/backup.php`: run daily by cron (11:01). The crontab points at that path.
+- `utils/backup.php`: run daily by cron (prod: 22:00). The crontab points at that path. After a good copy it also deletes old automatic copies: it keeps every copy from the last 30 days, then the first copy of each month. Named copies (`_pre_restore`, ...) and copies from before 2026-11-07 are never deleted.
 - `utils/util.php` and `utils/normalize.php`: used by the API.

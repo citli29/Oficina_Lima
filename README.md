@@ -293,7 +293,7 @@ Used by the frontend to show the lab summary button on Laboratório services.
 - `api/test/` deleted (stale PHPUnit integration tests).
 
 ## Deploying to production
-Prod has everything up to the 10-08 releases. Back up the prod DB first, then run in this order with `sqlite3 -bail <db> < <file>`:
+**Prod has everything up to `release_2026_11_04` (steps 1–8 below, done 4 Nov). Next: step 10.** Back up the prod DB first, then run in this order with `sqlite3 -bail <db> < <file>`:
 
 1. **`utils/sql_s/release_2026_10_20_migration.sql`:** Eletricidade, lab notes + done.
 2. **`utils/sql_s/release_2026_10_21_migration.sql`:** note presets, Laboratório finish rule.
@@ -303,13 +303,14 @@ Prod has everything up to the 10-08 releases. Back up the prod DB first, then ru
 6. **`utils/sql_s/release_2026_11_04_migration.sql`:** shop login (accounts, devices, login lock, admin flag, notification lock), case-insensitive product references. Check prod for case-duplicate references first (query in the file header).
 7. **`php utils/admin_scripts/trash_triggers.php`:** creates `deleted_rows` + the trash triggers. Must run after all the SQL above.
 8. **`php utils/admin_scripts/set_shop_password.php`** once per account (≥12 chars), then set `is_admin` / `notification_type_id` by hand (see the 11_04 file header). Without this nobody can log in.
-9. **Optional:** `utils/holidays_2026_2027.sql`.
+9. **Optional:** `utils/sql_s/holidays_2026_2027.sql`.
+10. **`utils/sql_s/release_2026_11_06_migration.sql`:** "Pedir" per orçamento product (`budget_products.to_order`). Then **re-run `php utils/admin_scripts/trash_triggers.php`** so the Lixo saves the new column. Backend + frontend go up with it.
 
 If some of these are already on prod, skip them and run the rest in order.
 
 **The backend and the frontend must go up together with the database.** The API reads `note` / `is_done`, the presets table, the marcação type, the marcação lab tables, the orçamentos tables and `service_types.is_locked`, and the frontend sends real ids for lab actions.
 
-Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. Releases 1–4 were tested in order on a copy of the production schema, and the result matched the dev database. `11_03b` and `11_04` were tested on copies of the dev database from just before their changes (result identical to dev).
+Each release file is one transaction: if anything fails, nothing is applied. Running one a second time fails at its first step and changes nothing. Releases 1–4 were tested in order on a copy of the production schema, and the result matched the dev database. `11_03b` and `11_04` were tested on copies of the dev database from just before their changes (result identical to dev). `11_06` was tested on a copy of the prod backup of 5 Nov: applied cleanly, a second run fails at its first step and changes nothing, the new objects match dev, and the 0/1 check and the Orçamentado lock work.
 
 ---
 

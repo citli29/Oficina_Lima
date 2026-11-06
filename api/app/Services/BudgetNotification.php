@@ -11,6 +11,8 @@ namespace App\Services;
 //
 //  - Who gets it ............ TYPE_NAME (a notification_types.name)
 //  - Which events exist ...... TITLES (event => notification title)
+//                              'to_order' = a Guardar whose only change was
+//                              ticking Pedir on products (sent by the service page)
 //  - The text ................ message()
 //  - Where clicking goes ..... url()   (now the Orçamentos page, /budgets)
 //
@@ -26,6 +28,7 @@ class BudgetNotification
 		'created' => 'Orçamento criado',
 		'edited'  => 'Orçamento editado',
 		'deleted' => 'Orçamento apagado',
+		'to_order' => 'Orçamento para pedir',
 	];
 
 	// Events only the backend sends (the delete itself, with ?notify=1),
@@ -36,10 +39,23 @@ class BudgetNotification
 	public static function message(string $event, array $budget, int $s_id, string $serviceLabel): string
 	{
 		$title = trim((string) ($budget['title'] ?? '')) ?: 'Sem título';
-		$verb = ['created' => 'criado', 'edited' => 'editado', 'deleted' => 'apagado'][$event] ?? $event;
+		$verb = ['created' => 'criado', 'edited' => 'editado', 'deleted' => 'apagado', 'to_order' => 'com produtos para pedir'][$event] ?? $event;
 		$service = "folha de serviço {$s_id}" . ($serviceLabel !== '' ? " - {$serviceLabel}" : '');
 
-		return "Orçamento \"{$title}\" {$verb} na {$service}.";
+		$message = "Orçamento \"{$title}\" {$verb} na {$service}.";
+
+		// Products marked "Pedir", by name, so the escritório sees what to
+		// order without opening it (created / edited / to_order).
+		if ($event !== 'deleted') {
+			$products = $budget['products'] ?? [];
+			$toOrder = array_values(array_filter($products, static fn ($p) => (int) ($p['to_order'] ?? 0) === 1));
+			if ($toOrder) {
+				$names = array_map(static fn ($p) => trim((string) ($p['product_name'] ?? '')) . ' (' . (int) ($p['quantity'] ?? 1) . ')', $toOrder);
+				$message .= ' Pedir ' . count($toOrder) . ' de ' . count($products) . ': ' . implode(', ', $names) . '.';
+			}
+		}
+
+		return $message;
 	}
 
 	// Opens the Orçamentos page with that orçamento outlined

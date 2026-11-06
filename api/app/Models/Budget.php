@@ -18,6 +18,7 @@ class Budget
 			bp.budget_id AS budget_id,
 			bp.product_id AS product_id,
 			bp.quantity AS quantity,
+			bp.to_order AS to_order,
 			p.name AS product_name,
 			p.reference AS product_reference,
 			p.product_type_id AS product_type_id,
@@ -150,8 +151,8 @@ class Budget
 	{
 		$stmt = $this->db->prepare("
 			INSERT INTO budget_products
-			(budget_id, product_id, quantity)
-			SELECT b.id, ?, ?
+			(budget_id, product_id, quantity, to_order)
+			SELECT b.id, ?, ?, ?
 			FROM budgets b
 			WHERE b.id = ? AND b.service_id = ?
 			");
@@ -159,6 +160,7 @@ class Budget
 		$stmt->execute([
 			!empty($data['product_id']) ? $data['product_id'] : null,
 			$data['quantity'] ?? 1,
+			$data['to_order'] ?? 0,
 			$b_id,
 			$s_id,
 		]);
@@ -176,6 +178,11 @@ class Budget
 		if (array_key_exists('quantity', $data)) {
 			$stmt = $this->db->prepare("UPDATE budget_products SET quantity = ? WHERE id = ?");
 			$stmt->execute([$data['quantity'], $product['id']]);
+		}
+
+		if (array_key_exists('to_order', $data)) {
+			$stmt = $this->db->prepare("UPDATE budget_products SET to_order = ? WHERE id = ?");
+			$stmt->execute([$data['to_order'], $product['id']]);
 		}
 
 		return $this->getProductBySidBidId($s_id, $b_id, $id);
@@ -225,6 +232,7 @@ class Budget
 		'client_name' => 'client_name COLLATE NOCASE',
 		'product_count' => 'product_count',
 		'done' => 'done',
+		'to_order_count' => 'to_order_count',
 		'created_at' => 'created_at',
 	];
 
@@ -244,7 +252,8 @@ class Budget
 					ma.name AS car_make,
 					mo.name AS car_model,
 					cl.name AS client_name,
-					(SELECT COUNT(*) FROM budget_products bp2 WHERE bp2.budget_id = b.id) AS product_count
+					(SELECT COUNT(*) FROM budget_products bp2 WHERE bp2.budget_id = b.id) AS product_count,
+					(SELECT COUNT(*) FROM budget_products bp3 WHERE bp3.budget_id = b.id AND bp3.to_order = 1) AS to_order_count
 				FROM budgets b
 				LEFT JOIN services s ON s.id = b.service_id
 				LEFT JOIN cars c ON c.id = s.car_id
@@ -259,6 +268,11 @@ class Budget
 		if (isset($filters['done'])) {
 			$sql .= " AND done = ?";
 			$params[] = $filters['done'] ? 1 : 0;
+		}
+
+		// to_order=true: at least one product marked Pedir; false: none.
+		if (isset($filters['to_order'])) {
+			$sql .= $filters['to_order'] ? " AND to_order_count > 0" : " AND to_order_count = 0";
 		}
 
 		if (isset($filters['service_finished'])) {

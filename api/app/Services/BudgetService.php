@@ -48,7 +48,21 @@ class BudgetService
 			$fields['done'] = (int)(bool)$data['done'];
 		}
 
+
 		return $fields;
+	}
+
+	// "Pedir" (to_order) as 0/1: this product is to be ordered. Changed
+	// with the rest of the orçamento (Editar → Guardar), so Orçamentado
+	// locks it like the quantity.
+	private function toOrderField(array $data): array
+	{
+		if (!array_key_exists('to_order', $data)) return [];
+
+		if (!in_array($data['to_order'], [true, false, 0, 1, '0', '1'], true))
+			throw new InvalidArgumentException('O campo Pedir deve ser verdadeiro ou falso.', 400);
+
+		return ['to_order' => (int)(bool)$data['to_order']];
 	}
 
 	// quantity must be a whole number >= 1 (the trigger says so too; this
@@ -133,7 +147,7 @@ class BudgetService
 	public function createProduct(int $s_id, int $b_id, array $data): array
 	{
 		try {
-			$fields = ['product_id' => $data['product_id'] ?? null] + $this->quantityField($data);
+			$fields = ['product_id' => $data['product_id'] ?? null] + $this->quantityField($data) + $this->toOrderField($data);
 			if (!$product = $this->budgetModel->createProduct($s_id, $b_id, $fields))
 				throw new InvalidArgumentException("Create Budget Product [Invalid Budget]: {$s_id} - {$b_id}.", 404);
 			return $product;
@@ -145,7 +159,7 @@ class BudgetService
 	public function updateProduct(int $s_id, int $b_id, int $id, array $data): array
 	{
 		try {
-			if (!$product = $this->budgetModel->updateProductBySidBidId($s_id, $b_id, $id, $this->quantityField($data)))
+			if (!$product = $this->budgetModel->updateProductBySidBidId($s_id, $b_id, $id, $this->quantityField($data) + $this->toOrderField($data)))
 				throw new InvalidArgumentException("Update Budget Product [Invalid ID]: {$s_id} - {$b_id} - {$id}.", 404);
 			return $product;
 		} catch (PDOException $e) {
