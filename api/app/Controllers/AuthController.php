@@ -50,13 +50,17 @@ class AuthController
 	 * For admin-only routes, on top of the login gate in public/index.php.
 	 * Sends a 403 and returns false when the account isn't an admin.
 	 */
-	public static function requireAdmin(PDO $db): bool
+	/** $respond = false: just answer whether it's an admin, without sending a 401/403. */
+	public static function requireAdmin(PDO $db, bool $respond = true): bool
 	{
 		$service = new AuthService(new Auth($db));
 		$account = $service->check(self::bearerToken());
 
 		if ($account !== null && $account['is_admin'])
 			return true;
+
+		if (!$respond)
+			return false;
 
 		http_response_code($account === null ? 401 : 403);
 		header('Content-Type: application/json');

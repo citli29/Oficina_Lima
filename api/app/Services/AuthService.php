@@ -11,7 +11,7 @@ use RuntimeException;
  * Shop-wide login. One account for the whole shop; each device that logs in
  * gets its own random token, kept by the browser until someone presses
  * "Terminar sessão", removes the device on the Dispositivos page, or the
- * password is changed with utils/set_shop_password.php (which revokes every
+ * password is changed with utils/admin_scripts/set_shop_password.php (which revokes every
  * token). Tokens don't expire, so a shop PC/tablet stays logged in.
  *
  * Only a SHA-256 of the token is stored, so a copy of the DB alone can't be

@@ -10,8 +10,8 @@ use PDOException;
 
 /**
  * "Lixo": rows saved in deleted_rows by the trash_<table> triggers
- * (utils/trash_triggers.php). Used by the admin-only Lixo page and by
- * utils/restore_deleted.php, so both restore the same way.
+ * (utils/admin_scripts/trash_triggers.php). Used by the admin-only Lixo page and by
+ * utils/admin_scripts/restore_deleted.php, so both restore the same way.
  *
  * A restore inserts the saved row back with its original id, so anything
  * that pointed to it works again. Several rows are restored in one

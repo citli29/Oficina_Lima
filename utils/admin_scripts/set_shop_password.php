@@ -2,13 +2,13 @@
 // Sets the shop login (creates the account the first time, otherwise
 // changes its password). Changing the password logs out every device.
 //
-//   php utils/set_shop_password.php
+//   php utils/admin_scripts/set_shop_password.php
 //
 // It asks for the username and the password. Nothing is accepted on the
 // command line: arguments are saved in the shell history (~/.bash_history)
 // and show up in `ps` while the script runs.
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 if (PHP_SAPI !== 'cli') {
 	exit("Run from the command line.\n");
@@ -17,7 +17,7 @@ if (PHP_SAPI !== 'cli') {
 if ($argc > 1) {
 	fwrite(STDERR, "This script takes no arguments: it asks for the username and password.\n");
 	fwrite(STDERR, "Typing them on the command line would save them in the shell history.\n");
-	fwrite(STDERR, "Usage: php utils/set_shop_password.php\n");
+	fwrite(STDERR, "Usage: php utils/admin_scripts/set_shop_password.php\n");
 	exit(1);
 }
 
@@ -57,7 +57,7 @@ function askHidden(string $label): string
 	return $value;
 }
 
-Dotenv\Dotenv::createImmutable(__DIR__ . '/..')->load();
+Dotenv\Dotenv::createImmutable(__DIR__ . '/../..')->load();
 $db = App\Database\Database::getConnection();
 
 $username = trim(ask("Username: "));

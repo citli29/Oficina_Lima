@@ -36,6 +36,7 @@ return [
 
 	/*	Backup Controller — Cópias de Segurança, admin only	*/
 	['GET', '/api/backups', [BackupController::class, 'getBackups']],
+	['GET', '/api/backups/status', [BackupController::class, 'getBackupStatus']],
 	['POST', '/api/backups', [BackupController::class, 'postBackup']],
 	['GET', '/api/backups/{name:[A-Za-z0-9_.-]+\.db}/download', [BackupController::class, 'downloadBackup']],
 

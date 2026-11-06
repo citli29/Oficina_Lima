@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 // "Lixo" (trash) for deleted rows.
 //
 // Creates the deleted_rows table (if missing) and, for every table in
 // TRASHED_TABLES, an AFTER DELETE trigger "trash_<table>" that saves the
 // whole deleted row as JSON. Rows older than KEEP_DAYS are cleared
-// automatically. Restore with utils/restore_deleted.php.
+// automatically. Restore with utils/admin_scripts/restore_deleted.php.
 //
 // The triggers list each column by name, read from the live schema.
 // ⚠️ RE-RUN THIS AFTER ANY ALTER TABLE on one of these tables, otherwise
 // new columns aren't saved. It's safe to run any number of times: every
 // trigger is dropped and recreated, deleted_rows itself is never touched.
 //
-//   php utils/trash_triggers.php            (uses DB_PATH from .env)
-//   php utils/trash_triggers.php --print    (only prints the SQL)
+//   php utils/admin_scripts/trash_triggers.php            (uses DB_PATH from .env)
+//   php utils/admin_scripts/trash_triggers.php --print    (only prints the SQL)
 
 const KEEP_DAYS = 90;
 
@@ -39,7 +39,7 @@ const TRASHED_TABLES = [
 
 $printOnly = in_array('--print', $argv, true);
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 
 $db = new PDO('sqlite:' . $_ENV['DB_PATH']);

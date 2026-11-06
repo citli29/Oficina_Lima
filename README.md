@@ -270,8 +270,8 @@ Used by the frontend to show the lab summary button on Laboratório services.
 - New dev accounts: `admin` / `admin2026`, `escritorio` / `escritorio2026`. Prod needs its own (stronger) passwords.
 
 ### Trash for deleted rows
-- New table `deleted_rows` + `trash_<table>` AFTER DELETE triggers on 27 tables, kept 90 days (no SQL file: created on prod by step 7 of the deploy). Created by `php utils/trash_triggers.php`, which must be **re-run after any `ALTER TABLE`** on those tables.
-- Restore with `php utils/restore_deleted.php list | show <id> | restore <id> [...]`, or from the **Lixo** page.
+- New table `deleted_rows` + `trash_<table>` AFTER DELETE triggers on 27 tables, kept 90 days (no SQL file: created on prod by step 7 of the deploy). Created by `php utils/admin_scripts/trash_triggers.php`, which must be **re-run after any `ALTER TABLE`** on those tables.
+- Restore with `php utils/admin_scripts/restore_deleted.php list | show <id> | restore <id> [...]`, or from the **Lixo** page.
 - Lixo page (admin only): `GET /api/trash`, `POST /api/trash/restore` (`App\Services\TrashService`, shared with the CLI). FE Gestão → Lixo (`/trash`).
 - Deletes blocked by the `d_*_in_use` triggers are still blocked; the trash only saves deletes that actually happen.
 
@@ -301,8 +301,8 @@ Prod has everything up to the 10-08 releases. Back up the prod DB first, then ru
 4. **`utils/sql_s/release_2026_11_03_migration.sql`:** orçamentos, product name rule.
 5. **`utils/sql_s/release_2026_11_03b_migration.sql`:** locked service types (Gestão de Tipos de Serviço).
 6. **`utils/sql_s/release_2026_11_04_migration.sql`:** shop login (accounts, devices, login lock, admin flag, notification lock), case-insensitive product references. Check prod for case-duplicate references first (query in the file header).
-7. **`php utils/trash_triggers.php`:** creates `deleted_rows` + the trash triggers. Must run after all the SQL above.
-8. **`php utils/set_shop_password.php`** once per account (≥12 chars), then set `is_admin` / `notification_type_id` by hand (see the 11_04 file header). Without this nobody can log in.
+7. **`php utils/admin_scripts/trash_triggers.php`:** creates `deleted_rows` + the trash triggers. Must run after all the SQL above.
+8. **`php utils/admin_scripts/set_shop_password.php`** once per account (≥12 chars), then set `is_admin` / `notification_type_id` by hand (see the 11_04 file header). Without this nobody can log in.
 9. **Optional:** `utils/holidays_2026_2027.sql`.
 
 If some of these are already on prod, skip them and run the rest in order.

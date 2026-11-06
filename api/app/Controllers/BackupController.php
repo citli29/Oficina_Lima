@@ -36,6 +36,25 @@ class BackupController
 		});
 	}
 
+	// Navbar warning: is the newest copy recent and not broken? The only
+	// backup route open to every logged-in account (the login gate in
+	// public/index.php already rejects requests without a token); non-admins
+	// get just ok + problem, not the file details.
+	public function getBackupStatus(): void
+	{
+		header('Content-Type: application/json');
+		try {
+			$status = (new BackupService())->status();
+			$isAdmin = AuthController::requireAdmin($this->db, false);
+			if (!$isAdmin)
+				unset($status['latest']);
+			echo json_encode(['success' => true] + $status);
+		} catch (InvalidArgumentException | RuntimeException $e) {
+			http_response_code(httpStatusFromException($e));
+			echo json_encode(['error' => $e->getMessage()]);
+		}
+	}
+
 	public function postBackup(): void
 	{
 		$this->respond(fn (BackupService $backups) => ['backup' => $backups->create()], 201);

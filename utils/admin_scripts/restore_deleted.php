@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
-// Puts back rows saved in deleted_rows (see utils/trash_triggers.php).
+// Puts back rows saved in deleted_rows (see utils/admin_scripts/trash_triggers.php).
 //
-//   php utils/restore_deleted.php list                 last 30 deletions
-//   php utils/restore_deleted.php list <table> [n]     last n of one table
-//   php utils/restore_deleted.php show <id>            the saved row
-//   php utils/restore_deleted.php restore <id> [...]   put rows back
+//   php utils/admin_scripts/restore_deleted.php list                 last 30 deletions
+//   php utils/admin_scripts/restore_deleted.php list <table> [n]     last n of one table
+//   php utils/admin_scripts/restore_deleted.php show <id>            the saved row
+//   php utils/admin_scripts/restore_deleted.php restore <id> [...]   put rows back
 //
 // A row comes back with its original id, so anything that pointed to it
 // works again. Restore parents before children (e.g. the service before its
@@ -17,7 +17,7 @@ require __DIR__ . '/../vendor/autoload.php';
 // parents first whatever the order given. Same code as the Lixo page
 // (App\Services\TrashService).
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 date_default_timezone_set('Europe/Lisbon');
 
@@ -77,7 +77,7 @@ switch ($command) {
 	case 'restore':
 		$ids = array_map('intval', array_slice($argv, 2));
 		if (!$ids) {
-			fwrite(STDERR, 'Usage: php utils/restore_deleted.php restore <id> [<id> ...]' . PHP_EOL);
+			fwrite(STDERR, 'Usage: php utils/admin_scripts/restore_deleted.php restore <id> [<id> ...]' . PHP_EOL);
 			exit(1);
 		}
 
@@ -95,9 +95,9 @@ switch ($command) {
 	default:
 		fwrite(STDERR,
 			"Usage:\n" .
-			"  php utils/restore_deleted.php list [<table> [n]]\n" .
-			"  php utils/restore_deleted.php show <id>\n" .
-			"  php utils/restore_deleted.php restore <id> [<id> ...]\n"
+			"  php utils/admin_scripts/restore_deleted.php list [<table> [n]]\n" .
+			"  php utils/admin_scripts/restore_deleted.php show <id>\n" .
+			"  php utils/admin_scripts/restore_deleted.php restore <id> [<id> ...]\n"
 		);
 		exit(1);
 }

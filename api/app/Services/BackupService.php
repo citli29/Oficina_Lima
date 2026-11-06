@@ -17,7 +17,7 @@ use SQLite3;
  * The copy uses SQLite's online backup API, which is safe while the app is
  * running (unlike copying the file, which can miss WAL contents).
  * Restoring is deliberately not offered here: it overwrites everyone's data,
- * so it stays a command-line step (utils/restore.php).
+ * so it stays a command-line step (utils/admin_scripts/restore.php).
  */
 class BackupService
 {
@@ -36,9 +36,16 @@ class BackupService
 			throw new RuntimeException('DB_PATH / BACKUP_PATH em falta no .env.', 500);
 	}
 
-	/** Makes a new copy now and checks it. Returns its listing entry + integrity result. */
-	public function create(): array
+	/**
+	 * Makes a new copy now and checks it. Returns its listing entry + integrity result.
+	 * $suffix (e.g. "pre_restore") is added to the name: YYYY_MM_DD_HH_MM_SS_<suffix>.db.
+	 * The web page never passes one; utils/admin_scripts/restore.php does.
+	 */
+	public function create(string $suffix = ''): array
 	{
+		if ($suffix !== '' && !preg_match('/^[a-z0-9_]+$/', $suffix))
+			throw new InvalidArgumentException('Sufixo de cópia inválido.', 400);
+
 		if (!is_dir($this->backupDirectory)
 			&& !mkdir($this->backupDirectory, 0750, true)
 			&& !is_dir($this->backupDirectory))
@@ -48,7 +55,7 @@ class BackupService
 			throw new RuntimeException('Base de dados não encontrada.', 500);
 
 		$now = new DateTime('now', new DateTimeZone('Europe/Lisbon'));
-		$name = $now->format('Y_m_d_H_i_s') . '.db';
+		$name = $now->format('Y_m_d_H_i_s') . ($suffix !== '' ? '_' . $suffix : '') . '.db';
 		$path = $this->backupDirectory . DIRECTORY_SEPARATOR . $name;
 
 		// Two copies in the same second would share a name.
@@ -116,6 +123,69 @@ class BackupService
 			foreach ([$tmp, "$tmp-wal", "$tmp-shm"] as $file)
 				if (file_exists($file)) @unlink($file);
 		}
+	}
+
+	/**
+	 * Is the newest copy recent and readable? Used by the navbar warning.
+	 * Cron makes one a day (11:01), so older than MAX_AGE_HOURS means a run
+	 * was missed. The integrity result is cached per file (name + size +
+	 * mtime), so polling this doesn't re-check the same copy every time.
+	 */
+	public const MAX_AGE_HOURS = 30;
+
+	public function status(): array
+	{
+		$latest = null;
+		try {
+			$latest = $this->list()[0] ?? null;
+		} catch (\Throwable) {
+			// fall through: treated as "no copies"
+		}
+
+		if ($latest === null)
+			return ['ok' => false, 'problem' => 'Não foi encontrada nenhuma cópia de segurança.', 'latest' => null];
+
+		$ageHours = (time() - $latest['modified_ts']) / 3600;
+
+		try {
+			$integrity = $this->cachedIntegrity($latest);
+		} catch (\Throwable) {
+			$integrity = 'não foi possível verificar';
+		}
+
+		$problem = null;
+		if ($integrity !== 'ok')
+			$problem = 'A última cópia de segurança está danificada (' . $integrity . ').';
+		elseif ($ageHours > self::MAX_AGE_HOURS)
+			$problem = 'A última cópia de segurança foi feita há ' . $this->describeAge($ageHours) . '. A cópia diária não está a ser feita.';
+
+		return [
+			'ok' => $problem === null,
+			'problem' => $problem,
+			'latest' => $latest + ['integrity' => $integrity],
+		];
+	}
+
+	private function cachedIntegrity(array $latest): string
+	{
+		$cacheFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'ol_backup_integrity_' . md5($this->backupDirectory) . '.json';
+		$key = $latest['name'] . '|' . $latest['size'] . '|' . $latest['modified_ts'];
+
+		$cached = is_file($cacheFile) ? json_decode((string) @file_get_contents($cacheFile), true) : null;
+		if (is_array($cached) && ($cached['key'] ?? null) === $key && is_string($cached['integrity'] ?? null))
+			return $cached['integrity'];
+
+		$integrity = $this->integrityCheck($this->pathFor($latest['name']));
+		@file_put_contents($cacheFile, json_encode(['key' => $key, 'integrity' => $integrity]), LOCK_EX);
+
+		return $integrity;
+	}
+
+	private function describeAge(float $hours): string
+	{
+		if ($hours < 48)
+			return (int) floor($hours) . ' horas';
+		return (int) floor($hours / 24) . ' dias';
 	}
 
 	/** Full path of a copy, or an exception if the name isn't a copy in BACKUP_PATH. */

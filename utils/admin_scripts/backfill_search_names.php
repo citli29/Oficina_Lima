@@ -10,7 +10,7 @@ declare(strict_types=1);
 // Safe to re-run: recomputes every row from its current name/plate,
 // wrapped in a single transaction (all-or-nothing).
 
-require_once __DIR__ . '/normalize.php';
+require_once __DIR__ . '/../normalize.php';
 
 if ($argc < 2) {
     fwrite(STDERR, "Usage: php backfill_search_names.php /path/to/Database.db\n");
